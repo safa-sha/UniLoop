@@ -6,10 +6,25 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+
+            System.out.println("Successfully connected to UniLoop database!");
+
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Database connection failed!");
+            e.printStackTrace();
+        }
 
         Label message = new Label("Welcome to UniLoop!");
 
