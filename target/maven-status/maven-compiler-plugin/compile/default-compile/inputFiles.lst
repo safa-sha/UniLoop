@@ -1,2 +1,9 @@
+D:\uniloop\src\main\java\com\uniloop\controller\UniLoopController.java
 D:\uniloop\src\main\java\com\uniloop\DatabaseConnection.java
 D:\uniloop\src\main\java\com\uniloop\Main.java
+D:\uniloop\src\main\java\com\uniloop\model\Item.java
+D:\uniloop\src\main\java\com\uniloop\model\Request.java
+D:\uniloop\src\main\java\com\uniloop\repository\ItemRepository.java
+D:\uniloop\src\main\java\com\uniloop\repository\RequestRepository.java
+D:\uniloop\src\main\java\com\uniloop\service\ItemService.java
+D:\uniloop\src\main\java\com\uniloop\service\RequestService.java

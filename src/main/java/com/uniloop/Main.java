@@ -1,8 +1,12 @@
 package com.uniloop;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("UniLoop backend project is starting...");
+        SpringApplication.run(Main.class, args);
     }
 }

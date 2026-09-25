@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Requests - UniLoop</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">
+            UniLoop
+        </div>
+
+        <nav>
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/items">
+                Browse
+            </a>
+
+            <a href="/sell.html">
+                Sell
+            </a>
+
+            <a href="/requests">
+                Requests
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <main class="items">
+
+        <h1>
+            Item Requests
+        </h1>
+
+        <p>
+            Requests received for your items.
+        </p>
+
+
+        <div class="item-container">
+
+
+            <div class="item-card"
+                 th:each="request : ${requests}">
+
+
+                <h3>
+
+                    Request #
+
+                    <span th:text="${request.requestId}">
+                        1
+                    </span>
+
+                </h3>
+
+
+                <p>
+
+                    Item ID:
+
+                    <strong th:text="${request.itemId}">
+                        0
+                    </strong>
+
+                </p>
+
+
+                <p>
+
+                    Buyer ID:
+
+                    <span th:text="${request.buyerId}">
+                        0
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    Status:
+
+                    <strong th:text="${request.requestStatus}">
+                        PENDING
+                    </strong>
+
+                </p>
+
+
+                <p>
+
+                    Requested on:
+
+                    <span th:text="${request.requestDate}">
+                        Date
+                    </span>
+
+                </p>
+
+
+                <!-- Accept -->
+
+                <form action="/accept-request"
+                      method="post">
+
+                    <input
+                        type="hidden"
+                        name="requestId"
+                        th:value="${request.requestId}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="submit-button">
+
+                        Accept
+
+                    </button>
+
+                </form>
+
+
+                <!-- Reject -->
+
+                <form action="/reject-request"
+                      method="post">
+
+                    <input
+                        type="hidden"
+                        name="requestId"
+                        th:value="${request.requestId}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="submit-button">
+
+                        Reject
+
+                    </button>
+
+                </form>
+
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

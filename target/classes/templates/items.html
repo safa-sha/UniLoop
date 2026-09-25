@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Browse Items - UniLoop</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">UniLoop</div>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/items">Browse</a>
+            <a href="/sell.html">Sell</a>
+            <a href="#">Login</a>
+        </nav>
+
+    </header>
+
+
+    <main class="items">
+
+        <h1>Browse Items</h1>
+
+        <p>Items available in your campus marketplace.</p>
+
+
+        <div class="item-container">
+
+            <div class="item-card" th:each="item : ${items}">
+
+                <div class="item-image">
+                    📦
+                </div>
+
+                <h3 th:text="${item.itemName}">
+                    Item Name
+                </h3>
+
+                <p th:text="${item.condition}">
+                    Condition
+                </p>
+
+                <strong th:text="'₹' + ${item.price}">
+                    ₹0
+                </strong>
+
+
+                <!-- Request Item -->
+
+                <form action="/request" method="post">
+
+                    <!-- Temporary buyer ID -->
+                    <input
+                        type="hidden"
+                        name="buyerId"
+                        value="2"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="itemId"
+                        th:value="${item.itemId}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="submit-button"
+                    >
+                        Request Item
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
