@@ -1,25 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Browse Items - UniLoop</title>
 
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet"
+          href="/css/style.css">
+
 </head>
+
 
 <body>
 
     <header class="navbar">
 
-        <div class="logo">UniLoop</div>
+        <div class="logo">
+            UniLoop
+        </div>
 
         <nav>
-            <a href="/">Home</a>
-            <a href="/items">Browse</a>
-            <a href="/sell.html">Sell</a>
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/items">
+                Browse
+            </a>
+
+            <a href="/sell.html">
+                Sell
+            </a>
+
+            <a href="/requests">
+                Requests
+            </a>
             <a href="#">Login</a>
+
         </nav>
 
     </header>
@@ -27,63 +51,213 @@
 
     <main class="items">
 
-        <h1>Browse Items</h1>
+        <h1>
+            Browse Items
+        </h1>
 
-        <p>Items available in your campus marketplace.</p>
+        <p>
+            Items available in your campus marketplace.
+        </p>
 
 
         <div class="item-container">
 
-            <div class="item-card" th:each="item : ${items}">
+
+            <div class="item-card"
+                 th:each="item : ${items}">
+
 
                 <div class="item-image">
                     📦
                 </div>
 
+
                 <h3 th:text="${item.itemName}">
                     Item Name
                 </h3>
 
+
                 <p th:text="${item.condition}">
                     Condition
                 </p>
+
 
                 <strong th:text="'₹' + ${item.price}">
                     ₹0
                 </strong>
 
 
-                <!-- Request Item -->
+                <!-- ============================== -->
+                <!-- NO REQUEST YET -->
+                <!-- ============================== -->
 
-                <form action="/request" method="post">
+                <div th:if="${item.requestStatus == null}">
 
-                    <!-- Temporary buyer ID -->
-                    <input
-                        type="hidden"
-                        name="buyerId"
-                        value="2"
-                    >
+                    <form action="/request"
+                          method="post">
 
-                    <input
-                        type="hidden"
-                        name="itemId"
-                        th:value="${item.itemId}"
-                    >
+                        <input
+                            type="hidden"
+                            name="buyerId"
+                            value="2"
+                        >
 
-                    <button
-                        type="submit"
-                        class="submit-button"
-                    >
-                        Request Item
-                    </button>
+                        <input
+                            type="hidden"
+                            name="itemId"
+                            th:value="${item.itemId}"
+                        >
 
-                </form>
+                        <button
+                            type="submit"
+                            class="submit-button">
+
+                            Request Item
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- ============================== -->
+                <!-- REQUEST PENDING -->
+                <!-- ============================== -->
+
+                <div th:if="${item.requestStatus == 'PENDING'}">
+
+                    <p>
+                        ✓ Request Sent
+                    </p>
+
+
+                    <form action="/cancel-request"
+                          method="post">
+
+                        <input
+                            type="hidden"
+                            name="buyerId"
+                            value="2"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="requestId"
+                            th:value="${item.requestId}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="submit-button">
+
+                            Cancel Request
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- ============================== -->
+                <!-- REQUEST ACCEPTED -->
+                <!-- ============================== -->
+
+                <div th:if="${item.requestStatus == 'ACCEPTED'}">
+
+                    <p>
+                        ✓ Request Accepted
+                    </p>
+
+                </div>
+
+
+                <!-- ============================== -->
+                <!-- REQUEST REJECTED -->
+                <!-- ============================== -->
+
+                <div th:if="${item.requestStatus == 'REJECTED'}">
+
+                    <p>
+                        Request Rejected
+                    </p>
+
+
+                    <form action="/request"
+                          method="post">
+
+                        <input
+                            type="hidden"
+                            name="buyerId"
+                            value="2"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="itemId"
+                            th:value="${item.itemId}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="submit-button">
+
+                            Request Again
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- ============================== -->
+                <!-- REQUEST CANCELLED -->
+                <!-- ============================== -->
+
+                <div th:if="${item.requestStatus == 'CANCELLED'}">
+
+                    <p>
+                        Request Cancelled
+                    </p>
+
+
+                    <form action="/request"
+                          method="post">
+
+                        <input
+                            type="hidden"
+                            name="buyerId"
+                            value="2"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="itemId"
+                            th:value="${item.itemId}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="submit-button">
+
+                            Request Again
+
+                        </button>
+
+                    </form>
+
+                </div>
+
 
             </div>
+
 
         </div>
 
     </main>
 
 </body>
+
 </html>

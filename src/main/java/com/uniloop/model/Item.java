@@ -13,6 +13,8 @@ public class Item {
     private String listingType;
     private String itemStatus;
     private String datePosted;
+    private int requestId;
+    private String requestStatus;
 
     public Item() {
     }
@@ -122,5 +124,21 @@ public class Item {
 
     public void setDatePosted(String datePosted) {
         this.datePosted = datePosted;
+    }
+
+    public int getRequestId() {
+    return requestId;
+    }
+
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(String requestStatus) {
+        this.requestStatus = requestStatus;
     }
 }

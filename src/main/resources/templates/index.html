@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniLoop</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="logo">UniLoop</div>
+
+        <nav>
+            <a href="/">Home</a>
+            <a href="/items">Browse</a>
+            <a href="/sell.html">Sell</a>
+            <a href="/requests">Requests</a>
+            <a href="#">Login</a>
+        </nav>
+    </header>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <div class="hero-content">
+            <h1>Your Campus.<br>Your Marketplace.</h1>
+
+            <p>
+                Buy, sell, exchange, or donate items within your campus community.
+            </p>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search for books, electronics, clothing...">
+                <button>Search</button>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- Categories -->
+   <section class="categories">
+
+    <h2>Browse Categories</h2>
+
+    <div class="category-container">
+
+        <a href="/items?category=1"
+           class="category-card">
+            📚
+            <h3>Books</h3>
+        </a>
+
+        <a href="/items?category=2"
+           class="category-card">
+            💻
+            <h3>Electronics</h3>
+        </a>
+
+        <a href="/items?category=3"
+           class="category-card">
+            ✏️
+            <h3>Stationery</h3>
+        </a>
+
+        <a href="/items?category=4"
+           class="category-card">
+            👕
+            <h3>Clothing</h3>
+        </a>
+
+        <a href="/items?category=5"
+           class="category-card">
+            🏠
+            <h3>Hostel Items</h3>
+        </a>
+
+        <a href="/items?category=6"
+           class="category-card">
+            ⚽
+            <h3>Sports</h3>
+        </a>
+
+    </div>
+
+</section>
+
+    <!-- Featured Items -->
+    <section class="items">
+
+    <h2>Recently Listed</h2>
+
+    <div class="item-container">
+
+        <div class="item-card"
+             th:each="item : ${latestItems}">
+
+            <div class="item-image">
+                📦
+            </div>
+
+            <h3 th:text="${item.itemName}">
+                Item Name
+            </h3>
+
+            <p th:text="${item.condition}">
+                Condition
+            </p>
+
+            <strong th:text="'₹' + ${item.price}">
+                ₹0
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 UniLoop • A Campus Marketplace for Students</p>
+    </footer>
+
+</body>
+</html>

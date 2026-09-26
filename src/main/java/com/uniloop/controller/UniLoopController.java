@@ -1,5 +1,5 @@
 package com.uniloop.controller;
-
+import com.uniloop.model.Request;
 import com.uniloop.model.Item;
 import com.uniloop.repository.ItemRepository;
 import com.uniloop.service.ItemService;
@@ -24,21 +24,56 @@ public class UniLoopController {
 
 
     @GetMapping("/")
-    public String home() {
+public String home(Model model) {
 
-        return "forward:/index.html";
+    model.addAttribute(
+            "latestItems",
+            itemRepository.getLatestItems()
+    );
+
+    return "index";
+}
+
+
+        @GetMapping("/items")
+public String getItems(
+        @RequestParam(required = false) Integer category,
+        Model model) {
+
+    List<Item> items;
+
+    if (category != null) {
+        items = itemRepository.getItemsByCategory(category);
+    } else {
+        items = itemRepository.getAllItems();
     }
 
+    int buyerId = 2;
 
-    @GetMapping("/items")
-    public String getItems(Model model) {
+    for (Item item : items) {
 
-        List<Item> items = itemRepository.getAllItems();
+        Request request =
+                requestService.getLatestRequest(
+                        item.getItemId(),
+                        buyerId
+                );
 
-        model.addAttribute("items", items);
+        if (request != null) {
 
-        return "items";
+            item.setRequestId(
+                    request.getRequestId()
+            );
+
+            item.setRequestStatus(
+                    request.getRequestStatus()
+            );
+        }
     }
+
+    model.addAttribute("items", items);
+
+    return "items";
+}
 
 
     @PostMapping("/sell")
@@ -114,4 +149,17 @@ public class UniLoopController {
 
         return "redirect:/requests";
     }
+
+    @PostMapping("/cancel-request")
+public String cancelRequest(
+        @RequestParam int requestId,
+        @RequestParam int buyerId) {
+
+    requestService.cancelRequest(
+            requestId,
+            buyerId
+    );
+
+    return "redirect:/items";
+}
 }

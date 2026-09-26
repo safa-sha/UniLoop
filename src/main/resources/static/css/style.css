@@ -137,6 +137,8 @@ body {
 
 /* ---------- Category Cards ---------- */
 
+/* ---------- Category Cards ---------- */
+
 .category-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -150,6 +152,10 @@ body {
     text-align: center;
     box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
     transition: 0.2s;
+
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .category-card:hover {
@@ -160,6 +166,8 @@ body {
 .category-card h3 {
     margin-top: 12px;
     font-size: 15px;
+    text-decoration: none;
+    color: #222;
 }
 
 
