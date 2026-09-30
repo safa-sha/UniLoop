@@ -198,4 +198,158 @@ public List<Item> getItemsByCategory(int categoryId) {
 
     return items;
 }
+
+public List<Item> getItemsBySeller(int sellerId) {
+
+    List<Item> items = new ArrayList<>();
+
+    String sql = """
+            SELECT *
+            FROM items
+            WHERE seller_id = ?
+            ORDER BY item_id DESC
+            """;
+
+    try (Connection connection = DatabaseConnection.getConnection();
+         PreparedStatement statement =
+                 connection.prepareStatement(sql)) {
+
+        statement.setInt(1, sellerId);
+
+        try (ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+
+                Item item = new Item();
+
+                item.setItemId(
+                        resultSet.getInt("item_id")
+                );
+
+                item.setSellerId(
+                        resultSet.getInt("seller_id")
+                );
+
+                item.setCategoryId(
+                        resultSet.getInt("category_id")
+                );
+
+                item.setItemName(
+                        resultSet.getString("item_name")
+                );
+
+                item.setDescription(
+                        resultSet.getString("description")
+                );
+
+                item.setPrice(
+                        resultSet.getDouble("price")
+                );
+
+                item.setImagePath(
+                        resultSet.getString("image_path")
+                );
+
+                item.setCondition(
+                        resultSet.getString("item_condition")
+                );
+
+                item.setListingType(
+                        resultSet.getString("listing_type")
+                );
+
+                item.setItemStatus(
+                        resultSet.getString("item_status")
+                );
+
+                item.setDatePosted(
+                        resultSet.getString("date_posted")
+                );
+
+                items.add(item);
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return items;
+}
+
+public Item getItemById(int itemId) {
+
+    String sql = """
+            SELECT *
+            FROM items
+            WHERE item_id = ?
+            """;
+
+    try (Connection connection = DatabaseConnection.getConnection();
+         PreparedStatement statement =
+                 connection.prepareStatement(sql)) {
+
+        statement.setInt(1, itemId);
+
+        try (ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+
+                Item item = new Item();
+
+                item.setItemId(
+                        resultSet.getInt("item_id")
+                );
+
+                item.setSellerId(
+                        resultSet.getInt("seller_id")
+                );
+
+                item.setCategoryId(
+                        resultSet.getInt("category_id")
+                );
+
+                item.setItemName(
+                        resultSet.getString("item_name")
+                );
+
+                item.setDescription(
+                        resultSet.getString("description")
+                );
+
+                item.setPrice(
+                        resultSet.getDouble("price")
+                );
+
+                item.setImagePath(
+                        resultSet.getString("image_path")
+                );
+
+                item.setCondition(
+                        resultSet.getString("item_condition")
+                );
+
+                item.setListingType(
+                        resultSet.getString("listing_type")
+                );
+
+                item.setItemStatus(
+                        resultSet.getString("item_status")
+                );
+
+                item.setDatePosted(
+                        resultSet.getString("date_posted")
+                );
+
+                return item;
+            }
+
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
 }

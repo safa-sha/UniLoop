@@ -5,6 +5,7 @@ public class Request {
     private int requestId;
     private int itemId;
     private int buyerId;
+    private String imagePath;
 
     private String itemName;
     private String buyerName;
@@ -91,5 +92,13 @@ public class Request {
 
     public void setRequestDate(String requestDate) {
         this.requestDate = requestDate;
+    }
+
+    public String getImagePath() {
+    return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

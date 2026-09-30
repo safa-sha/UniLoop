@@ -7,6 +7,10 @@ import java.util.List;
 
 public class RequestService {
 
+        public int getItemIdByRequestId(int requestId) {
+    return requestRepository.getItemIdByRequestId(requestId);
+}
+
     private final RequestRepository requestRepository =
             new RequestRepository();
 

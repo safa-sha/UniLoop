@@ -35,7 +35,7 @@
                 Browse
             </a>
 
-            <a href="/sell.html">
+            <a href="/sell">
                 Sell
             </a>
 
@@ -66,6 +66,17 @@
             <div class="item-card"
                  th:each="request : ${requests}">
 
+                <div class="item-image">
+
+                     <img th:if="${request.imagePath != null and !request.imagePath.isEmpty()}"
+                       th:src="${request.imagePath}"
+                         alt="Item image">
+
+                     <span th:unless="${request.imagePath != null and !request.imagePath.isEmpty()}">
+                       📦
+                      </span>
+
+                </div>
 
                 <h3 th:text="${request.itemName}">
                     Item Name

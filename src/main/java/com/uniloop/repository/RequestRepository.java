@@ -104,6 +104,7 @@ public class RequestRepository {
                     r.item_id,
                     r.buyer_id,
                     i.item_name,
+                    i.image_path,
                     u.name AS buyer_name,
                     r.request_status,
                     r.request_date
@@ -135,6 +136,10 @@ public class RequestRepository {
 
                 request.setItemId(
                         resultSet.getInt("item_id")
+                );
+
+                request.setImagePath(
+                        resultSet.getString("image_path")
                 );
 
                 request.setBuyerId(

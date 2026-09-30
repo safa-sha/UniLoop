@@ -1,4 +1,5 @@
 package com.uniloop.controller;
+
 import com.uniloop.model.Request;
 import com.uniloop.model.Item;
 import com.uniloop.repository.ItemRepository;
@@ -10,82 +11,169 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @Controller
 public class UniLoopController {
 
-    private final ItemRepository itemRepository = new ItemRepository();
+    private final ItemRepository itemRepository =
+            new ItemRepository();
 
-    private final ItemService itemService = new ItemService();
+    private final ItemService itemService =
+            new ItemService();
 
-    private final RequestService requestService = new RequestService();
+    private final RequestService requestService =
+            new RequestService();
 
 
     @GetMapping("/")
-public String home(Model model) {
+    public String home(Model model) {
 
-    model.addAttribute(
-            "latestItems",
-            itemRepository.getLatestItems()
-    );
+        model.addAttribute(
+                "latestItems",
+                itemRepository.getLatestItems()
+        );
 
-    return "index";
-}
-
-
-        @GetMapping("/items")
-public String getItems(
-        @RequestParam(required = false) Integer category,
-        Model model) {
-
-    List<Item> items;
-
-    if (category != null) {
-        items = itemRepository.getItemsByCategory(category);
-    } else {
-        items = itemRepository.getAllItems();
+        return "index";
     }
 
-    int buyerId = 2;
 
-    for (Item item : items) {
+    @GetMapping("/items")
+    public String getItems(
+            @RequestParam(name = "category", required = false)
+            Integer category,
+            Model model) {
 
-        Request request =
-                requestService.getLatestRequest(
-                        item.getItemId(),
-                        buyerId
+        List<Item> items;
+
+        if (category != null) {
+
+            items =
+                    itemRepository.getItemsByCategory(category);
+
+        } else {
+
+            items =
+                    itemRepository.getAllItems();
+        }
+
+        int buyerId = 2;
+
+        for (Item item : items) {
+
+            Request request =
+                    requestService.getLatestRequest(
+                            item.getItemId(),
+                            buyerId
+                    );
+
+            if (request != null) {
+
+                item.setRequestId(
+                        request.getRequestId()
                 );
 
-        if (request != null) {
-
-            item.setRequestId(
-                    request.getRequestId()
-            );
-
-            item.setRequestStatus(
-                    request.getRequestStatus()
-            );
+                item.setRequestStatus(
+                        request.getRequestStatus()
+                );
+            }
         }
+
+        model.addAttribute(
+                "items",
+                items
+        );
+
+        return "items";
     }
-
-    model.addAttribute("items", items);
-
-    return "items";
-}
 
 
     @PostMapping("/sell")
     public String sellItem(
-            @RequestParam int sellerId,
-            @RequestParam int categoryId,
-            @RequestParam String itemName,
-            @RequestParam String description,
-            @RequestParam double price,
-            @RequestParam(required = false) String imagePath,
-            @RequestParam String condition,
-            @RequestParam String listingType) {
+            @RequestParam(name = "sellerId")
+            int sellerId,
+
+            @RequestParam(name = "categoryId")
+            int categoryId,
+
+            @RequestParam(name = "itemName")
+            String itemName,
+
+            @RequestParam(name = "description")
+            String description,
+
+            @RequestParam(name = "price")
+            double price,
+
+            @RequestParam(
+                    name = "image",
+                    required = false
+            )
+            MultipartFile image,
+
+            @RequestParam(name = "condition")
+            String condition,
+
+            @RequestParam(name = "listingType")
+            String listingType) {
+
+        String imagePath = null;
+
+        // Handle image upload
+        if (image != null && !image.isEmpty()) {
+
+            try {
+
+                String uploadDirectory =
+                        "src/main/resources/static/uploads";
+
+                Files.createDirectories(
+                        Paths.get(uploadDirectory)
+                );
+
+                String originalName =
+                        image.getOriginalFilename();
+
+                String fileExtension = "";
+
+                if (originalName != null
+                        && originalName.contains(".")) {
+
+                    fileExtension =
+                            originalName.substring(
+                                    originalName.lastIndexOf(".")
+                            );
+                }
+
+                String fileName =
+                        UUID.randomUUID()
+                                + fileExtension;
+
+                Path filePath =
+                        Paths.get(
+                                uploadDirectory,
+                                fileName
+                        );
+
+                Files.write(
+                        filePath,
+                        image.getBytes()
+                );
+
+                imagePath =
+                        "/uploads/" + fileName;
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+        }
 
         itemService.addItem(
                 sellerId,
@@ -102,15 +190,31 @@ public String getItems(
     }
 
 
-    @PostMapping("/request")
-    public String requestItem(
-            @RequestParam int itemId,
-            @RequestParam int buyerId) {
+ @PostMapping("/request")
+public String requestItem(
+        @RequestParam(name = "itemId")
+        int itemId,
 
-        requestService.requestItem(itemId, buyerId);
+        @RequestParam(name = "buyerId")
+        int buyerId,
 
-        return "redirect:/items";
+        @RequestParam(
+                name = "source",
+                defaultValue = "items"
+        )
+        String source) {
+
+    requestService.requestItem(
+            itemId,
+            buyerId
+    );
+
+    if (source.equals("item")) {
+        return "redirect:/item?id=" + itemId;
     }
+
+    return "redirect:/items";
+}
 
 
     @GetMapping("/requests")
@@ -127,7 +231,8 @@ public String getItems(
 
     @PostMapping("/accept-request")
     public String acceptRequest(
-            @RequestParam int requestId) {
+            @RequestParam(name = "requestId")
+            int requestId) {
 
         requestService.updateRequestStatus(
                 requestId,
@@ -140,7 +245,8 @@ public String getItems(
 
     @PostMapping("/reject-request")
     public String rejectRequest(
-            @RequestParam int requestId) {
+            @RequestParam(name = "requestId")
+            int requestId) {
 
         requestService.updateRequestStatus(
                 requestId,
@@ -150,16 +256,84 @@ public String getItems(
         return "redirect:/requests";
     }
 
+
     @PostMapping("/cancel-request")
 public String cancelRequest(
-        @RequestParam int requestId,
-        @RequestParam int buyerId) {
+        @RequestParam(name = "requestId")
+        int requestId,
+
+        @RequestParam(name = "buyerId")
+        int buyerId,
+
+        @RequestParam(
+                name = "source",
+                defaultValue = "items"
+        )
+        String source) {
+
+    int itemId =
+            requestService.getItemIdByRequestId(requestId);
 
     requestService.cancelRequest(
             requestId,
             buyerId
     );
 
+    if (source.equals("item")) {
+        return "redirect:/item?id=" + itemId;
+    }
+
     return "redirect:/items";
 }
+
+
+    @GetMapping("/sell")
+    public String sellPage(Model model) {
+
+        int sellerId = 1;
+
+        model.addAttribute(
+                "myListings",
+                itemRepository.getItemsBySeller(sellerId)
+        );
+
+        return "sell";
+    }
+
+
+    @GetMapping("/item")
+    public String itemDetails(
+            @RequestParam(name = "id")
+            int id,
+
+            Model model) {
+
+        Item item =
+                itemRepository.getItemById(id);
+
+        if (item == null) {
+
+            return "redirect:/items";
+        }
+
+        int buyerId = 2;
+
+        Request request =
+                requestService.getLatestRequest(
+                        id,
+                        buyerId
+                );
+
+        model.addAttribute(
+                "item",
+                item
+        );
+
+        model.addAttribute(
+                "request",
+                request
+        );
+
+        return "item-details";
+    }
 }

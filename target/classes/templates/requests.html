@@ -35,13 +35,14 @@
                 Browse
             </a>
 
-            <a href="/sell.html">
+            <a href="/sell">
                 Sell
             </a>
 
             <a href="/requests">
                 Requests
             </a>
+            <a href="#">Login</a>
 
         </nav>
 
@@ -65,36 +66,30 @@
             <div class="item-card"
                  th:each="request : ${requests}">
 
+                <div class="item-image">
 
-                <h3>
+                     <img th:if="${request.imagePath != null and !request.imagePath.isEmpty()}"
+                       th:src="${request.imagePath}"
+                         alt="Item image">
 
-                    Request #
+                     <span th:unless="${request.imagePath != null and !request.imagePath.isEmpty()}">
+                       📦
+                      </span>
 
-                    <span th:text="${request.requestId}">
-                        1
-                    </span>
+                </div>
 
+                <h3 th:text="${request.itemName}">
+                    Item Name
                 </h3>
 
 
                 <p>
 
-                    Item ID:
+                    Requested by:
 
-                    <strong th:text="${request.itemId}">
-                        0
+                    <strong th:text="${request.buyerName}">
+                        Student Name
                     </strong>
-
-                </p>
-
-
-                <p>
-
-                    Buyer ID:
-
-                    <span th:text="${request.buyerId}">
-                        0
-                    </span>
 
                 </p>
 
@@ -124,7 +119,8 @@
                 <!-- Accept -->
 
                 <form action="/accept-request"
-                      method="post">
+                      method="post"
+                      th:if="${request.requestStatus == 'PENDING'}">
 
                     <input
                         type="hidden"
@@ -146,7 +142,8 @@
                 <!-- Reject -->
 
                 <form action="/reject-request"
-                      method="post">
+                      method="post"
+                      th:if="${request.requestStatus == 'PENDING'}">
 
                     <input
                         type="hidden"

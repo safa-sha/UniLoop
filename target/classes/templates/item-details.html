@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${item.itemName} + ' - UniLoop'">
+        Item Details - UniLoop
+    </title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        UniLoop
+    </div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/items">Browse</a>
+        <a href="/sell">Sell</a>
+        <a href="/requests">Requests</a>
+        <a href="#">Login</a>
+    </nav>
+
+</header>
+
+
+<main class="item-details-page">
+
+    <div class="item-details-card">
+
+
+        <!-- ============================== -->
+        <!-- ITEM IMAGE -->
+        <!-- ============================== -->
+
+        <div class="item-details-image">
+
+            <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
+                 th:src="${item.imagePath}"
+                 alt="Item image">
+
+            <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
+                📦
+            </span>
+
+        </div>
+
+
+        <!-- ============================== -->
+        <!-- ITEM INFORMATION -->
+        <!-- ============================== -->
+
+        <div class="item-details-info">
+
+            <h1 th:text="${item.itemName}">
+                Item Name
+            </h1>
+
+            <p class="item-condition"
+               th:text="${item.condition}">
+                Condition
+            </p>
+
+            <h2 th:text="'₹' + ${item.price}">
+                ₹0
+            </h2>
+
+
+            <p>
+                <strong>Description</strong>
+            </p>
+
+            <p th:text="${item.description}">
+                Item description
+            </p>
+
+
+            <p>
+                <strong>Listing Type:</strong>
+
+                <span th:text="${item.listingType}">
+                    SELL
+                </span>
+            </p>
+
+
+            <p>
+                <strong>Status:</strong>
+
+                <span th:text="${item.itemStatus}">
+                    AVAILABLE
+                </span>
+            </p>
+
+
+
+            <!-- ============================== -->
+            <!-- REQUEST ITEM -->
+            <!-- No request / Rejected / Cancelled -->
+            <!-- ============================== -->
+
+            <form action="/request"
+                  method="post"
+                  th:if="${item.itemStatus == 'AVAILABLE' and
+                          (request == null or
+                          request.requestStatus == 'REJECTED' or
+                          request.requestStatus == 'CANCELLED')}">
+
+                <input type="hidden"
+                       name="itemId"
+                       th:value="${item.itemId}">
+
+                <input type="hidden"
+                       name="buyerId"
+                       value="2">
+
+                <!-- Tell controller this came from Item Details -->
+                <input type="hidden"
+                       name="source"
+                       value="item">
+
+                <button type="submit"
+                        class="submit-button">
+
+                    <span th:if="${request == null}">
+                        Request Item
+                    </span>
+
+                    <span th:if="${request != null and
+                                  request.requestStatus == 'REJECTED'}">
+                        Request Again
+                    </span>
+
+                    <span th:if="${request != null and
+                                  request.requestStatus == 'CANCELLED'}">
+                        Request Again
+                    </span>
+
+                </button>
+
+            </form>
+
+
+
+            <!-- ============================== -->
+            <!-- PENDING REQUEST -->
+            <!-- ============================== -->
+
+            <form action="/cancel-request"
+                  method="post"
+                  th:if="${item.itemStatus == 'AVAILABLE' and
+                          request != null and
+                          request.requestStatus == 'PENDING'}">
+
+                <input type="hidden"
+                       name="requestId"
+                       th:value="${request.requestId}">
+
+                <input type="hidden"
+                       name="buyerId"
+                       value="2">
+
+                <!-- Tell controller this came from Item Details -->
+                <input type="hidden"
+                       name="source"
+                       value="item">
+
+                <button type="submit"
+                        class="submit-button">
+
+                    Cancel Request
+
+                </button>
+
+            </form>
+
+
+
+            <!-- ============================== -->
+            <!-- ACCEPTED REQUEST -->
+            <!-- ============================== -->
+
+            <p th:if="${request != null and
+                      request.requestStatus == 'ACCEPTED'}">
+
+                Request Accepted ✓
+
+            </p>
+
+
+
+            <!-- ============================== -->
+            <!-- ITEM UNAVAILABLE -->
+            <!-- ============================== -->
+
+            <p th:if="${item.itemStatus != 'AVAILABLE'}"
+               class="unavailable-message">
+
+                This item is no longer available.
+
+            </p>
+
+
+
+            <!-- ============================== -->
+            <!-- BACK TO BROWSE -->
+            <!-- ============================== -->
+
+            <a href="/items"
+               class="back-button">
+
+                ← Back to Browse
+
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>
