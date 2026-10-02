@@ -7,3 +7,4 @@ com\uniloop\service\ItemService.class
 com\uniloop\controller\UniLoopController.class
 com\uniloop\Main.class
 com\uniloop\DatabaseConnection.class
+com\uniloop\model\RequestGroup.class

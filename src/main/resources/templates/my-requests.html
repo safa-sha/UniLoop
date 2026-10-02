@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Requests - UniLoop</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+
+<body id="top">
+
+
+<!-- =========================
+     NAVBAR
+     ========================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+        UniLoop
+    </div>
+
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/items">Browse</a>
+
+        <a href="/sell">Sell</a>
+
+        <a href="#">Login</a>
+
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     MAIN CONTENT
+     ========================= -->
+
+<main class="items">
+
+
+    <!-- =========================
+         PAGE HEADING
+         ========================= -->
+
+    <div class="requests-heading">
+
+        <a href="/items"
+           class="back-to-sell">
+
+            ← Back to Browse
+
+        </a>
+
+
+        <div>
+
+            <h1>📩 My Requests</h1>
+
+            <p>
+                Items you have requested.
+            </p>
+
+        </div>
+
+
+        <a href="#request-history"
+           class="history-link">
+
+            📜 View Request History →
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         ACTIVE REQUESTS
+         ========================= -->
+
+    <div class="request-groups">
+
+
+        <!-- PENDING / ACCEPTED REQUESTS -->
+
+        <div th:each="request : ${myRequests}"
+             th:if="${request.requestStatus == 'PENDING' or request.requestStatus == 'ACCEPTED'}"
+             class="request-group">
+
+
+            <!-- ITEM INFORMATION -->
+
+            <div class="request-item-header">
+
+                <div class="item-image">
+
+                    <img th:if="${request.imagePath != null and !request.imagePath.isEmpty()}"
+                         th:src="${request.imagePath}"
+                         alt="Item image">
+
+                    <span th:unless="${request.imagePath != null and !request.imagePath.isEmpty()}">
+                        📦
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <h2 th:text="${request.itemName}">
+                        Item Name
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- REQUEST INFORMATION -->
+
+            <div class="request-list">
+
+
+                <div class="request-card">
+
+
+                    <p>
+
+                        👤 Seller:
+
+                        <strong th:text="${request.sellerName}">
+                            Seller Name
+                        </strong>
+
+                    </p>
+
+
+                    <p>
+
+                        Status:
+
+                        <strong th:if="${request.requestStatus == 'PENDING'}">
+                            ⏳ Pending
+                        </strong>
+
+                        <strong th:if="${request.requestStatus == 'ACCEPTED'}">
+                            ✓ Accepted
+                        </strong>
+
+                    </p>
+
+
+                    <p>
+
+                        Requested on:
+
+                        <span th:text="${request.requestDate}">
+                            Date
+                        </span>
+
+                    </p>
+
+
+                    <!-- PENDING -->
+
+                    <div th:if="${request.requestStatus == 'PENDING'}">
+
+                        <form action="/cancel-request"
+                              method="post"
+                              style="display:inline;">
+
+                            <input type="hidden"
+                                   name="itemId"
+                                   th:value="${request.itemId}">
+
+                            <input type="hidden"
+                                   name="buyerId"
+                                   value="2">
+
+                            <input type="hidden"
+                                   name="source"
+                                   value="my-requests">
+
+                            <button type="submit"
+                                    class="submit-button">
+
+                                Cancel Request
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- ACCEPTED -->
+
+                    <div th:if="${request.requestStatus == 'ACCEPTED'}">
+
+                        <!-- Chat will be added later -->
+
+                        <button type="button"
+                                class="submit-button">
+
+                            💬 Chat
+
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         REQUEST HISTORY
+         ========================= -->
+
+    <section id="request-history"
+             class="request-history">
+
+
+        <div class="history-heading">
+
+
+            <div>
+
+                <h2>
+                    📜 Request History
+                </h2>
+
+                <p>
+                    Rejected and cancelled requests.
+                </p>
+
+            </div>
+
+
+            <a href="#top"
+               class="back-to-top">
+
+                ↑ Back to Active Requests
+
+            </a>
+
+
+        </div>
+
+
+        <!-- NO HISTORY -->
+
+        <div th:if="${#lists.isEmpty(historyGroups)}"
+             class="empty-history">
+
+            <p>
+                No request history yet.
+            </p>
+
+        </div>
+
+
+        <!-- HISTORY GROUPS -->
+
+        <div class="request-groups">
+
+
+            <!-- ONE GROUP = ONE ITEM -->
+
+            <div th:each="group : ${historyGroups}"
+                 class="request-group history-group">
+
+
+                <!-- ITEM INFORMATION -->
+
+                <div class="request-item-header">
+
+
+                    <div class="item-image">
+
+                        <img th:if="${group.imagePath != null and !group.imagePath.isEmpty()}"
+                             th:src="${group.imagePath}"
+                             alt="Item image">
+
+                        <span th:unless="${group.imagePath != null and !group.imagePath.isEmpty()}">
+                            📦
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <h2 th:text="${group.itemName}">
+                            Item Name
+                        </h2>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ALL HISTORY REQUESTS FOR THIS ITEM -->
+
+                <div class="request-list">
+
+
+                    <div th:each="request, requestStat : ${group.requests}"
+                         th:classappend="${requestStat.index >= 2} ? ' hidden-history' : ''"
+                         class="request-card history-card">
+
+
+                        <p>
+
+                            👤 Seller:
+
+                            <strong th:text="${request.sellerName}">
+                                Seller Name
+                            </strong>
+
+                        </p>
+
+
+                        <p>
+
+                            Status:
+
+
+                            <strong th:if="${request.requestStatus == 'REJECTED'}">
+
+                                ✕ Rejected
+
+                            </strong>
+
+
+                            <strong th:if="${request.requestStatus == 'CANCELLED'}">
+
+                                ↩ Cancelled
+
+                            </strong>
+
+                        </p>
+
+
+                        <p>
+
+                            Requested on:
+
+                            <span th:text="${request.requestDate}">
+                                Date
+                            </span>
+
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- SHOW MORE -->
+
+                <button th:if="${#lists.size(group.requests) > 2}"
+                        type="button"
+                        class="history-toggle"
+                        onclick="toggleHistory(this)">
+
+                    Show more
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+function toggleHistory(button) {
+
+    const group = button.closest(".request-group");
+
+    const hiddenRequests =
+        group.querySelectorAll(".hidden-history");
+
+    const isHidden =
+        hiddenRequests.length > 0 &&
+        hiddenRequests[0].style.display !== "block";
+
+    hiddenRequests.forEach(function(request) {
+
+        if (isHidden) {
+
+            request.style.display = "block";
+
+        } else {
+
+            request.style.display = "none";
+
+        }
+
+    });
+
+
+    if (isHidden) {
+
+        button.textContent = "Show less";
+
+    } else {
+
+        button.textContent = "Show more";
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>

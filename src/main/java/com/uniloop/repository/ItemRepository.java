@@ -11,11 +11,17 @@ import java.util.List;
 
 public class ItemRepository {
 
+    // Get all AVAILABLE items for Browse
     public List<Item> getAllItems() {
 
         List<Item> items = new ArrayList<>();
 
-        String sql = "SELECT * FROM items ORDER BY item_id DESC";
+        String sql = """
+                SELECT *
+                FROM items
+                WHERE item_status = 'AVAILABLE'
+                ORDER BY item_id DESC
+                """;
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
@@ -25,17 +31,49 @@ public class ItemRepository {
 
                 Item item = new Item();
 
-                item.setItemId(resultSet.getInt("item_id"));
-                item.setSellerId(resultSet.getInt("seller_id"));
-                item.setCategoryId(resultSet.getInt("category_id"));
-                item.setItemName(resultSet.getString("item_name"));
-                item.setDescription(resultSet.getString("description"));
-                item.setPrice(resultSet.getDouble("price"));
-                item.setImagePath(resultSet.getString("image_path"));
-                item.setCondition(resultSet.getString("item_condition"));
-                item.setListingType(resultSet.getString("listing_type"));
-                item.setItemStatus(resultSet.getString("item_status"));
-                item.setDatePosted(resultSet.getString("date_posted"));
+                item.setItemId(
+                        resultSet.getInt("item_id")
+                );
+
+                item.setSellerId(
+                        resultSet.getInt("seller_id")
+                );
+
+                item.setCategoryId(
+                        resultSet.getInt("category_id")
+                );
+
+                item.setItemName(
+                        resultSet.getString("item_name")
+                );
+
+                item.setDescription(
+                        resultSet.getString("description")
+                );
+
+                item.setPrice(
+                        resultSet.getDouble("price")
+                );
+
+                item.setImagePath(
+                        resultSet.getString("image_path")
+                );
+
+                item.setCondition(
+                        resultSet.getString("item_condition")
+                );
+
+                item.setListingType(
+                        resultSet.getString("listing_type")
+                );
+
+                item.setItemStatus(
+                        resultSet.getString("item_status")
+                );
+
+                item.setDatePosted(
+                        resultSet.getString("date_posted")
+                );
 
                 items.add(item);
             }
@@ -46,99 +84,26 @@ public class ItemRepository {
 
         return items;
     }
+
+
+    // Get latest AVAILABLE items for homepage
     public List<Item> getLatestItems() {
 
-    List<Item> items = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
 
-    String sql = """
-            SELECT *
-            FROM items
-            ORDER BY item_id DESC
-            LIMIT 3
-            """;
+        String sql = """
+                SELECT *
+                FROM items
+                WHERE item_status = 'AVAILABLE'
+                ORDER BY item_id DESC
+                LIMIT 3
+                """;
 
-    try (Connection connection = DatabaseConnection.getConnection();
-         PreparedStatement statement =
-                 connection.prepareStatement(sql);
-         ResultSet resultSet =
-                 statement.executeQuery()) {
-
-        while (resultSet.next()) {
-
-            Item item = new Item();
-
-            item.setItemId(
-                    resultSet.getInt("item_id")
-            );
-
-            item.setSellerId(
-                    resultSet.getInt("seller_id")
-            );
-
-            item.setCategoryId(
-                    resultSet.getInt("category_id")
-            );
-
-            item.setItemName(
-                    resultSet.getString("item_name")
-            );
-
-            item.setDescription(
-                    resultSet.getString("description")
-            );
-
-            item.setPrice(
-                    resultSet.getDouble("price")
-            );
-
-            item.setImagePath(
-                    resultSet.getString("image_path")
-            );
-
-            item.setCondition(
-                    resultSet.getString("item_condition")
-            );
-
-            item.setListingType(
-                    resultSet.getString("listing_type")
-            );
-
-            item.setItemStatus(
-                    resultSet.getString("item_status")
-            );
-
-            item.setDatePosted(
-                    resultSet.getString("date_posted")
-            );
-
-            items.add(item);
-        }
-
-    } catch (Exception e) {
-
-        e.printStackTrace();
-    }
-
-    return items;
-}
-public List<Item> getItemsByCategory(int categoryId) {
-
-    List<Item> items = new ArrayList<>();
-
-    String sql = """
-            SELECT *
-            FROM items
-            WHERE category_id = ?
-            ORDER BY item_id DESC
-            """;
-
-    try (Connection connection = DatabaseConnection.getConnection();
-         PreparedStatement statement =
-                 connection.prepareStatement(sql)) {
-
-        statement.setInt(1, categoryId);
-
-        try (ResultSet resultSet = statement.executeQuery()) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(sql);
+             ResultSet resultSet =
+                     statement.executeQuery()) {
 
             while (resultSet.next()) {
 
@@ -190,166 +155,351 @@ public List<Item> getItemsByCategory(int categoryId) {
 
                 items.add(item);
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return items;
     }
 
-    return items;
-}
 
-public List<Item> getItemsBySeller(int sellerId) {
+    // Get AVAILABLE items by category for Browse
+    public List<Item> getItemsByCategory(int categoryId) {
 
-    List<Item> items = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
 
-    String sql = """
-            SELECT *
-            FROM items
-            WHERE seller_id = ?
-            ORDER BY item_id DESC
-            """;
+        String sql = """
+                SELECT *
+                FROM items
+                WHERE category_id = ?
+                AND item_status = 'AVAILABLE'
+                ORDER BY item_id DESC
+                """;
 
-    try (Connection connection = DatabaseConnection.getConnection();
-         PreparedStatement statement =
-                 connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
 
-        statement.setInt(1, sellerId);
+            statement.setInt(1, categoryId);
 
-        try (ResultSet resultSet = statement.executeQuery()) {
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
 
-            while (resultSet.next()) {
+                while (resultSet.next()) {
 
-                Item item = new Item();
+                    Item item = new Item();
 
-                item.setItemId(
-                        resultSet.getInt("item_id")
-                );
+                    item.setItemId(
+                            resultSet.getInt("item_id")
+                    );
 
-                item.setSellerId(
-                        resultSet.getInt("seller_id")
-                );
+                    item.setSellerId(
+                            resultSet.getInt("seller_id")
+                    );
 
-                item.setCategoryId(
-                        resultSet.getInt("category_id")
-                );
+                    item.setCategoryId(
+                            resultSet.getInt("category_id")
+                    );
 
-                item.setItemName(
-                        resultSet.getString("item_name")
-                );
+                    item.setItemName(
+                            resultSet.getString("item_name")
+                    );
 
-                item.setDescription(
-                        resultSet.getString("description")
-                );
+                    item.setDescription(
+                            resultSet.getString("description")
+                    );
 
-                item.setPrice(
-                        resultSet.getDouble("price")
-                );
+                    item.setPrice(
+                            resultSet.getDouble("price")
+                    );
 
-                item.setImagePath(
-                        resultSet.getString("image_path")
-                );
+                    item.setImagePath(
+                            resultSet.getString("image_path")
+                    );
 
-                item.setCondition(
-                        resultSet.getString("item_condition")
-                );
+                    item.setCondition(
+                            resultSet.getString("item_condition")
+                    );
 
-                item.setListingType(
-                        resultSet.getString("listing_type")
-                );
+                    item.setListingType(
+                            resultSet.getString("listing_type")
+                    );
 
-                item.setItemStatus(
-                        resultSet.getString("item_status")
-                );
+                    item.setItemStatus(
+                            resultSet.getString("item_status")
+                    );
 
-                item.setDatePosted(
-                        resultSet.getString("date_posted")
-                );
+                    item.setDatePosted(
+                            resultSet.getString("date_posted")
+                    );
 
-                items.add(item);
+                    items.add(item);
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return items;
     }
 
-    return items;
-}
 
-public Item getItemById(int itemId) {
+    // Get seller's AVAILABLE items
+    public List<Item> getAvailableItemsBySeller(int sellerId) {
 
-    String sql = """
-            SELECT *
-            FROM items
-            WHERE item_id = ?
-            """;
+        List<Item> items = new ArrayList<>();
+
+        String sql = """
+                SELECT *
+                FROM items
+                WHERE seller_id = ?
+                AND item_status = 'AVAILABLE'
+                ORDER BY item_id DESC
+                """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
+
+            statement.setInt(1, sellerId);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                while (resultSet.next()) {
+
+                    Item item = new Item();
+
+                    item.setItemId(
+                            resultSet.getInt("item_id")
+                    );
+
+                    item.setSellerId(
+                            resultSet.getInt("seller_id")
+                    );
+
+                    item.setCategoryId(
+                            resultSet.getInt("category_id")
+                    );
+
+                    item.setItemName(
+                            resultSet.getString("item_name")
+                    );
+
+                    item.setDescription(
+                            resultSet.getString("description")
+                    );
+
+                    item.setPrice(
+                            resultSet.getDouble("price")
+                    );
+
+                    item.setImagePath(
+                            resultSet.getString("image_path")
+                    );
+
+                    item.setCondition(
+                            resultSet.getString("item_condition")
+                    );
+
+                    item.setListingType(
+                            resultSet.getString("listing_type")
+                    );
+
+                    item.setItemStatus(
+                            resultSet.getString("item_status")
+                    );
+
+                    item.setDatePosted(
+                            resultSet.getString("date_posted")
+                    );
+
+                    items.add(item);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
+
+
+    // Get seller's UNAVAILABLE items for Listing History
+    public List<Item> getUnavailableItemsBySeller(int sellerId) {
+
+        List<Item> items = new ArrayList<>();
+
+        String sql = """
+                SELECT *
+                FROM items
+                WHERE seller_id = ?
+                AND item_status = 'UNAVAILABLE'
+                ORDER BY item_id DESC
+                """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
+
+            statement.setInt(1, sellerId);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                while (resultSet.next()) {
+
+                    Item item = new Item();
+
+                    item.setItemId(
+                            resultSet.getInt("item_id")
+                    );
+
+                    item.setSellerId(
+                            resultSet.getInt("seller_id")
+                    );
+
+                    item.setCategoryId(
+                            resultSet.getInt("category_id")
+                    );
+
+                    item.setItemName(
+                            resultSet.getString("item_name")
+                    );
+
+                    item.setDescription(
+                            resultSet.getString("description")
+                    );
+
+                    item.setPrice(
+                            resultSet.getDouble("price")
+                    );
+
+                    item.setImagePath(
+                            resultSet.getString("image_path")
+                    );
+
+                    item.setCondition(
+                            resultSet.getString("item_condition")
+                    );
+
+                    item.setListingType(
+                            resultSet.getString("listing_type")
+                    );
+
+                    item.setItemStatus(
+                            resultSet.getString("item_status")
+                    );
+
+                    item.setDatePosted(
+                            resultSet.getString("date_posted")
+                    );
+
+                    items.add(item);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
+
+
+    // Get an item by ID regardless of its status
+    public Item getItemById(int itemId) {
+
+        String sql = """
+                SELECT *
+                FROM items
+                WHERE item_id = ?
+                """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
+
+            statement.setInt(1, itemId);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                if (resultSet.next()) {
+
+                    Item item = new Item();
+
+                    item.setItemId(
+                            resultSet.getInt("item_id")
+                    );
+
+                    item.setSellerId(
+                            resultSet.getInt("seller_id")
+                    );
+
+                    item.setCategoryId(
+                            resultSet.getInt("category_id")
+                    );
+
+                    item.setItemName(
+                            resultSet.getString("item_name")
+                    );
+
+                    item.setDescription(
+                            resultSet.getString("description")
+                    );
+
+                    item.setPrice(
+                            resultSet.getDouble("price")
+                    );
+
+                    item.setImagePath(
+                            resultSet.getString("image_path")
+                    );
+
+                    item.setCondition(
+                            resultSet.getString("item_condition")
+                    );
+
+                    item.setListingType(
+                            resultSet.getString("listing_type")
+                    );
+
+                    item.setItemStatus(
+                            resultSet.getString("item_status")
+                    );
+
+                    item.setDatePosted(
+                            resultSet.getString("date_posted")
+                    );
+
+                    return item;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    public void markItemUnavailable(int itemId) {
+
+    String sql =
+            "UPDATE items SET item_status = 'UNAVAILABLE' WHERE item_id = ?";
 
     try (Connection connection = DatabaseConnection.getConnection();
          PreparedStatement statement =
                  connection.prepareStatement(sql)) {
 
         statement.setInt(1, itemId);
-
-        try (ResultSet resultSet = statement.executeQuery()) {
-
-            if (resultSet.next()) {
-
-                Item item = new Item();
-
-                item.setItemId(
-                        resultSet.getInt("item_id")
-                );
-
-                item.setSellerId(
-                        resultSet.getInt("seller_id")
-                );
-
-                item.setCategoryId(
-                        resultSet.getInt("category_id")
-                );
-
-                item.setItemName(
-                        resultSet.getString("item_name")
-                );
-
-                item.setDescription(
-                        resultSet.getString("description")
-                );
-
-                item.setPrice(
-                        resultSet.getDouble("price")
-                );
-
-                item.setImagePath(
-                        resultSet.getString("image_path")
-                );
-
-                item.setCondition(
-                        resultSet.getString("item_condition")
-                );
-
-                item.setListingType(
-                        resultSet.getString("listing_type")
-                );
-
-                item.setItemStatus(
-                        resultSet.getString("item_status")
-                );
-
-                item.setDatePosted(
-                        resultSet.getString("date_posted")
-                );
-
-                return item;
-            }
-
-        }
+        statement.executeUpdate();
 
     } catch (Exception e) {
         e.printStackTrace();
     }
-
-    return null;
 }
 }

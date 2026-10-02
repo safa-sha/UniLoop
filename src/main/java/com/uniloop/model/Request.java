@@ -9,6 +9,7 @@ public class Request {
 
     private String itemName;
     private String buyerName;
+    private String sellerName;
 
     private String requestStatus;
     private String requestDate;
@@ -101,4 +102,12 @@ public class Request {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    public String getSellerName() {
+    return sellerName;
+}
+
+public void setSellerName(String sellerName) {
+    this.sellerName = sellerName;
+}
 }

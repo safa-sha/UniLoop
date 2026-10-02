@@ -1,87 +1,245 @@
+
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Sell an Item - UniLoop</title>
 
     <link rel="stylesheet" href="/css/style.css">
+
 </head>
 
 <body>
 
-    <header class="navbar">
+<header class="navbar">
 
-        <div class="logo">UniLoop</div>
+    <div class="logo">
+        UniLoop
+    </div>
 
-        <nav>
-            <a href="/">Home</a>
-            <a href="/items">Browse</a>
-            <a href="/sell.html">Sell</a>
-            <a href="/requests">Requests</a>
-            <a href="#">Login</a>
-        </nav>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/items">Browse</a>
+        <a href="/sell">Sell</a>
+        <a href="#">Login</a>
+    </nav>
 
-    </header>
+</header>
 
 
-    <main class="sell-page">
+<main class="sell-page">
 
-    <!-- My Listings -->
-    <div class="my-listings">
+    <div class="listings-column">
 
-        <h1>My Listings</h1>
 
-        <p>Your items listed on UniLoop.</p>
+        <!-- My Listings -->
 
-        <div class="my-listing-container">
+        <div class="my-listings">
 
-            <div class="my-listing-card"
-                 th:each="item : ${myListings}">
+            <div class="listings-heading">
 
-                <div class="my-listing-image">
+                <div>
 
-                    <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
-                         th:src="${item.imagePath}"
-                         alt="Item image">
+                    <h1>My Listings</h1>
 
-                    <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
-                        📦
-                    </span>
+                    <p>Your items listed on UniLoop.</p>
+
+                    <a href="#listing-history" class="history-scroll-button">
+                        ↓ Listing History
+                    </a>
 
                 </div>
 
-                <div class="my-listing-info">
 
-                    <h3 th:text="${item.itemName}">
-                        Item Name
-                    </h3>
+                <div class="listing-actions">
 
-                    <p th:text="${item.condition}">
-                        Condition
-                    </p>
+                    <a href="/list-item" class="list-item-button">
+                        + List an Item
+                    </a>
 
-                    <strong th:text="'₹' + ${item.price}">
-                        ₹0
-                    </strong>
+                    <a href="/requests" class="view-requests-button">
+                        View Requests →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="my-listing-container">
+
+                <div class="my-listing-card"
+                     th:each="item : ${myListings}">
+
+                    <div class="my-listing-image">
+
+                        <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
+                             th:src="${item.imagePath}"
+                             alt="Item image">
+
+                        <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
+                            📦
+                        </span>
+
+                    </div>
+
+
+                    <div class="my-listing-info">
+
+                        <h3 th:text="${item.itemName}">
+                            Item Name
+                        </h3>
+
+                        <p th:text="${item.condition}">
+                            Condition
+                        </p>
+
+                        <strong th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
+                            ₹0
+                        </strong>
+
+                        <p>
+                            Status:
+                            <span th:text="${item.itemStatus}">
+                                AVAILABLE
+                            </span>
+                        </p>
+
+
+                        <!-- Delete Listing -->
+
+                        <form action="/delete-listing"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to delete this listing? It will be moved to Listing History.');">
+
+                            <input type="hidden"
+                                   name="itemId"
+                                   th:value="${item.itemId}">
+
+                            <button type="submit"
+                                    class="delete-listing-button">
+                                Delete Listing
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Message when there are no listings -->
+
+                <div th:if="${#lists.isEmpty(myListings)}"
+                     class="no-listings">
 
                     <p>
-                        Status:
-                        <span th:text="${item.itemStatus}">
-                            AVAILABLE
-                        </span>
+                        You haven't listed any items yet.
                     </p>
 
                 </div>
 
             </div>
 
-            <!-- Message when there are no listings -->
-            <div th:if="${#lists.isEmpty(myListings)}"
-                 class="no-listings">
+        </div>
 
-                <p>You haven't listed any items yet.</p>
+
+
+        <!-- Listing History -->
+
+        <div class="listing-history" id="listing-history">
+
+            <div class="listings-heading">
+
+                <div>
+
+                    <h1>Listing History</h1>
+
+                    <p>
+                        Items that are no longer active.
+                    </p>
+
+                </div>
+
+
+                <a href="#"
+                   class="back-to-top-button">
+
+                    ↑ Back to Active listings
+
+                </a>
+
+            </div>
+
+
+            <div class="my-listing-container">
+
+                <div class="my-listing-card"
+                     th:each="item : ${listingHistory}">
+
+                    <div class="my-listing-image">
+
+                        <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
+                             th:src="${item.imagePath}"
+                             alt="Item image">
+
+                        <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
+                            📦
+                        </span>
+
+                    </div>
+
+
+                    <div class="my-listing-info">
+
+                        <h3 th:text="${item.itemName}">
+                            Item Name
+                        </h3>
+
+                        <p th:text="${item.condition}">
+                            Condition
+                        </p>
+
+                        <strong th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
+                            ₹0
+                        </strong>
+
+                        <p>
+                            Status:
+                            <span th:text="${item.itemStatus}">
+                                UNAVAILABLE
+                            </span>
+                        </p>
+
+
+                        <!-- List Again -->
+
+                        <a th:href="@{/list-item(id=${item.itemId})}"
+   class="list-again-button">
+    List Again
+</a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Message when there is no history -->
+
+                <div th:if="${#lists.isEmpty(listingHistory)}"
+                     class="no-listings">
+
+                    <p>
+                        You don't have any listing history yet.
+                    </p>
+
+                </div>
 
             </div>
 
@@ -89,134 +247,8 @@
 
     </div>
 
-
-    <!-- Sell Form -->
-    <div class="sell-form">
-
-        <h1>List an Item</h1>
-
-        <p>Give your item a new home on campus.</p>
-
-        <form action="/sell"
-              method="post"
-              enctype="multipart/form-data">
-
-            <!-- Temporary seller ID -->
-            <input type="hidden"
-                   name="sellerId"
-                   value="1">
-
-            <label for="categoryId">Category</label>
-
-            <select id="categoryId"
-                    name="categoryId"
-                    required>
-
-                <option value="">
-                    Select a category
-                </option>
-
-                <option value="1">Books</option>
-                <option value="2">Electronics</option>
-                <option value="3">Stationery</option>
-                <option value="4">Clothing</option>
-                <option value="5">Hostel Items</option>
-                <option value="6">Sports & Fitness</option>
-                <option value="7">Other</option>
-
-            </select>
-
-
-            <label for="itemName">Item Name</label>
-
-            <input
-                type="text"
-                id="itemName"
-                name="itemName"
-                placeholder="e.g. Engineering Mathematics Book"
-                required
-            >
-
-
-            <label for="condition">Condition</label>
-
-            <select id="condition"
-                    name="condition"
-                    required>
-
-                <option value="">
-                    Select condition
-                </option>
-
-                <option value="New">New</option>
-                <option value="Like New">Like New</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-
-            </select>
-
-
-            <label for="price">Price</label>
-
-            <input
-                type="number"
-                id="price"
-                name="price"
-                placeholder="Enter price"
-                min="0"
-                required
-            >
-
-
-            <label for="description">Description</label>
-
-            <textarea
-                id="description"
-                name="description"
-                rows="5"
-                placeholder="Tell students something about your item..."
-            ></textarea>
-
-
-            <label for="image">Item Image</label>
-
-            <input
-                type="file"
-                id="image"
-                name="image"
-                accept="image/*"
-            >
-
-
-            <label for="listingType">Listing Type</label>
-
-            <select id="listingType"
-                    name="listingType"
-                    required>
-
-                <option value="">
-                    Select listing type
-                </option>
-
-                <option value="SELL">Sell</option>
-                <option value="DONATE">Donate</option>
-                <option value="EXCHANGE">Exchange</option>
-
-            </select>
-
-
-            <button type="submit"
-                    class="submit-button">
-
-                List Item
-
-            </button>
-
-        </form>
-
-    </div>
-
 </main>
 
 </body>
+
 </html>

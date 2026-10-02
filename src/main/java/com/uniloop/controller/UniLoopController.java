@@ -53,12 +53,9 @@ public class UniLoopController {
         List<Item> items;
 
         if (category != null) {
-
             items =
                     itemRepository.getItemsByCategory(category);
-
         } else {
-
             items =
                     itemRepository.getAllItems();
         }
@@ -108,7 +105,7 @@ public class UniLoopController {
             @RequestParam(name = "description")
             String description,
 
-            @RequestParam(name = "price")
+            @RequestParam(name = "price", defaultValue = "0")
             double price,
 
             @RequestParam(
@@ -170,7 +167,6 @@ public class UniLoopController {
                         "/uploads/" + fileName;
 
             } catch (Exception e) {
-
                 e.printStackTrace();
             }
         }
@@ -186,47 +182,70 @@ public class UniLoopController {
                 listingType
         );
 
+        return "redirect:/sell";
+    }
+
+
+    @PostMapping("/request")
+    public String requestItem(
+            @RequestParam(name = "itemId")
+            int itemId,
+
+            @RequestParam(name = "buyerId")
+            int buyerId,
+
+            @RequestParam(
+                    name = "source",
+                    defaultValue = "items"
+            )
+            String source) {
+
+        requestService.requestItem(
+                itemId,
+                buyerId
+        );
+
+        if (source.equals("item")) {
+            return "redirect:/item?id=" + itemId;
+        }
+
         return "redirect:/items";
     }
-
-
- @PostMapping("/request")
-public String requestItem(
-        @RequestParam(name = "itemId")
-        int itemId,
-
-        @RequestParam(name = "buyerId")
-        int buyerId,
-
-        @RequestParam(
-                name = "source",
-                defaultValue = "items"
-        )
-        String source) {
-
-    requestService.requestItem(
-            itemId,
-            buyerId
-    );
-
-    if (source.equals("item")) {
-        return "redirect:/item?id=" + itemId;
-    }
-
-    return "redirect:/items";
-}
 
 
     @GetMapping("/requests")
     public String viewRequests(Model model) {
 
         model.addAttribute(
-                "requests",
-                requestService.getRequestsForSeller(1)
+                "requestGroups",
+                requestService.getRequestGroupsForSeller(1)
+        );
+
+        model.addAttribute(
+                "historyGroups",
+                requestService.getRequestHistoryGroupsForSeller(1)
         );
 
         return "requests";
     }
+    
+    @GetMapping("/my-requests")
+public String myRequests(Model model) {
+
+    int buyerId = 2;
+
+    model.addAttribute(
+            "myRequests",
+            requestService.getRequestsForBuyer(buyerId)
+    );
+
+    model.addAttribute(
+            "historyGroups",
+            requestService.getRequestHistoryGroupsForBuyer(buyerId)
+    );
+
+    return "my-requests";
+}
 
 
     @PostMapping("/accept-request")
@@ -258,48 +277,70 @@ public String requestItem(
 
 
     @PostMapping("/cancel-request")
-public String cancelRequest(
-        @RequestParam(name = "requestId")
-        int requestId,
+    public String cancelRequest(
+            @RequestParam(name = "requestId")
+            int requestId,
 
-        @RequestParam(name = "buyerId")
-        int buyerId,
+            @RequestParam(name = "buyerId")
+            int buyerId,
 
-        @RequestParam(
-                name = "source",
-                defaultValue = "items"
-        )
-        String source) {
+            @RequestParam(
+                    name = "source",
+                    defaultValue = "items"
+            )
+            String source) {
 
-    int itemId =
-            requestService.getItemIdByRequestId(requestId);
+        int itemId =
+                requestService.getItemIdByRequestId(requestId);
 
-    requestService.cancelRequest(
-            requestId,
-            buyerId
-    );
+        requestService.cancelRequest(
+                requestId,
+                buyerId
+        );
 
-    if (source.equals("item")) {
-        return "redirect:/item?id=" + itemId;
+        if (source.equals("item")) {
+            return "redirect:/item?id=" + itemId;
+        }
+
+        return "redirect:/items";
     }
-
-    return "redirect:/items";
-}
 
 
     @GetMapping("/sell")
-    public String sellPage(Model model) {
+public String sellPage(Model model) {
 
-        int sellerId = 1;
+    int sellerId = 1;
 
-        model.addAttribute(
-                "myListings",
-                itemRepository.getItemsBySeller(sellerId)
-        );
+    model.addAttribute(
+            "myListings",
+            itemRepository.getAvailableItemsBySeller(sellerId)
+    );
 
-        return "sell";
+    model.addAttribute(
+            "listingHistory",
+            itemRepository.getUnavailableItemsBySeller(sellerId)
+    );
+
+    return "sell";
+}
+@GetMapping("/list-item")
+public String listItemPage(
+        @RequestParam(name = "id", required = false) Integer id,
+        Model model) {
+
+    if (id != null) {
+
+        Item item =
+                itemRepository.getItemById(id);
+
+        if (item != null) {
+            model.addAttribute("item", item);
+            model.addAttribute("listAgain", true);
+        }
     }
 
+    return "list-item";
+}
 
     @GetMapping("/item")
     public String itemDetails(
@@ -312,7 +353,6 @@ public String cancelRequest(
                 itemRepository.getItemById(id);
 
         if (item == null) {
-
             return "redirect:/items";
         }
 
@@ -336,4 +376,12 @@ public String cancelRequest(
 
         return "item-details";
     }
+    @PostMapping("/delete-listing")
+public String deleteListing(
+        @RequestParam(name = "itemId") int itemId) {
+
+    itemRepository.markItemUnavailable(itemId);
+
+    return "redirect:/sell";
+}
 }

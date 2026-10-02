@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
@@ -11,6 +14,7 @@
 
     <link rel="stylesheet"
           href="/css/style.css">
+
 </head>
 
 <body>
@@ -25,7 +29,6 @@
         <a href="/">Home</a>
         <a href="/items">Browse</a>
         <a href="/sell">Sell</a>
-        <a href="/requests">Requests</a>
         <a href="#">Login</a>
     </nav>
 
@@ -34,18 +37,40 @@
 
 <main class="items">
 
-    <h1>
-        Browse Items
-    </h1>
+    <!-- ============================== -->
+    <!-- BROWSE PAGE HEADING -->
+    <!-- ============================== -->
 
-    <p>
-        Items available in your campus marketplace.
-    </p>
+    <div class="browse-heading">
 
+        <div>
+
+            <h1>
+                Browse Items
+            </h1>
+
+            <p>
+                Items available in your campus marketplace.
+            </p>
+
+        </div>
+
+        <a href="/my-requests" class="my-requests-button">
+            My Requests →
+        </a>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- CATEGORY FILTER -->
+    <!-- ============================== -->
 
     <div class="category-filter">
 
-        <a href="/items">All</a>
+        <a href="/items">
+            All
+        </a>
 
         <a href="/items?category=1">
             Books
@@ -78,7 +103,28 @@
     </div>
 
 
+    <!-- ============================== -->
+    <!-- ITEM CONTAINER -->
+    <!-- ============================== -->
+
     <div class="item-container">
+
+        <!-- ============================== -->
+        <!-- NO ITEMS MESSAGE -->
+        <!-- ============================== -->
+
+        <div class="no-items-message"
+             th:if="${#lists.isEmpty(items)}">
+
+            <h3>
+                No items yet
+            </h3>
+
+            <p>
+                There are no items available in this category.
+            </p>
+
+        </div>
 
 
         <!-- ============================== -->
@@ -121,10 +167,14 @@
 
             <!-- PRICE -->
 
-            <strong th:text="'₹' + ${item.price}">
+            <strong th:if="${item.listingType == 'SELL'}"
+                    th:text="'₹' + ${item.price}">
                 ₹0
             </strong>
 
+            <strong th:if="${item.listingType == 'DONATE'}">
+                FREE
+            </strong>
 
 
             <!-- ============================== -->
@@ -151,15 +201,12 @@
 
                     <button type="submit"
                             class="submit-button">
-
                         Request Item
-
                     </button>
 
                 </form>
 
             </div>
-
 
 
             <!-- ============================== -->
@@ -171,7 +218,6 @@
                 <p>
                     ✓ Request Sent
                 </p>
-
 
                 <form action="/cancel-request"
                       method="post"
@@ -191,15 +237,12 @@
 
                     <button type="submit"
                             class="submit-button">
-
                         Cancel Request
-
                     </button>
 
                 </form>
 
             </div>
-
 
 
             <!-- ============================== -->
@@ -215,7 +258,6 @@
             </div>
 
 
-
             <!-- ============================== -->
             <!-- REQUEST REJECTED -->
             <!-- ============================== -->
@@ -225,7 +267,6 @@
                 <p>
                     Request Rejected
                 </p>
-
 
                 <form action="/request"
                       method="post"
@@ -245,15 +286,12 @@
 
                     <button type="submit"
                             class="submit-button">
-
                         Request Again
-
                     </button>
 
                 </form>
 
             </div>
-
 
 
             <!-- ============================== -->
@@ -266,7 +304,6 @@
                     Request Cancelled
                 </p>
 
-
                 <form action="/request"
                       method="post"
                       onclick="event.stopPropagation()">
@@ -285,15 +322,12 @@
 
                     <button type="submit"
                             class="submit-button">
-
                         Request Again
-
                     </button>
 
                 </form>
 
             </div>
-
 
         </div>
 
@@ -302,4 +336,5 @@
 </main>
 
 </body>
+
 </html>

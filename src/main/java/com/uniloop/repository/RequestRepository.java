@@ -418,4 +418,80 @@ public Request getLatestRequest(int itemId, int buyerId) {
 
     return null;
 }
+public List<Request> getRequestsForBuyer(int buyerId) {
+
+    List<Request> requests = new ArrayList<>();
+
+    String sql = """
+            SELECT
+                r.request_id,
+                r.item_id,
+                r.buyer_id,
+                i.item_name,
+                i.image_path,
+                u.name AS seller_name,
+                r.request_status,
+                r.request_date
+            FROM requests r
+            JOIN items i
+                ON r.item_id = i.item_id
+            JOIN users u
+                ON i.seller_id = u.user_id
+            WHERE r.buyer_id = ?
+            ORDER BY r.request_id DESC
+            """;
+
+    try (Connection connection = DatabaseConnection.getConnection();
+         PreparedStatement statement =
+                 connection.prepareStatement(sql)) {
+
+        statement.setInt(1, buyerId);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+
+            Request request = new Request();
+
+            request.setRequestId(
+                    resultSet.getInt("request_id")
+            );
+
+            request.setItemId(
+                    resultSet.getInt("item_id")
+            );
+
+            request.setBuyerId(
+                    resultSet.getInt("buyer_id")
+            );
+
+            request.setItemName(
+                    resultSet.getString("item_name")
+            );
+
+            request.setImagePath(
+                    resultSet.getString("image_path")
+            );
+
+            request.setSellerName(
+                    resultSet.getString("seller_name")
+            );
+
+            request.setRequestStatus(
+                    resultSet.getString("request_status")
+            );
+
+            request.setRequestDate(
+                    resultSet.getString("request_date")
+            );
+
+            requests.add(request);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return requests;
+}
 }
