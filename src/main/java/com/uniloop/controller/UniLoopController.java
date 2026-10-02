@@ -206,10 +206,14 @@ public class UniLoopController {
         );
 
         if (source.equals("item")) {
-            return "redirect:/item?id=" + itemId;
-        }
+    return "redirect:/item?id=" + itemId;
+}
 
-        return "redirect:/items";
+if (source.equals("my-requests")) {
+    return "redirect:/my-requests";
+}
+
+return "redirect:/items#item-" + itemId;
     }
 
 
@@ -299,10 +303,14 @@ public String myRequests(Model model) {
         );
 
         if (source.equals("item")) {
-            return "redirect:/item?id=" + itemId;
-        }
+    return "redirect:/item?id=" + itemId;
+}
 
-        return "redirect:/items";
+if (source.equals("my-requests")) {
+    return "redirect:/my-requests";
+}
+
+return "redirect:/items#item-" + itemId;
     }
 
 
