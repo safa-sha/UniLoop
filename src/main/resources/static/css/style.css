@@ -2185,10 +2185,10 @@ footer {
 .my-listings-page .my-listings,
 .my-listings-page .listing-history {
     width: 100%;
-    padding: 27px;
-    border: 1px solid var(--listings-line);
-    border-radius: 10px;
-    background: var(--listings-surface);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
     box-shadow: none;
 }
 
@@ -2245,7 +2245,7 @@ footer {
 
 .my-listings-page .my-listing-container {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    gap: 20px;
 }
 
 .my-listings-page .my-listing-card {
@@ -2253,21 +2253,29 @@ footer {
     min-height: 0;
     overflow: hidden;
     border: 1px solid var(--listings-line);
-    border-radius: 9px;
+    border-radius: 10px;
     background: var(--listings-surface);
+    box-shadow: none;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+}
+
+.my-listings-page .my-listing-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(196, 182, 232, 0.35);
+    background: #1b1a20;
 }
 
 .my-listings-page .my-listing-image {
-    height: auto;
-    aspect-ratio: 1.55 / 1;
+    height: 220px;
+    aspect-ratio: auto;
     background: var(--listings-raised);
 }
 
 .my-listings-page .my-listing-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .my-listings-page .my-listing-image span { color: var(--listings-lavender); font-size: 34px; }
-.my-listings-page .my-listing-info { padding: 17px; }
-.my-listings-page .my-listing-info h3 { margin: 0 0 7px; color: var(--listings-text); font-size: 16px; line-height: 1.4; }
-.my-listings-page .my-listing-info p { margin: 7px 0; color: var(--listings-muted); font-size: 11px; line-height: 1.5; }
+.my-listings-page .my-listing-info { padding: 18px; }
+.my-listings-page .my-listing-info h3 { margin: 0 0 7px; color: var(--listings-text); font-size: 17px; line-height: 1.4; }
+.my-listings-page .my-listing-info p { margin: 7px 0; color: var(--listings-muted); font-size: 12px; line-height: 1.5; }
 .my-listings-page .my-listing-info strong { display: inline-block; margin: 4px 0 7px; color: var(--listings-lavender); font-size: 16px; }
 .my-listings-page .listing-type-row { display: flex; align-items: center; gap: 7px; }
 .my-listings-page .listing-type-label { padding: 4px 7px; border: 1px solid rgba(196, 182, 232, 0.18); border-radius: 4px; background: rgba(196, 182, 232, 0.08); color: var(--listings-lavender); font-size: 9px; font-weight: 700; letter-spacing: 0.6px; }
@@ -2315,14 +2323,14 @@ footer {
 .my-listings-page .empty-list-item-link:hover { color: var(--listings-purple-hover); text-decoration: underline; text-underline-offset: 4px; }
 
 .my-listings-page .my-listing-history {
-    background: #151519;
+    background: transparent;
 }
 
 .my-listings-page .my-listing-history .listings-heading h1 { font-size: 22px; }
 .my-listings-page .my-listing-history .my-listing-card { background: #18181d; }
 .my-listings-page .my-listing-history .my-listing-image { opacity: 0.88; }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
     .my-listings-page .my-listing-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -2332,8 +2340,6 @@ footer {
 
 @media (max-width: 680px) {
     .my-listings-page .sell-page.my-listings-main { padding: 30px 15px 50px; }
-    .my-listings-page .my-listings,
-    .my-listings-page .listing-history { padding: 20px 15px; }
     .my-listings-page .listings-heading { flex-direction: column; gap: 16px; }
     .my-listings-page .listing-actions { width: 100%; flex-direction: row; align-items: stretch; }
     .my-listings-page .listing-actions > a { flex: 1; }
