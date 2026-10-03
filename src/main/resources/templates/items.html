@@ -1,345 +1,120 @@
 <!DOCTYPE html>
-
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Items - UniLoop</title>
-
-    <link rel="stylesheet"
-          href="/css/style.css">
-
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+<body class="browse-page">
+    <header class="navbar site-navbar">
+        <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
+        <nav aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a class="nav-current" href="/items">Browse</a>
+            <a href="/sell">Sell</a>
+            <a href="#">Login</a>
+        </nav>
+        <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
+    </header>
 
-<body>
+    <main class="items browse-page-main">
+        <section class="browse-intro" aria-labelledby="browse-title">
+            <div class="browse-heading">
+                <div>
+                    <p class="browse-eyebrow">THE CAMPUS EXCHANGE</p>
+                    <h1 id="browse-title">Browse Items</h1>
+                    <p>Find secondhand things students are offering around your campus.</p>
+                </div>
+                <a href="/my-requests" class="my-requests-button">My Requests <span aria-hidden="true">→</span></a>
+            </div>
 
-<header class="navbar">
+            <nav class="category-filter" aria-label="Filter items by category">
+                <a href="/items" th:classappend="${param.category == null} ? ' is-active' : ''">All</a>
+                <a href="/items?category=1" th:classappend="${param.category != null and param.category[0] == '1'} ? ' is-active' : ''">Books</a>
+                <a href="/items?category=2" th:classappend="${param.category != null and param.category[0] == '2'} ? ' is-active' : ''">Electronics</a>
+                <a href="/items?category=3" th:classappend="${param.category != null and param.category[0] == '3'} ? ' is-active' : ''">Stationery</a>
+                <a href="/items?category=4" th:classappend="${param.category != null and param.category[0] == '4'} ? ' is-active' : ''">Clothing</a>
+                <a href="/items?category=5" th:classappend="${param.category != null and param.category[0] == '5'} ? ' is-active' : ''">Hostel Items</a>
+                <a href="/items?category=6" th:classappend="${param.category != null and param.category[0] == '6'} ? ' is-active' : ''">Sports</a>
+                <a href="/items?category=7" th:classappend="${param.category != null and param.category[0] == '7'} ? ' is-active' : ''">Other</a>
+            </nav>
+        </section>
 
-    <div class="logo">
-        UniLoop
-    </div>
+        <div class="item-container browse-item-container">
+            <div class="no-items-message browse-empty-state" th:if="${#lists.isEmpty(items)}">
+                <span class="browse-empty-icon" aria-hidden="true">▤</span>
+                <h3>No items yet</h3>
+                <p>There are no items available in this category. Try another category or check back later.</p>
+            </div>
 
-    <nav>
-        <a href="/">Home</a>
-        <a href="/items">Browse</a>
-        <a href="/sell">Sell</a>
-        <a href="#">Login</a>
-    </nav>
+            <article class="item-card browse-item-card"
+                     th:each="item : ${items}"
+                     th:id="'item-' + ${item.itemId}"
+                     th:onclick="'window.location.href=\'/item?id=' + ${item.itemId} + '\''">
+                <div class="item-image browse-item-image">
+                    <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
+                         th:src="${item.imagePath}"
+                         alt="Item image">
+                    <span class="browse-image-fallback" th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}" aria-hidden="true">▤</span>
+                    <span class="browse-listing-type" th:text="${item.listingType}">SELL</span>
+                </div>
 
-</header>
+                <div class="browse-item-content">
+                    <div class="browse-item-heading">
+                        <h2 th:text="${item.itemName}">Item Name</h2>
+                        <strong class="browse-item-price" th:if="${item.listingType == 'SELL'}" th:text="'₹' + ${item.price}">₹0</strong>
+                        <strong class="browse-item-price browse-free-price" th:if="${item.listingType == 'DONATE'}">FREE</strong>
+                    </div>
+                    <p class="browse-item-condition" th:text="${item.condition}">Condition</p>
 
+                    <div class="browse-request-area">
+                        <div class="browse-request-state" th:if="${item.requestStatus == null}">
+                            <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item?');">
+                                <input type="hidden" name="buyerId" value="2">
+                                <input type="hidden" name="itemId" th:value="${item.itemId}">
+                                <input type="hidden" name="source" value="items">
+                                <button type="submit" class="submit-button browse-request-button">Request Item</button>
+                            </form>
+                        </div>
 
-<main class="items">
+                        <div class="browse-request-state" th:if="${item.requestStatus == 'PENDING'}">
+                            <p class="browse-status-message">Request Sent</p>
+                            <form action="/cancel-request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                                <input type="hidden" name="buyerId" value="2">
+                                <input type="hidden" name="requestId" th:value="${item.requestId}">
+                                <input type="hidden" name="source" value="items">
+                                <button type="submit" class="submit-button browse-request-button browse-cancel-button">Cancel Request</button>
+                            </form>
+                        </div>
 
-    <!-- ============================== -->
-    <!-- BROWSE PAGE HEADING -->
-    <!-- ============================== -->
+                        <div class="browse-request-state" th:if="${item.requestStatus == 'ACCEPTED'}">
+                            <p class="browse-status-message">Request Accepted</p>
+                        </div>
 
-    <div class="browse-heading">
+                        <div class="browse-request-state" th:if="${item.requestStatus == 'REJECTED'}">
+                            <p class="browse-status-message">Request Rejected</p>
+                            <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item again?');">
+                                <input type="hidden" name="buyerId" value="2">
+                                <input type="hidden" name="itemId" th:value="${item.itemId}">
+                                <input type="hidden" name="source" value="items">
+                                <button type="submit" class="submit-button browse-request-button">Request Again</button>
+                            </form>
+                        </div>
 
-        <div>
-
-            <h1>
-                Browse Items
-            </h1>
-
-            <p>
-                Items available in your campus marketplace.
-            </p>
-
+                        <div class="browse-request-state" th:if="${item.requestStatus == 'CANCELLED'}">
+                            <p class="browse-status-message">Request Cancelled</p>
+                            <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item again?');">
+                                <input type="hidden" name="buyerId" value="2">
+                                <input type="hidden" name="itemId" th:value="${item.itemId}">
+                                <input type="hidden" name="source" value="items">
+                                <button type="submit" class="submit-button browse-request-button">Request Again</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </article>
         </div>
-
-        <a href="/my-requests" class="my-requests-button">
-            My Requests →
-        </a>
-
-    </div>
-
-
-    <!-- ============================== -->
-    <!-- CATEGORY FILTER -->
-    <!-- ============================== -->
-
-    <div class="category-filter">
-
-        <a href="/items">
-            All
-        </a>
-
-        <a href="/items?category=1">
-            Books
-        </a>
-
-        <a href="/items?category=2">
-            Electronics
-        </a>
-
-        <a href="/items?category=3">
-            Stationery
-        </a>
-
-        <a href="/items?category=4">
-            Clothing
-        </a>
-
-        <a href="/items?category=5">
-            Hostel Items
-        </a>
-
-        <a href="/items?category=6">
-            Sports
-        </a>
-
-        <a href="/items?category=7">
-            Other
-        </a>
-
-    </div>
-
-
-    <!-- ============================== -->
-    <!-- ITEM CONTAINER -->
-    <!-- ============================== -->
-
-    <div class="item-container">
-
-        <!-- ============================== -->
-        <!-- NO ITEMS MESSAGE -->
-        <!-- ============================== -->
-
-        <div class="no-items-message"
-             th:if="${#lists.isEmpty(items)}">
-
-            <h3>
-                No items yet
-            </h3>
-
-            <p>
-                There are no items available in this category.
-            </p>
-
-        </div>
-
-
-        <!-- ============================== -->
-        <!-- ITEM CARD -->
-        <!-- ============================== -->
-
-        <div class="item-card"
-             th:each="item : ${items}"
-             th:id="'item-' + ${item.itemId}"
-             th:onclick="'window.location.href=\'/item?id=' + ${item.itemId} + '\''">
-
-
-            <!-- ITEM IMAGE -->
-
-            <div class="item-image">
-
-                <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
-                     th:src="${item.imagePath}"
-                     alt="Item image">
-
-                <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
-                    📦
-                </span>
-
-            </div>
-
-
-            <!-- ITEM NAME -->
-
-            <h3 th:text="${item.itemName}">
-                Item Name
-            </h3>
-
-
-            <!-- CONDITION -->
-
-            <p th:text="${item.condition}">
-                Condition
-            </p>
-
-
-            <!-- PRICE -->
-
-            <strong th:if="${item.listingType == 'SELL'}"
-                    th:text="'₹' + ${item.price}">
-                ₹0
-            </strong>
-
-            <strong th:if="${item.listingType == 'DONATE'}">
-                FREE
-            </strong>
-
-
-            <!-- ============================== -->
-            <!-- NO REQUEST YET -->
-            <!-- ============================== -->
-
-            <div th:if="${item.requestStatus == null}">
-
-                <form action="/request"
-                      method="post"
-                      onclick="event.stopPropagation()"
-                      onsubmit="return confirm('Are you sure you want to request this item?');">
-
-                    <input type="hidden"
-                           name="buyerId"
-                           value="2">
-
-                    <input type="hidden"
-                           name="itemId"
-                           th:value="${item.itemId}">
-
-                    <input type="hidden"
-                           name="source"
-                           value="items">
-
-                    <button type="submit"
-                            class="submit-button">
-                        Request Item
-                    </button>
-
-                </form>
-
-            </div>
-
-
-            <!-- ============================== -->
-            <!-- REQUEST PENDING -->
-            <!-- ============================== -->
-
-            <div th:if="${item.requestStatus == 'PENDING'}">
-
-                <p>
-                    ✓ Request Sent
-                </p>
-
-                <form action="/cancel-request"
-                      method="post"
-                      onclick="event.stopPropagation()"
-                      onsubmit="return confirm('Are you sure you want to cancel this request?');">
-
-                    <input type="hidden"
-                           name="buyerId"
-                           value="2">
-
-                    <input type="hidden"
-                           name="requestId"
-                           th:value="${item.requestId}">
-
-                    <input type="hidden"
-                           name="source"
-                           value="items">
-
-                    <button type="submit"
-                            class="submit-button">
-                        Cancel Request
-                    </button>
-
-                </form>
-
-            </div>
-
-
-            <!-- ============================== -->
-            <!-- REQUEST ACCEPTED -->
-            <!-- ============================== -->
-
-            <div th:if="${item.requestStatus == 'ACCEPTED'}">
-
-                <p>
-                    ✓ Request Accepted
-                </p>
-
-            </div>
-
-
-            <!-- ============================== -->
-            <!-- REQUEST REJECTED -->
-            <!-- ============================== -->
-
-            <div th:if="${item.requestStatus == 'REJECTED'}">
-
-                <p>
-                    Request Rejected
-                </p>
-
-                <form action="/request"
-                      method="post"
-                      onclick="event.stopPropagation()"
-                      onsubmit="return confirm('Are you sure you want to request this item again?');">
-
-                    <input type="hidden"
-                           name="buyerId"
-                           value="2">
-
-                    <input type="hidden"
-                           name="itemId"
-                           th:value="${item.itemId}">
-
-                    <input type="hidden"
-                           name="source"
-                           value="items">
-
-                    <button type="submit"
-                            class="submit-button">
-                        Request Again
-                    </button>
-
-                </form>
-
-            </div>
-
-
-            <!-- ============================== -->
-            <!-- REQUEST CANCELLED -->
-            <!-- ============================== -->
-
-            <div th:if="${item.requestStatus == 'CANCELLED'}">
-
-                <p>
-                    Request Cancelled
-                </p>
-
-                <form action="/request"
-                      method="post"
-                      onclick="event.stopPropagation()"
-                      onsubmit="return confirm('Are you sure you want to request this item again?');">
-
-                    <input type="hidden"
-                           name="buyerId"
-                           value="2">
-
-                    <input type="hidden"
-                           name="itemId"
-                           th:value="${item.itemId}">
-
-                    <input type="hidden"
-                           name="source"
-                           value="items">
-
-                    <button type="submit"
-                            class="submit-button">
-                        Request Again
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</main>
-
+    </main>
 </body>
-
 </html>

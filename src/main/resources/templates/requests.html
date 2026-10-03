@@ -9,24 +9,21 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body id="top">
+<body id="top" class="seller-requests-page">
 
     <!-- =========================
          NAVBAR
          ========================= -->
 
-    <header class="navbar">
-
-        <div class="logo">
-            UniLoop
-        </div>
-
-        <nav>
+    <header class="navbar site-navbar">
+        <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
+        <nav aria-label="Main navigation">
             <a href="/">Home</a>
             <a href="/items">Browse</a>
-            <a href="/sell">Sell</a>
+            <a class="nav-current" href="/sell">Sell</a>
             <a href="#">Login</a>
         </nav>
+        <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
 
     </header>
 
@@ -35,7 +32,7 @@
          MAIN CONTENT
          ========================= -->
 
-    <main class="items">
+    <main class="items seller-requests-main">
 
         <!-- REQUESTS HEADING -->
 
@@ -47,7 +44,8 @@
 
             <div>
                 <h1>📩 Requests</h1>
-                <p>Requests received for your items.</p>
+                <p class="seller-requests-eyebrow">SELLER INBOX</p>
+                <p>Manage requests from students interested in your listings.</p>
             </div>
 
             <a href="#request-history" class="history-link">
@@ -61,10 +59,23 @@
              ACTIVE REQUESTS
              ========================= -->
 
-        <div class="request-groups">
+        <div class="seller-requests-section-heading">
+            <div>
+                <p class="seller-requests-eyebrow">IN PROGRESS</p>
+                <h2>Active Requests</h2>
+            </div>
+            <p>Pending and accepted requests for your listings.</p>
+        </div>
+
+        <div class="request-groups seller-active-request-groups">
+
+            <div th:if="${#lists.isEmpty(requestGroups)}" class="empty-active-requests">
+                <h3>No active requests</h3>
+                <p>When students request your listings, they'll appear here.</p>
+            </div>
 
             <div th:each="group : ${requestGroups}"
-                 class="request-group">
+                 class="request-group seller-request-group">
 
                 <!-- Item information -->
 
@@ -93,7 +104,7 @@
 
                 <div class="request-list">
 
-                    <div class="request-card"
+                    <div class="request-card seller-request-card"
                          th:each="request : ${group.requests}">
 
                         <p>
@@ -106,11 +117,11 @@
                         <p>
                             Status:
 
-                            <strong th:if="${request.requestStatus == 'PENDING'}">
+                            <strong class="seller-request-status pending-request-status" th:if="${request.requestStatus == 'PENDING'}">
                                 ⏳ Pending
                             </strong>
 
-                            <strong th:if="${request.requestStatus == 'ACCEPTED'}">
+                            <strong class="seller-request-status accepted-request-status" th:if="${request.requestStatus == 'ACCEPTED'}">
                                 ✓ Accepted
                             </strong>
 
@@ -127,7 +138,7 @@
 
                         <!-- Pending request buttons -->
 
-                        <div th:if="${request.requestStatus == 'PENDING'}">
+                        <div class="seller-request-actions pending-actions" th:if="${request.requestStatus == 'PENDING'}">
 
                             <form action="/accept-request"
                                   method="post"
@@ -139,7 +150,7 @@
                                        th:value="${request.requestId}">
 
                                 <button type="submit"
-                                        class="submit-button">
+                                        class="submit-button seller-action-button accept-request-button">
                                     Accept
                                 </button>
 
@@ -156,7 +167,7 @@
                                        th:value="${request.requestId}">
 
                                 <button type="submit"
-                                        class="submit-button">
+                                        class="submit-button seller-action-button reject-request-button">
                                     Reject
                                 </button>
 
@@ -167,12 +178,12 @@
 
                         <!-- Accepted request -->
 
-                        <div th:if="${request.requestStatus == 'ACCEPTED'}">
+                        <div class="seller-request-actions accepted-actions" th:if="${request.requestStatus == 'ACCEPTED'}">
 
                             <!-- Chat will be added later -->
 
                             <button type="button"
-                                    class="submit-button">
+                                    class="submit-button seller-action-button seller-chat-placeholder">
                                 💬 Chat
                             </button>
 
@@ -192,7 +203,7 @@
              ========================= -->
 
        <section id="request-history"
-         class="request-history">
+         class="request-history seller-request-history">
 
     <div class="history-heading">
         <div>
@@ -220,10 +231,10 @@
 
             <!-- History item groups -->
 
-            <div class="request-groups">
+            <div class="request-groups seller-history-groups">
 
                 <div th:each="group : ${historyGroups}"
-                     class="request-group history-group">
+                     class="request-group history-group seller-history-group">
 
                     <!-- Item information -->
 
@@ -254,7 +265,7 @@
 
                         <!-- History request cards -->
 
-                        <div class="request-card history-card"
+                        <div class="request-card history-card seller-history-card"
                              th:each="request, stat : ${group.requests}"
                              th:classappend="${stat.index >= 2} ? ' hidden-history' : ''">
 

@@ -15,32 +15,29 @@
 
 </head>
 
-<body>
+<body class="my-listings-page">
 
-<header class="navbar">
-
-    <div class="logo">
-        UniLoop
-    </div>
-
-    <nav>
+<header class="navbar site-navbar">
+    <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
+    <nav aria-label="Main navigation">
         <a href="/">Home</a>
         <a href="/items">Browse</a>
-        <a href="/sell">Sell</a>
+        <a class="nav-current" href="/sell">Sell</a>
         <a href="#">Login</a>
     </nav>
+    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
 
 </header>
 
 
-<main class="sell-page">
+<main class="sell-page my-listings-main">
 
     <div class="listings-column">
 
 
         <!-- My Listings -->
 
-        <div class="my-listings">
+        <div class="my-listings active-listings-section">
 
             <div class="listings-heading">
 
@@ -48,7 +45,7 @@
 
                     <h1>My Listings</h1>
 
-                    <p>Your items listed on UniLoop.</p>
+                    <p>Manage the items you've listed on UniLoop.</p>
 
                     <a href="#listing-history" class="history-scroll-button">
                         ↓ Listing History
@@ -72,7 +69,14 @@
             </div>
 
 
-            <div class="my-listing-container">
+            <div class="listing-section-heading">
+                <div>
+                    <p class="listings-eyebrow">AVAILABLE AROUND CAMPUS</p>
+                    <h2>Active Listings</h2>
+                </div>
+            </div>
+
+            <div class="my-listing-container active-listing-grid">
 
                 <div class="my-listing-card"
                      th:each="item : ${myListings}">
@@ -104,7 +108,14 @@
                             ₹0
                         </strong>
 
-                        <p>
+                        <p class="listing-type-row">
+                            Listing type:
+                            <span class="listing-type-label" th:text="${item.listingType}">
+                                SELL
+                            </span>
+                        </p>
+
+                        <p class="listing-status-row">
                             Status:
                             <span th:text="${item.itemStatus}">
                                 AVAILABLE
@@ -143,6 +154,8 @@
                         You haven't listed any items yet.
                     </p>
 
+                    <a href="/list-item" class="empty-list-item-link">List an Item</a>
+
                 </div>
 
             </div>
@@ -153,7 +166,7 @@
 
         <!-- Listing History -->
 
-        <div class="listing-history" id="listing-history">
+        <div class="listing-history my-listing-history" id="listing-history">
 
             <div class="listings-heading">
 
@@ -210,7 +223,14 @@
                             ₹0
                         </strong>
 
-                        <p>
+                        <p class="listing-type-row">
+                            Listing type:
+                            <span class="listing-type-label" th:text="${item.listingType}">
+                                SELL
+                            </span>
+                        </p>
+
+                        <p class="listing-status-row">
                             Status:
                             <span th:text="${item.itemStatus}">
                                 UNAVAILABLE

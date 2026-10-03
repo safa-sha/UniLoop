@@ -15,47 +15,45 @@
 
 </head>
 
-<body>
+<body class="list-item-page">
 
-<header class="navbar">
-
-    <div class="logo">
-        UniLoop
-    </div>
-
-    <nav>
+<header class="navbar site-navbar">
+    <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
+    <nav aria-label="Main navigation">
         <a href="/">Home</a>
         <a href="/items">Browse</a>
-        <a href="/sell">Sell</a>
+        <a class="nav-current" href="/sell">Sell</a>
         <a href="#">Login</a>
     </nav>
+    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
 
 </header>
 
 
-<main class="sell-form-page">
+<main class="sell-form-page list-item-main">
 
     <div class="sell-form">
 
-        <a href="/sell" class="back-to-listings">
+        <a href="/sell" class="back-to-listings list-form-back">
             ← Back to My Listings
         </a>
 
 
-        <div class="sell-heading">
+        <div class="sell-heading list-item-heading">
 
             <div>
 
+                <p class="list-item-eyebrow">THE CAMPUS EXCHANGE</p>
                 <h1>List an Item</h1>
 
-                <p>Give your item a new home on campus.</p>
+                <p>Give something you no longer need a second life on campus.</p>
 
             </div>
 
         </div>
 
 
-        <form action="/sell"
+        <form class="list-item-form" action="/sell"
               method="post"
               enctype="multipart/form-data"
               onsubmit="return confirm('Are you sure you want to list this item?');">
@@ -65,7 +63,9 @@
                    name="sellerId"
                    value="1">
 
+            <div class="listing-fields-grid">
 
+            <div class="sell-field">
             <label for="categoryId">
                 Category
             </label>
@@ -114,8 +114,11 @@
                 </option>
 
             </select>
+            <small>Choose the category that best fits your item.</small>
+            </div>
 
 
+            <div class="sell-field">
             <label for="itemName">
                 Item Name
             </label>
@@ -126,8 +129,10 @@
                    placeholder="e.g. Engineering Mathematics Book"
                    th:value="${item != null ? item.itemName : ''}"
                    required>
+            </div>
 
 
+            <div class="sell-field">
             <label for="condition">
                 Condition
             </label>
@@ -161,8 +166,10 @@
                 </option>
 
             </select>
+            </div>
 
 
+            <div class="sell-field">
             <label for="listingType">
                 Listing Type
             </label>
@@ -186,9 +193,10 @@
                 </option>
 
             </select>
+            </div>
 
 
-            <div id="price-field">
+            <div id="price-field" class="sell-field">
 
                 <label for="price">
                     Price
@@ -200,10 +208,12 @@
                        placeholder="Enter price"
                        min="0"
                        th:value="${item != null ? item.price : ''}">
+                <small>A price is needed for items listed for sale.</small>
 
             </div>
 
 
+            <div class="sell-field sell-field-full">
             <label for="description">
                 Description
             </label>
@@ -213,16 +223,23 @@
                       rows="5"
                       placeholder="Tell students something about your item..."
                       th:text="${item != null ? item.description : ''}"></textarea>
+            </div>
 
 
+            <div class="sell-field sell-field-full image-upload-field">
             <label for="image">
-                Item Image
+                Add a Photo <span>(optional)</span>
             </label>
+
+            <small>Help other students get a better look at your item.</small>
 
             <input type="file"
                    id="image"
                    name="image"
                    accept="image/*">
+            </div>
+
+            </div>
 
 
             <button type="submit"

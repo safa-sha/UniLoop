@@ -17,30 +17,22 @@
 </head>
 
 
-<body id="top">
+<body id="top" class="my-requests-page">
 
 
 <!-- =========================
      NAVBAR
      ========================= -->
 
-<header class="navbar">
-
-    <div class="logo">
-        UniLoop
-    </div>
-
-    <nav>
-
+<header class="navbar site-navbar">
+    <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
+    <nav aria-label="Main navigation">
         <a href="/">Home</a>
-
         <a href="/items">Browse</a>
-
         <a href="/sell">Sell</a>
-
         <a href="#">Login</a>
-
     </nav>
+    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
 
 </header>
 
@@ -49,7 +41,7 @@
      MAIN CONTENT
      ========================= -->
 
-<main class="items">
+<main class="items my-requests-main">
 
 
     <!-- =========================
@@ -70,8 +62,9 @@
 
             <h1>📩 My Requests</h1>
 
+            <p class="my-requests-eyebrow">YOUR CAMPUS EXCHANGE</p>
             <p>
-                Items you have requested.
+                Keep track of the items you've requested from students around campus.
             </p>
 
         </div>
@@ -91,7 +84,15 @@
          ACTIVE REQUESTS
          ========================= -->
 
-    <div class="request-groups">
+    <div class="my-requests-section-heading">
+        <div>
+            <p class="my-requests-eyebrow">IN PROGRESS</p>
+            <h2>Active Requests</h2>
+        </div>
+        <p>Requests waiting on a response and accepted requests.</p>
+    </div>
+
+    <div class="request-groups my-active-request-groups">
 
 
         <!-- PENDING / ACCEPTED REQUESTS -->
@@ -99,7 +100,8 @@
         <div th:each="request : ${myRequests}"
              th:if="${request.requestStatus == 'PENDING' or request.requestStatus == 'ACCEPTED'}"
              th:id="'request-' + ${request.requestId}"
-             class="request-group">
+             class="request-group my-request-group"
+             th:classappend="${request.requestStatus == 'PENDING'} ? ' pending-request' : ' accepted-request'">
 
 
             <!-- ITEM INFORMATION -->
@@ -153,11 +155,11 @@
 
                         Status:
 
-                        <strong th:if="${request.requestStatus == 'PENDING'}">
+                        <strong class="my-request-status pending-status" th:if="${request.requestStatus == 'PENDING'}">
                             ⏳ Pending
                         </strong>
 
-                        <strong th:if="${request.requestStatus == 'ACCEPTED'}">
+                        <strong class="my-request-status accepted-status" th:if="${request.requestStatus == 'ACCEPTED'}">
                             ✓ Accepted
                         </strong>
 
@@ -238,7 +240,7 @@
          ========================= -->
 
     <section id="request-history"
-             class="request-history">
+             class="request-history my-request-history">
 
 
         <div class="history-heading">
@@ -288,7 +290,7 @@
             <!-- ONE GROUP = ONE ITEM -->
 
             <div th:each="group : ${historyGroups}"
-                 class="request-group history-group">
+                 class="request-group history-group my-history-group">
 
 
                 <!-- ITEM INFORMATION -->
@@ -347,14 +349,14 @@
                             Status:
 
 
-                            <strong th:if="${request.requestStatus == 'REJECTED'}">
+                            <strong class="my-request-status rejected-status" th:if="${request.requestStatus == 'REJECTED'}">
 
                                 ✕ Rejected
 
                             </strong>
 
 
-                            <strong th:if="${request.requestStatus == 'CANCELLED'}">
+                            <strong class="my-request-status cancelled-status" th:if="${request.requestStatus == 'CANCELLED'}">
 
                                 ↩ Cancelled
 
