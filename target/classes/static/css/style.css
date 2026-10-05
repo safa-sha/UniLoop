@@ -289,6 +289,16 @@ footer {
 }
 
 
+/* Shared navigation colors for non-homepage pages. */
+body:not(.home-page) .site-navbar { border-bottom-color: #344154; background: #111C2D; }
+body:not(.home-page) .site-navbar .logo { color: #F2F0EC; }
+body:not(.home-page) .site-navbar .nav-logo-dot { color: #D7D2CA; }
+body:not(.home-page) .site-navbar nav a { color: #B9AFBF; }
+body:not(.home-page) .site-navbar nav a:hover,
+body:not(.home-page) .site-navbar nav a.nav-current { color: #F2F0EC; }
+body:not(.home-page) .site-navbar .navbar-cta { border-color: rgba(161, 139, 174, 0.48); color: #F2F0EC; }
+body:not(.home-page) .site-navbar .navbar-cta:hover { border-color: rgba(161, 139, 174, 0.68); background: rgba(161, 139, 174, 0.08); }
+body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 /* =========================================================
    BROWSE PAGE
    ========================================================= */
@@ -1637,16 +1647,16 @@ footer {
    ========================================================= */
 
 .browse-page {
-    --browse-bg: #121215;
-    --browse-surface: #18181d;
-    --browse-raised: #202027;
-    --browse-text: #f6f5f2;
-    --browse-muted: #a7a6b0;
-    --browse-lavender: #c4b6e8;
-    --browse-purple: #9b8bc4;
-    --browse-purple-hover: #ada0d4;
-    --browse-warm: #d4a373;
-    --browse-line: rgba(246, 245, 242, 0.1);
+    --browse-bg: #111C2D;
+    --browse-surface: #172438;
+    --browse-raised: #1B2940;
+    --browse-text: #F2F0EC;
+    --browse-muted: #B9AFBF;
+    --browse-lavender: #A18BAE;
+    --browse-purple: #574267;
+    --browse-purple-hover: #3D2D4D;
+    --browse-warm: #D7D2CA;
+    --browse-line: rgba(215, 210, 202, 0.1);
     min-height: 100vh;
     background: var(--browse-bg);
     color: var(--browse-text);
@@ -1708,7 +1718,7 @@ footer {
 }
 
 .browse-page .my-requests-button:hover {
-    border-color: rgba(196, 182, 232, 0.38);
+    border-color: rgba(161, 139, 174, 0.38);
     background: var(--browse-raised);
 }
 
@@ -1733,7 +1743,7 @@ footer {
 
 .browse-page .category-filter a:hover {
     transform: none;
-    border-color: rgba(196, 182, 232, 0.4);
+    border-color: rgba(161, 139, 174, 0.4);
     background: var(--browse-raised);
     color: var(--browse-text);
     box-shadow: none;
@@ -1742,7 +1752,7 @@ footer {
 .browse-page .category-filter a.is-active {
     border-color: var(--browse-purple);
     background: var(--browse-purple);
-    color: #17151b;
+    color: #F2F0EC;
 }
 
 .browse-page .browse-item-container.item-container {
@@ -1768,8 +1778,8 @@ footer {
 
 .browse-page .browse-item-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(196, 182, 232, 0.35);
-    background: #1b1a20;
+    border-color: rgba(161, 139, 174, 0.35);
+    background: #1B2940;
 }
 
 .browse-page .browse-item-image.item-image {
@@ -1795,7 +1805,7 @@ footer {
     width: 100%;
     height: 100%;
     place-items: center;
-    color: rgba(196, 182, 232, 0.55);
+    color: rgba(161, 139, 174, 0.55);
     font-size: 54px;
 }
 
@@ -1804,9 +1814,9 @@ footer {
     top: 13px;
     left: 13px;
     padding: 6px 9px;
-    border: 1px solid rgba(246, 245, 242, 0.13);
+    border: 1px solid rgba(215, 210, 202, 0.13);
     border-radius: 5px;
-    background: rgba(18, 18, 21, 0.88);
+    background: rgba(17, 28, 45, 0.88);
     color: var(--browse-lavender);
     font-size: 9px;
     font-weight: 700;
@@ -1846,7 +1856,7 @@ footer {
     border: 1px solid var(--browse-purple);
     border-radius: 6px;
     background: var(--browse-purple);
-    color: #17151b;
+    color: #F2F0EC;
     font-size: 12px;
     font-weight: 700;
     transition: background-color 0.18s ease, border-color 0.18s ease;
@@ -1858,17 +1868,17 @@ footer {
 }
 
 .browse-page .browse-cancel-button.submit-button {
-    border-color: rgba(196, 182, 232, 0.32);
+    border-color: rgba(161, 139, 174, 0.32);
     background: transparent;
     color: var(--browse-lavender);
 }
 
-.browse-page .browse-cancel-button.submit-button:hover { background: rgba(196, 182, 232, 0.09); }
+.browse-page .browse-cancel-button.submit-button:hover { background: rgba(161, 139, 174, 0.09); }
 
 .browse-page .browse-empty-state.no-items-message {
     grid-column: 1 / -1;
     padding: 58px 24px;
-    border: 1px dashed rgba(196, 182, 232, 0.25);
+    border: 1px dashed rgba(161, 139, 174, 0.25);
     border-radius: 10px;
     background: var(--browse-surface);
 }
@@ -1899,16 +1909,16 @@ footer {
    ========================================================= */
 
 .my-requests-page {
-    --my-bg: #121215;
-    --my-surface: #18181d;
-    --my-raised: #202027;
-    --my-text: #f6f5f2;
-    --my-muted: #a7a6b0;
-    --my-lavender: #c4b6e8;
-    --my-purple: #9b8bc4;
-    --my-purple-hover: #ada0d4;
-    --my-warm: #d4a373;
-    --my-line: rgba(246, 245, 242, 0.1);
+    --my-bg: #111C2D;
+    --my-surface: #172438;
+    --my-raised: #1B2940;
+    --my-text: #F2F0EC;
+    --my-muted: #B9AFBF;
+    --my-lavender: #A18BAE;
+    --my-purple: #574267;
+    --my-purple-hover: #3D2D4D;
+    --my-warm: #D7D2CA;
+    --my-line: rgba(215, 210, 202, 0.1);
     min-height: 100vh;
     background: var(--my-bg);
     color: var(--my-text);
@@ -1990,8 +2000,8 @@ footer {
     box-shadow: none;
 }
 
-.my-requests-page .my-request-group.pending-request { border-top: 2px solid rgba(196, 182, 232, 0.62); }
-.my-requests-page .my-request-group.accepted-request { border-top: 2px solid rgba(212, 163, 115, 0.6); }
+.my-requests-page .my-request-group.pending-request { border-top: 2px solid rgba(161, 139, 174, 0.62); }
+.my-requests-page .my-request-group.accepted-request { border-top: 2px solid rgba(215, 210, 202, 0.6); }
 
 .my-requests-page .request-item-header {
     align-items: center;
@@ -2027,10 +2037,10 @@ footer {
 .my-requests-page .request-card p:last-child { margin-bottom: 0; }
 .my-requests-page .request-card strong { color: var(--my-text); font-weight: 600; }
 .my-requests-page .my-request-status { display: inline-block; padding: 4px 8px; border: 1px solid transparent; border-radius: 5px; font-size: 11px; }
-.my-requests-page .pending-status { border-color: rgba(196, 182, 232, 0.2); background: rgba(196, 182, 232, 0.1); color: var(--my-lavender) !important; }
-.my-requests-page .accepted-status { border-color: rgba(212, 163, 115, 0.2); background: rgba(212, 163, 115, 0.1); color: var(--my-warm) !important; }
+.my-requests-page .pending-status { border-color: rgba(161, 139, 174, 0.2); background: rgba(161, 139, 174, 0.1); color: var(--my-lavender) !important; }
+.my-requests-page .accepted-status { border-color: rgba(215, 210, 202, 0.2); background: rgba(215, 210, 202, 0.1); color: var(--my-warm) !important; }
 .my-requests-page .rejected-status,
-.my-requests-page .cancelled-status { border-color: var(--my-line); background: rgba(246, 245, 242, 0.05); color: var(--my-muted) !important; }
+.my-requests-page .cancelled-status { border-color: var(--my-line); background: rgba(215, 210, 202, 0.05); color: var(--my-muted) !important; }
 
 .my-requests-page .request-card form { margin: 13px 0 0; }
 
@@ -2040,15 +2050,15 @@ footer {
     border: 1px solid var(--my-purple);
     border-radius: 6px;
     background: var(--my-purple);
-    color: #17151b;
+    color: #F2F0EC;
     font-size: 12px;
     font-weight: 700;
     transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .my-requests-page .request-card .submit-button:hover { border-color: var(--my-purple-hover); background: var(--my-purple-hover); }
-.my-requests-page .accepted-request .request-card .submit-button { border-color: rgba(196, 182, 232, 0.34); background: transparent; color: var(--my-lavender); }
-.my-requests-page .accepted-request .request-card .submit-button:hover { background: rgba(196, 182, 232, 0.09); }
+.my-requests-page .accepted-request .request-card .submit-button { border-color: rgba(161, 139, 174, 0.34); background: transparent; color: var(--my-lavender); }
+.my-requests-page .accepted-request .request-card .submit-button:hover { background: rgba(161, 139, 174, 0.09); }
 
 .my-requests-page .my-request-history {
     margin-top: 54px;
@@ -2059,14 +2069,14 @@ footer {
 .my-requests-page .history-heading { align-items: center; margin-bottom: 20px; }
 .my-requests-page .history-heading h2 { margin: 0 0 8px; color: var(--my-text); font-size: 22px; }
 .my-requests-page .history-heading p { margin: 0; color: var(--my-muted); font-size: 12px; }
-.my-requests-page .my-history-group { background: #151519; }
+.my-requests-page .my-history-group { background: #172438; }
 .my-requests-page .history-card { margin: 0; background: var(--my-raised); }
 .my-requests-page .history-card.hidden-history { display: none; }
 
 .my-requests-page .empty-history {
     margin: 0;
     padding: 26px 20px;
-    border: 1px dashed rgba(196, 182, 232, 0.22);
+    border: 1px dashed rgba(161, 139, 174, 0.22);
     border-radius: 8px;
     background: var(--my-surface);
     color: var(--my-muted);
@@ -2111,16 +2121,16 @@ footer {
    ========================================================= */
 
 .list-item-page {
-    --list-bg: #121215;
-    --list-surface: #18181d;
-    --list-raised: #202027;
-    --list-text: #f6f5f2;
-    --list-muted: #a7a6b0;
-    --list-lavender: #c4b6e8;
-    --list-purple: #9b8bc4;
-    --list-purple-hover: #ada0d4;
-    --list-warm: #d4a373;
-    --list-line: rgba(246, 245, 242, 0.1);
+    --list-bg: #111C2D;
+    --list-surface: #172438;
+    --list-raised: #1B2940;
+    --list-text: #F2F0EC;
+    --list-muted: #B9AFBF;
+    --list-lavender: #A18BAE;
+    --list-purple: #574267;
+    --list-purple-hover: #3D2D4D;
+    --list-warm: #D7D2CA;
+    --list-line: rgba(215, 210, 202, 0.1);
     min-height: 100vh;
     background: var(--list-bg);
     color: var(--list-text);
@@ -2216,7 +2226,7 @@ footer {
     min-height: 44px;
     margin: 0;
     padding: 11px 13px;
-    border: 1px solid rgba(246, 245, 242, 0.14);
+    border: 1px solid rgba(215, 210, 202, 0.14);
     border-radius: 6px;
     outline: none;
     background: var(--list-raised);
@@ -2229,13 +2239,13 @@ footer {
 .list-item-page .sell-field select { color-scheme: dark; }
 .list-item-page .sell-field textarea { min-height: 132px; line-height: 1.6; resize: vertical; }
 .list-item-page .sell-field input::placeholder,
-.list-item-page .sell-field textarea::placeholder { color: #85838e; opacity: 1; }
+.list-item-page .sell-field textarea::placeholder { color: #B9AFBF; opacity: 1; }
 
 .list-item-page .sell-field input:focus,
 .list-item-page .sell-field select:focus,
 .list-item-page .sell-field textarea:focus {
     border-color: var(--list-purple);
-    background: #222128;
+    background: #1B2940;
 }
 
 .list-item-page .sell-field small {
@@ -2248,9 +2258,9 @@ footer {
 
 .list-item-page .image-upload-field {
     padding: 15px;
-    border: 1px dashed rgba(196, 182, 232, 0.3);
+    border: 1px dashed rgba(161, 139, 174, 0.3);
     border-radius: 7px;
-    background: rgba(196, 182, 232, 0.035);
+    background: rgba(161, 139, 174, 0.035);
 }
 
 .list-item-page .image-upload-field input[type="file"] {
@@ -2258,7 +2268,7 @@ footer {
     width: 100%;
     margin: 11px 0 0;
     padding: 10px;
-    border: 1px solid rgba(246, 245, 242, 0.12);
+    border: 1px solid rgba(215, 210, 202, 0.12);
     border-radius: 6px;
     background: var(--list-raised);
     color: var(--list-muted);
@@ -2269,16 +2279,16 @@ footer {
 .list-item-page .image-upload-field input[type="file"]::file-selector-button {
     margin-right: 12px;
     padding: 8px 11px;
-    border: 1px solid rgba(196, 182, 232, 0.35);
+    border: 1px solid rgba(161, 139, 174, 0.35);
     border-radius: 5px;
-    background: #2a2631;
+    background: #1B2940;
     color: var(--list-lavender);
     font: inherit;
     font-weight: 600;
     cursor: pointer;
 }
 
-.list-item-page .image-upload-field input[type="file"]::file-selector-button:hover { background: #332e3b; }
+.list-item-page .image-upload-field input[type="file"]::file-selector-button:hover { background: #3D2D4D; }
 
 .list-item-page .list-item-form > .submit-button {
     width: 100%;
@@ -2287,7 +2297,7 @@ footer {
     border: 1px solid var(--list-purple);
     border-radius: 6px;
     background: var(--list-purple);
-    color: #17151b;
+    color: #F2F0EC;
     font-size: 13px;
     font-weight: 700;
     transition: background-color 0.18s ease, border-color 0.18s ease;
@@ -2309,16 +2319,16 @@ footer {
    ========================================================= */
 
 .my-listings-page {
-    --listings-bg: #121215;
-    --listings-surface: #18181d;
-    --listings-raised: #202027;
-    --listings-text: #f6f5f2;
-    --listings-muted: #a7a6b0;
-    --listings-lavender: #c4b6e8;
-    --listings-purple: #9b8bc4;
-    --listings-purple-hover: #ada0d4;
-    --listings-warm: #d4a373;
-    --listings-line: rgba(246, 245, 242, 0.1);
+    --listings-bg: #111C2D;
+    --listings-surface: #172438;
+    --listings-raised: #1B2940;
+    --listings-text: #F2F0EC;
+    --listings-muted: #B9AFBF;
+    --listings-lavender: #A18BAE;
+    --listings-purple: #574267;
+    --listings-purple-hover: #3D2D4D;
+    --listings-warm: #D7D2CA;
+    --listings-line: rgba(215, 210, 202, 0.1);
     min-height: 100vh;
     background: var(--listings-bg);
     color: var(--listings-text);
@@ -2387,10 +2397,10 @@ footer {
     transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
-.my-listings-page .list-item-button { background: var(--listings-purple); color: #17151b; }
+.my-listings-page .list-item-button { background: var(--listings-purple); color: #F2F0EC; }
 .my-listings-page .list-item-button:hover { transform: none; border-color: var(--listings-purple-hover); background: var(--listings-purple-hover); }
-.my-listings-page .view-requests-button { border-color: rgba(196, 182, 232, 0.3); background: transparent; color: var(--listings-lavender); }
-.my-listings-page .view-requests-button:hover { transform: none; background: rgba(196, 182, 232, 0.08); }
+.my-listings-page .view-requests-button { border-color: rgba(161, 139, 174, 0.3); background: transparent; color: var(--listings-lavender); }
+.my-listings-page .view-requests-button:hover { transform: none; background: rgba(161, 139, 174, 0.08); }
 
 .my-listings-page .listing-section-heading { margin: 0 0 17px; }
 .my-listings-page .listings-eyebrow { margin: 0 0 7px; color: var(--listings-lavender); font-size: 9px; font-weight: 700; letter-spacing: 1.7px; }
@@ -2414,8 +2424,8 @@ footer {
 
 .my-listings-page .my-listing-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(196, 182, 232, 0.35);
-    background: #1b1a20;
+    border-color: rgba(161, 139, 174, 0.35);
+    background: #1B2940;
 }
 
 .my-listings-page .my-listing-image {
@@ -2431,13 +2441,13 @@ footer {
 .my-listings-page .my-listing-info p { margin: 7px 0; color: var(--listings-muted); font-size: 12px; line-height: 1.5; }
 .my-listings-page .my-listing-info strong { display: inline-block; margin: 4px 0 7px; color: var(--listings-lavender); font-size: 16px; }
 .my-listings-page .listing-type-row { display: flex; align-items: center; gap: 7px; }
-.my-listings-page .listing-type-label { padding: 4px 7px; border: 1px solid rgba(196, 182, 232, 0.18); border-radius: 4px; background: rgba(196, 182, 232, 0.08); color: var(--listings-lavender); font-size: 9px; font-weight: 700; letter-spacing: 0.6px; }
+.my-listings-page .listing-type-label { padding: 4px 7px; border: 1px solid rgba(161, 139, 174, 0.18); border-radius: 4px; background: rgba(161, 139, 174, 0.08); color: var(--listings-lavender); font-size: 9px; font-weight: 700; letter-spacing: 0.6px; }
 .my-listings-page .listing-status-row span { color: var(--listings-text); font-weight: 600; }
 
 .my-listings-page .delete-listing-button {
     margin-top: 8px;
     padding: 8px 11px;
-    border: 1px solid rgba(212, 163, 115, 0.38);
+    border: 1px solid rgba(215, 210, 202, 0.38);
     border-radius: 5px;
     background: transparent;
     color: var(--listings-warm);
@@ -2446,24 +2456,24 @@ footer {
     transition: border-color 0.18s ease, background-color 0.18s ease;
 }
 
-.my-listings-page .delete-listing-button:hover { border-color: rgba(212, 163, 115, 0.65); background: rgba(212, 163, 115, 0.09); color: #e2bb95; }
+.my-listings-page .delete-listing-button:hover { border-color: rgba(215, 210, 202, 0.65); background: rgba(215, 210, 202, 0.09); color: #D7D2CA; }
 
 .my-listings-page .list-again-button {
     margin-top: 7px;
     padding: 8px 11px;
-    border: 1px solid rgba(196, 182, 232, 0.3);
+    border: 1px solid rgba(161, 139, 174, 0.3);
     border-radius: 5px;
     background: transparent;
     color: var(--listings-lavender);
     font-size: 10px;
 }
 
-.my-listings-page .list-again-button:hover { transform: none; border-color: var(--listings-purple); background: rgba(196, 182, 232, 0.08); color: var(--listings-purple-hover); }
+.my-listings-page .list-again-button:hover { transform: none; border-color: var(--listings-purple); background: rgba(161, 139, 174, 0.08); color: var(--listings-purple-hover); }
 
 .my-listings-page .no-listings {
     grid-column: 1 / -1;
     padding: 30px 18px;
-    border: 1px dashed rgba(196, 182, 232, 0.23);
+    border: 1px dashed rgba(161, 139, 174, 0.23);
     border-radius: 8px;
     background: var(--listings-raised);
     color: var(--listings-muted);
@@ -2480,7 +2490,7 @@ footer {
 }
 
 .my-listings-page .my-listing-history .listings-heading h1 { font-size: 22px; }
-.my-listings-page .my-listing-history .my-listing-card { background: #18181d; }
+.my-listings-page .my-listing-history .my-listing-card { background: #172438; }
 .my-listings-page .my-listing-history .my-listing-image { opacity: 0.88; }
 
 @media (max-width: 900px) {
@@ -2508,16 +2518,16 @@ footer {
    ========================================================= */
 
 .seller-requests-page {
-    --seller-requests-bg: #121215;
-    --seller-requests-surface: #18181d;
-    --seller-requests-raised: #202027;
-    --seller-requests-text: #f6f5f2;
-    --seller-requests-muted: #a7a6b0;
-    --seller-requests-lavender: #c4b6e8;
-    --seller-requests-purple: #9b8bc4;
-    --seller-requests-purple-hover: #ada0d4;
-    --seller-requests-warm: #d4a373;
-    --seller-requests-line: rgba(246, 245, 242, 0.1);
+    --seller-requests-bg: #111C2D;
+    --seller-requests-surface: #172438;
+    --seller-requests-raised: #1B2940;
+    --seller-requests-text: #F2F0EC;
+    --seller-requests-muted: #B9AFBF;
+    --seller-requests-lavender: #A18BAE;
+    --seller-requests-purple: #574267;
+    --seller-requests-purple-hover: #3D2D4D;
+    --seller-requests-warm: #D7D2CA;
+    --seller-requests-line: rgba(215, 210, 202, 0.1);
     min-height: 100vh;
     background: var(--seller-requests-bg);
     color: var(--seller-requests-text);
@@ -2605,7 +2615,7 @@ footer {
     box-shadow: none;
 }
 
-.seller-requests-page .seller-request-group { border-top: 2px solid rgba(196, 182, 232, 0.55) !important; }
+.seller-requests-page .seller-request-group { border-top: 2px solid rgba(161, 139, 174, 0.55) !important; }
 
 .seller-requests-page .request-item-header {
     align-items: center;
@@ -2646,8 +2656,8 @@ footer {
 .seller-requests-page .request-card p:last-of-type { margin-bottom: 0; }
 .seller-requests-page .request-card strong { color: var(--seller-requests-text); font-weight: 600; }
 .seller-requests-page .seller-request-status { display: inline-block; padding: 4px 7px; border: 1px solid transparent; border-radius: 4px; font-size: 10px; }
-.seller-requests-page .pending-request-status { border-color: rgba(196, 182, 232, 0.2); background: rgba(196, 182, 232, 0.09); color: var(--seller-requests-lavender) !important; }
-.seller-requests-page .accepted-request-status { border-color: rgba(212, 163, 115, 0.2); background: rgba(212, 163, 115, 0.09); color: var(--seller-requests-warm) !important; }
+.seller-requests-page .pending-request-status { border-color: rgba(161, 139, 174, 0.2); background: rgba(161, 139, 174, 0.09); color: var(--seller-requests-lavender) !important; }
+.seller-requests-page .accepted-request-status { border-color: rgba(215, 210, 202, 0.2); background: rgba(215, 210, 202, 0.09); color: var(--seller-requests-warm) !important; }
 
 .seller-requests-page .seller-request-actions {
     display: flex;
@@ -2665,24 +2675,24 @@ footer {
     border: 1px solid var(--seller-requests-purple);
     border-radius: 5px;
     background: var(--seller-requests-purple);
-    color: #17151b;
+    color: #F2F0EC;
     font-size: 10px;
     font-weight: 700;
     transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .seller-requests-page .seller-action-button.submit-button:hover { border-color: var(--seller-requests-purple-hover); background: var(--seller-requests-purple-hover); }
-.seller-requests-page .reject-request-button.submit-button { border-color: rgba(212, 163, 115, 0.35); background: transparent; color: var(--seller-requests-warm); }
-.seller-requests-page .reject-request-button.submit-button:hover { background: rgba(212, 163, 115, 0.08); }
-.seller-requests-page .seller-chat-placeholder.submit-button { border-color: rgba(196, 182, 232, 0.3); background: transparent; color: var(--seller-requests-lavender); }
-.seller-requests-page .seller-chat-placeholder.submit-button:hover { background: rgba(196, 182, 232, 0.08); }
+.seller-requests-page .reject-request-button.submit-button { border-color: rgba(215, 210, 202, 0.35); background: transparent; color: var(--seller-requests-warm); }
+.seller-requests-page .reject-request-button.submit-button:hover { background: rgba(215, 210, 202, 0.08); }
+.seller-requests-page .seller-chat-placeholder.submit-button { border-color: rgba(161, 139, 174, 0.3); background: transparent; color: var(--seller-requests-lavender); }
+.seller-requests-page .seller-chat-placeholder.submit-button:hover { background: rgba(161, 139, 174, 0.08); }
 
 .seller-requests-page .empty-active-requests,
 .seller-requests-page .empty-history {
     grid-column: 1 / -1;
     margin: 0;
     padding: 28px 20px;
-    border: 1px dashed rgba(196, 182, 232, 0.22);
+    border: 1px dashed rgba(161, 139, 174, 0.22);
     border-radius: 8px;
     background: var(--seller-requests-surface);
     color: var(--seller-requests-muted);
@@ -2702,9 +2712,9 @@ footer {
 .seller-requests-page .history-heading { align-items: center; margin-bottom: 17px; }
 .seller-requests-page .history-heading h2 { margin: 0 0 7px; color: var(--seller-requests-text); font-size: 20px; }
 .seller-requests-page .history-heading p { margin: 0; color: var(--seller-requests-muted); font-size: 11px; }
-.seller-requests-page .seller-history-group { background: #151519 !important; }
-.seller-requests-page .seller-history-card { border-color: rgba(246, 245, 242, 0.08); background: #1b1a20; }
-.seller-requests-page .seller-history-card .seller-request-status { border-color: var(--seller-requests-line); background: rgba(246, 245, 242, 0.04); color: var(--seller-requests-muted) !important; }
+.seller-requests-page .seller-history-group { background: #172438 !important; }
+.seller-requests-page .seller-history-card { border-color: rgba(215, 210, 202, 0.08); background: #1B2940; }
+.seller-requests-page .seller-history-card .seller-request-status { border-color: var(--seller-requests-line); background: rgba(215, 210, 202, 0.04); color: var(--seller-requests-muted) !important; }
 .seller-requests-page .seller-history-groups .history-toggle { grid-column: 1 / -1; justify-self: start; margin: 0; padding: 8px 0; color: var(--seller-requests-lavender); }
 .seller-requests-page .seller-history-groups .history-toggle:hover { color: var(--seller-requests-purple-hover); text-decoration: underline; text-underline-offset: 4px; }
 .seller-requests-page .seller-history-card.hidden-history { display: none; }
@@ -2742,3 +2752,16 @@ footer {
     .seller-requests-page .seller-request-history { margin-top: 39px; padding-top: 25px; }
 }
 
+
+/* Item details page uses the same UniLoop reference palette. */
+.item-details-page-body { background: #111C2D; color: #F2F0EC; }
+.item-details-page-body .item-details-card { background: #172438; color: #F2F0EC; }
+.item-details-page-body .item-details-image { background: #1B2940; }
+.item-details-page-body .item-details-info h1,
+.item-details-page-body .item-details-info h2 { color: #F2F0EC; }
+.item-details-page-body .item-condition,
+.item-details-page-body .item-details-info p { color: #B9AFBF; }
+.item-details-page-body .item-details-info p strong { color: #F2F0EC; }
+.item-details-page-body .back-button { color: #A18BAE; }
+.item-details-page-body .submit-button { border-color: #574267; background: #574267; color: #F2F0EC; }
+.item-details-page-body .submit-button:hover { border-color: #3D2D4D; background: #3D2D4D; }

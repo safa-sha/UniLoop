@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 
@@ -15,7 +15,7 @@
           href="/css/style.css">
 </head>
 
-<body>
+<body class="item-details-page-body">
 
 <header class="navbar site-navbar">
     <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
@@ -25,7 +25,7 @@
         <a href="/sell">Sell</a>
         <a href="#">Login</a>
     </nav>
-    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
+    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">â†—</span></a>
 
 </header>
 
@@ -46,7 +46,7 @@
                  alt="Item image">
 
             <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
-                📦
+                ðŸ“¦
             </span>
 
         </div>
@@ -67,8 +67,8 @@
                 Condition
             </p>
 
-            <h2 th:text="'₹' + ${item.price}">
-                ₹0
+            <h2 th:text="'â‚¹' + ${item.price}">
+                â‚¹0
             </h2>
 
 
@@ -189,7 +189,7 @@
             <p th:if="${request != null and
                       request.requestStatus == 'ACCEPTED'}">
 
-                Request Accepted ✓
+                Request Accepted âœ“
 
             </p>
 
@@ -215,7 +215,7 @@
             <a href="/items"
                class="back-button">
 
-                ← Back to Browse
+                â† Back to Browse
 
             </a>
 
