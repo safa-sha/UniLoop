@@ -8,7 +8,10 @@
 </head>
 <body class="home-page">
     <header class="navbar site-navbar">
-        <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
+        <a class="logo" href="/" aria-label="UniLoop home">
+            <span class="logo-icon"></span>
+            <span>UniLoop</span>
+        </a>
         <nav aria-label="Main navigation">
             <a class="nav-current" href="/">Home</a>
             <a href="/items">Browse</a>
@@ -35,7 +38,11 @@
                     <div class="home-orbit home-orbit-one"></div>
                     <div class="home-orbit home-orbit-two"></div>
                     <div class="home-art-card home-art-book"><span class="home-art-icon">▤</span><span>PASS IT ON</span></div>
-                    <div class="home-art-center"><span class="home-art-loop">↻</span><span>GOOD THINGS<br>GO AROUND</span></div>
+                    <div class="home-art-center">
+                        <span class="home-art-loop">
+
+                        </span>
+                    </div>
                     <div class="home-art-card home-art-cap"><span class="home-art-icon">⌂</span><span>RIGHT HERE<br>ON CAMPUS</span></div>
                     <span class="home-art-spark home-art-spark-one">✳</span>
                     <span class="home-art-spark home-art-spark-two">✦</span>
@@ -43,13 +50,7 @@
             </div>
         </section>
 
-        <section class="home-search-section" aria-label="Search marketplace">
-            <label class="home-search-box">
-                <span class="home-search-icon" aria-hidden="true">⌕</span>
-                <input type="search" placeholder="What are you looking for? Try books, a lamp, or a cricket bat" aria-label="Search items">
-                <span class="home-search-note">Find it on campus</span>
-            </label>
-        </section>
+        
 
         <section class="home-categories" id="categories">
             <div class="home-section-heading">
@@ -57,27 +58,53 @@
                 <a href="/items" class="home-text-link">Browse all items <span aria-hidden="true">→</span></a>
             </div>
             <div class="home-category-grid">
-                <a href="/items?category=1" class="home-category-card"><span class="home-category-icon">▤</span><span>Books</span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-                <a href="/items?category=2" class="home-category-card"><span class="home-category-icon">⌘</span><span>Electronics</span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-                <a href="/items?category=3" class="home-category-card"><span class="home-category-icon">✎</span><span>Stationery</span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-                <a href="/items?category=4" class="home-category-card"><span class="home-category-icon">♧</span><span>Clothing</span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-                <a href="/items?category=5" class="home-category-card"><span class="home-category-icon">⌂</span><span>Hostel Items</span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-                <a href="/items?category=6" class="home-category-card"><span class="home-category-icon">◉</span><span>Sports</span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+                <a href="#" class="category-card books">
+                    <h3>Books</h3>
+                    <p>Textbooks & novels</p>
+                </a>
+    
+
+                <a href="#" class="category-card electronics">
+                    <h3>Electronics</h3>
+                    <p>Gadgets & devices</p>
+                </a>
+
+                <a href="#" class="category-card stationary">
+                    <h3>Stationery</h3>
+                    <p>Study essentials</p>
+                </a>
+
+                <a href="#" class="category-card clothing">
+                    <h3>Clothing</h3>
+                    <p>Campus wear</p>
+                </a>
+
+                <a href="#" class="category-card hostel">
+                    <h3>Hostel Items</h3>
+                    <p>Room essentials</p>
+                </a>
+
+                <a href="#" class="category-card sports">
+                    <h3>Sports & Fitness</h3>
+                    <p>Gear & equipment</p>
+                </a>
             </div>
         </section>
 
         <section class="home-how" id="how-it-works">
-            <div class="home-how-heading"><p class="home-eyebrow">EASY AS ONE, TWO, THREE</p><h2>How UniLoop works</h2><p>Keep good things moving around your campus.</p></div>
+            <div class="home-how-heading"><p class="home-eyebrow">EASY AS ONE, TWO, THREE</p><h2>How UniLoop works</h2></div>
             <div class="home-steps">
                 <article class="home-step"><span class="home-step-number">01</span><span class="home-step-icon" aria-hidden="true">⌕</span><h3>Find an item</h3><p>Browse items students are selling around campus.</p></article>
                 <article class="home-step"><span class="home-step-number">02</span><span class="home-step-icon" aria-hidden="true">↗</span><h3>Send a request</h3><p>Send the seller a request for the item.</p></article>
-                <article class="home-step"><span class="home-step-number">03</span><span class="home-step-icon" aria-hidden="true">↔</span><h3>Chat &amp; meet</h3><p>Once the request is accepted, use chat to coordinate and arrange the campus handover.</p></article>
+                <article class="home-step"><span class="home-step-number">03</span><span class="home-step-icon" aria-hidden="true">🗪</span><h3>Chat &amp; meet</h3><p>Once the request is accepted, use chat to coordinate and arrange the campus handover.</p></article>
             </div>
             <p class="home-exchange-note"><span aria-hidden="true">✳</span> No online payments. No shipping. Just a simple student-to-student exchange on campus.</p>
         </section>
 
         <section class="home-sell-cta">
-            <div><p class="home-eyebrow">MAKE ROOM FOR SOMETHING NEW</p><h2>Give it a new home on campus.</h2><p>Someone nearby might be looking for just what you no longer need.</p></div>
+            <div><p class="home-eyebrow">MAKE ROOM FOR SOMETHING NEW</p><h2>Give it a new home on campus.</h2><p>UniLoop makes it easier for students to pass useful
+                    things<br>from one person to another instead of letting
+                    them go to waste.</p></div>
             <a class="home-button home-button-light" href="/list-item">Sell an Item <span aria-hidden="true">→</span></a>
         </section>
     </main>
