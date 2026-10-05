@@ -2765,3 +2765,47 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .item-details-page-body .back-button { color: #A18BAE; }
 .item-details-page-body .submit-button { border-color: #574267; background: #574267; color: #F2F0EC; }
 .item-details-page-body .submit-button:hover { border-color: #3D2D4D; background: #3D2D4D; }
+
+/* Marketplace item detail page */
+.item-details-page-body { background: #111C2D; color: #F2F0EC; }
+.item-details-page { display: block; padding: 42px 28px 72px; }
+.item-details-wrap { width: 100%; max-width: 1120px; margin: 0 auto; }
+.details-back { display: inline-block; margin: 0 0 18px; color: #B9AFBF; font-size: 13px; text-decoration: none; }
+.details-back:hover { color: #F2F0EC; }
+.item-details-page-body .item-details-card { max-width: none; grid-template-columns: minmax(0, 1.03fr) minmax(0, .97fr); gap: 42px; padding: 28px; border: 1px solid rgba(215,210,202,.11); border-radius: 18px; background: #172438; box-shadow: 0 18px 48px rgba(0,0,0,.15); }
+.item-details-page-body .item-details-image { width: 100%; height: auto; min-height: 410px; aspect-ratio: 1 / 1; background: #1B2940; }
+.item-details-page-body .item-details-image span { color: #A18BAE; }
+.item-details-info { padding: 8px 4px; }
+.details-kicker { display: flex; align-items: center; gap: 8px; color: #A18BAE; font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+.details-kicker > span, .details-status { padding: 6px 9px; border: 1px solid rgba(161,139,174,.22); border-radius: 20px; background: rgba(161,139,174,.08); }
+.details-kicker .details-status { color: #D7D2CA; border-color: rgba(215,210,202,.15); background: rgba(215,210,202,.05); }
+.item-details-page-body .item-details-info h1 { margin: 19px 0 6px; color: #F2F0EC; font-size: clamp(27px, 3vw, 38px); line-height: 1.17; letter-spacing: -.8px; }
+.details-seller, .details-condition { color: #B9AFBF; font-size: 13px; }
+.details-seller { margin: 0; }
+.details-price { margin: 22px 0 4px; color: #F2F0EC; font-size: 29px; font-weight: 700; letter-spacing: -.5px; }
+.details-condition { margin: 0 0 22px; }
+.details-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 22px; }
+.details-actions form { margin: 0; }
+.details-primary, .details-secondary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 0 18px; border: 1px solid #574267; border-radius: 9px; background: #574267; color: #F2F0EC; font: inherit; font-size: 13px; font-weight: 650; text-decoration: none; cursor: pointer; }
+.details-primary:hover { background: #3D2D4D; border-color: #3D2D4D; }
+.details-secondary { border-color: rgba(161,139,174,.3); background: transparent; color: #C4B5CE; }
+.details-secondary:hover { background: rgba(161,139,174,.08); }
+.details-request-state { width: 100%; margin: 0; color: #D7D2CA; font-size: 13px; line-height: 1.6; }
+.details-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; margin-top: 23px; border-top: 1px solid rgba(215,210,202,.1); }
+.details-facts > div { display: flex; justify-content: space-between; gap: 10px; padding: 13px 0; border-bottom: 1px solid rgba(215,210,202,.08); font-size: 12px; }
+.details-facts span { color: #B9AFBF; }
+.details-facts strong { color: #F2F0EC; text-align: right; font-weight: 600; }
+.details-description { margin-top: 20px; padding: 27px 30px; border: 1px solid rgba(215,210,202,.1); border-radius: 16px; background: #172438; }
+.details-section-label { margin: 0 0 9px; color: #A18BAE; font-size: 9px; font-weight: 700; letter-spacing: 1.7px; }
+.details-description h2 { margin: 0 0 13px; color: #F2F0EC; font-size: 21px; }
+.details-description-copy { max-width: 850px; margin: 0; color: #C5BECA; font-size: 14px; line-height: 1.8; white-space: pre-line; }
+.my-listings-page .edit-listing-button { display: inline-flex; margin: 8px 7px 8px 0; padding: 9px 12px; border: 1px solid rgba(161,139,174,.3); border-radius: 7px; color: #C4B5CE; font-size: 11px; font-weight: 600; text-decoration: none; }
+.my-listings-page .edit-listing-button:hover { background: rgba(161,139,174,.08); }
+@media (max-width: 760px) {
+    .item-details-page { padding: 26px 16px 48px; }
+    .item-details-page-body .item-details-card { grid-template-columns: 1fr; gap: 20px; padding: 15px; }
+    .item-details-page-body .item-details-image { min-height: 0; aspect-ratio: 1.15 / 1; }
+    .item-details-info { padding: 4px 2px; }
+    .details-description { padding: 22px 19px; }
+    .details-facts { gap: 0 13px; }
+}

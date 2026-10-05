@@ -93,6 +93,8 @@ public class UniLoopController {
 
     @PostMapping("/sell")
     public String sellItem(
+            @RequestParam(name = "itemId", required = false) Integer itemId,
+
             @RequestParam(name = "sellerId")
             int sellerId,
 
@@ -169,6 +171,12 @@ public class UniLoopController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        if (itemId != null) {
+            itemRepository.updateItem(itemId, 1, categoryId, itemName, description,
+                    price, imagePath, condition, listingType);
+            return "redirect:/item?id=" + itemId;
         }
 
         itemService.addItem(
@@ -334,6 +342,7 @@ public String sellPage(Model model) {
 @GetMapping("/list-item")
 public String listItemPage(
         @RequestParam(name = "id", required = false) Integer id,
+        @RequestParam(name = "edit", defaultValue = "false") boolean edit,
         Model model) {
 
     if (id != null) {
@@ -344,6 +353,7 @@ public String listItemPage(
         if (item != null) {
             model.addAttribute("item", item);
             model.addAttribute("listAgain", true);
+            model.addAttribute("editing", edit);
         }
     }
 
@@ -381,6 +391,8 @@ public String listItemPage(
                 "request",
                 request
         );
+
+        model.addAttribute("isSeller", item.getSellerId() == 1);
 
         return "item-details";
     }

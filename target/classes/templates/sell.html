@@ -122,6 +122,8 @@
                             </span>
                         </p>
 
+                        <a th:href="@{/list-item(id=${item.itemId},edit=true)}" class="edit-listing-button">Edit Listing</a>
+
 
                         <!-- Delete Listing -->
 
@@ -236,6 +238,8 @@
                                 UNAVAILABLE
                             </span>
                         </p>
+
+                        <a th:href="@{/item(id=${item.itemId})}" class="edit-listing-button">View Listing</a>
 
 
                         <!-- List Again -->

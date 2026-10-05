@@ -15,6 +15,8 @@ public class Item {
     private String datePosted;
     private int requestId;
     private String requestStatus;
+    private String categoryName;
+    private String sellerName;
 
     public Item() {
     }
@@ -141,4 +143,9 @@ public class Item {
     public void setRequestStatus(String requestStatus) {
         this.requestStatus = requestStatus;
     }
+
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public String getSellerName() { return sellerName; }
+    public void setSellerName(String sellerName) { this.sellerName = sellerName; }
 }

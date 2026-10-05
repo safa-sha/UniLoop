@@ -44,7 +44,7 @@
             <div>
 
                 <p class="list-item-eyebrow">THE CAMPUS EXCHANGE</p>
-                <h1>List an Item</h1>
+                <h1 th:text="${editing == true ? 'Edit Listing' : 'List an Item'}">List an Item</h1>
 
                 <p>Give something you no longer need a second life on campus.</p>
 
@@ -56,7 +56,9 @@
         <form class="list-item-form" action="/sell"
               method="post"
               enctype="multipart/form-data"
-              onsubmit="return confirm('Are you sure you want to list this item?');">
+              >
+
+            <input th:if="${editing == true}" type="hidden" name="itemId" th:value="${item.itemId}">
 
 
             <input type="hidden"
@@ -245,7 +247,7 @@
             <button type="submit"
                     class="submit-button">
 
-                List Item
+                <span th:text="${editing == true ? 'Update Listing' : 'List Item'}">List Item</span>
 
             </button>
 

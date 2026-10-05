@@ -414,9 +414,11 @@ public class ItemRepository {
     public Item getItemById(int itemId) {
 
         String sql = """
-                SELECT *
-                FROM items
-                WHERE item_id = ?
+                SELECT i.*, c.category_name, u.name AS seller_name
+                FROM items i
+                LEFT JOIN categories c ON c.category_id = i.category_id
+                LEFT JOIN users u ON u.user_id = i.seller_id
+                WHERE i.item_id = ?
                 """;
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -475,6 +477,8 @@ public class ItemRepository {
                     item.setDatePosted(
                             resultSet.getString("date_posted")
                     );
+                    item.setCategoryName(resultSet.getString("category_name"));
+                    item.setSellerName(resultSet.getString("seller_name"));
 
                     return item;
                 }
@@ -486,6 +490,28 @@ public class ItemRepository {
 
         return null;
     }
+    public boolean updateItem(int itemId, int sellerId, int categoryId,
+                              String itemName, String description, double price,
+                              String imagePath, String condition, String listingType) {
+        String sql = "UPDATE items SET category_id=?, item_name=?, description=?, price=?, image_path=COALESCE(?, image_path), item_condition=?, listing_type=? WHERE item_id=? AND seller_id=?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, categoryId);
+            statement.setString(2, itemName);
+            statement.setString(3, description);
+            statement.setDouble(4, price);
+            statement.setString(5, imagePath);
+            statement.setString(6, condition);
+            statement.setString(7, listingType);
+            statement.setInt(8, itemId);
+            statement.setInt(9, sellerId);
+            return statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void markItemUnavailable(int itemId) {
 
     String sql =
