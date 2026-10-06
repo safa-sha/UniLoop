@@ -72,7 +72,7 @@
 
                     <div class="browse-request-area">
                         <div class="browse-request-state" th:if="${item.requestStatus == null}">
-                            <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item?');">
+                            <form action="/request" method="post" onclick="event.stopPropagation()" data-confirm-title="Request Item?" data-confirm-message="Are you sure you want to request this item?" data-confirm-text="Request Item">
                                 <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
                                 <input type="hidden" name="source" value="items">
@@ -82,7 +82,7 @@
 
                         <div class="browse-request-state" th:if="${item.requestStatus == 'PENDING'}">
                             <p class="browse-message-sent">Request Sent</p>
-                            <form action="/cancel-request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                            <form action="/cancel-request" method="post" onclick="event.stopPropagation()" data-confirm-title="Cancel Request?" data-confirm-message="Are you sure you want to cancel this request?" data-confirm-text="Cancel Request">
                                 <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="requestId" th:value="${item.requestId}">
                                 <input type="hidden" name="source" value="items">
@@ -96,7 +96,7 @@
 
                         <div class="browse-request-state" th:if="${item.requestStatus == 'REJECTED'}">
                             <p class="browse-message-rej">Request Rejected</p>
-                            <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item again?');">
+                            <form action="/request" method="post" onclick="event.stopPropagation()" data-confirm-title="Request Item Again?" data-confirm-message="Are you sure you want to request this item again?" data-confirm-text="Request Again">
                                 <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
                                 <input type="hidden" name="source" value="items">
@@ -106,7 +106,7 @@
 
                         <div class="browse-request-state" th:if="${item.requestStatus == 'CANCELLED'}">
                             <p class="browse-message-can">Request Cancelled</p>
-                            <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item again?');">
+                            <form action="/request" method="post" onclick="event.stopPropagation()" data-confirm-title="Request Item Again?" data-confirm-message="Are you sure you want to request this item again?" data-confirm-text="Request Again">
                                 <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
                                 <input type="hidden" name="source" value="items">
@@ -118,5 +118,6 @@
             </article>
         </div>
     </main>
+<script src="/js/confirmation-modal.js" defer></script>
 </body>
 </html>

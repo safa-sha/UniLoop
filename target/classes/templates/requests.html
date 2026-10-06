@@ -146,7 +146,9 @@
                             <form action="/accept-request"
                                   method="post"
                                   style="display:inline;"
-                                  onsubmit="return confirm('Are you sure you want to accept this request?');">
+                                  data-confirm-title="Accept Request?"
+                                  data-confirm-message="Are you sure you want to accept this request?"
+                                  data-confirm-text="Accept Request">
 
                                 <input type="hidden"
                                        name="requestId"
@@ -163,7 +165,9 @@
                             <form action="/reject-request"
                                   method="post"
                                   style="display:inline;"
-                                  onsubmit="return confirm('Are you sure you want to reject this request?');">
+                                  data-confirm-title="Reject Request?"
+                                  data-confirm-message="Are you sure you want to reject this request?"
+                                  data-confirm-text="Reject Request">
 
                                 <input type="hidden"
                                        name="requestId"
@@ -399,5 +403,6 @@
     </script>
 
 
+<script src="/js/confirmation-modal.js" defer></script>
 </body>
 </html>

@@ -2850,6 +2850,20 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .item-details-page-body .details-request-list .reject-request-button { border-color: rgba(215,210,202,.35); background: transparent; color: #D7D2CA; }
 .item-details-page-body .details-request-list .seller-chat-placeholder { border-color: rgba(161,139,174,.3); background: transparent; color: #C4B5CE; }
 .details-no-requests { margin: 0; color: #B9AFBF; font-size: 13px; }
+.uniloop-confirm-backdrop[hidden] { display: none; }
+.uniloop-confirm-backdrop { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 20px; background: rgba(8, 12, 20, .66); opacity: 0; transition: opacity .17s ease; }
+.uniloop-confirm-backdrop.is-open { opacity: 1; }
+.uniloop-confirm-modal { width: min(100%, 420px); padding: 28px; border: 1px solid rgba(215,210,202,.16); border-radius: 18px; background: #172438; color: #F2F0EC; box-shadow: 0 24px 70px rgba(0,0,0,.38); transform: translateY(7px) scale(.98); transition: transform .17s ease; }
+.uniloop-confirm-backdrop.is-open .uniloop-confirm-modal { transform: translateY(0) scale(1); }
+.uniloop-confirm-eyebrow { margin: 0 0 10px; color: #A18BAE; font-size: 9px; font-weight: 700; letter-spacing: 1.7px; }
+.uniloop-confirm-modal h2 { margin: 0 0 10px; color: #F2F0EC; font-size: 21px; letter-spacing: -.3px; }
+.uniloop-confirm-modal > p:not(.uniloop-confirm-eyebrow) { margin: 0; color: #C5BECA; font-size: 13px; line-height: 1.65; }
+.uniloop-confirm-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 24px; }
+.uniloop-confirm-actions button { min-height: 40px; padding: 0 15px; border: 1px solid rgba(215,210,202,.22); border-radius: 8px; background: transparent; color: #D7D2CA; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+.uniloop-confirm-actions button:hover { background: rgba(215,210,202,.07); }
+.uniloop-confirm-actions .uniloop-confirm-submit { border-color: #574267; background: #574267; color: #F2F0EC; }
+.uniloop-confirm-actions .uniloop-confirm-submit:hover { border-color: #3D2D4D; background: #3D2D4D; }
+@media (prefers-reduced-motion: reduce) { .uniloop-confirm-backdrop, .uniloop-confirm-modal { transition: none; } }
 @media (max-width: 760px) {
     .item-details-page { padding: 26px 16px 48px; }
     .item-details-page-body .item-details-card { grid-template-columns: 1fr; gap: 20px; padding: 15px; }
