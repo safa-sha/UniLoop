@@ -778,6 +778,7 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .submit-button:hover {
     background: #4939c5;
+    color:white !important;
 }
 
 .back-to-listings {
@@ -829,10 +830,6 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .requests-heading .history-link {
     justify-self: end;
-}
-
-.requests-heading .back-to-sell {
-    justify-self: start;
 }
 
 .request-item-header {
@@ -934,6 +931,7 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .history-toggle:hover {
     text-decoration: underline;
+    color:white !important;
 }
 
 .extra-history {
@@ -945,26 +943,40 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     display: none;
 }
 
-.history-link {
-    text-decoration: none;
-    font-size: 14px;
+.history-link{
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    color: #f6f5f2;
+    font-size: 13px;
     font-weight: 600;
-    color: #5b4bb7;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .history-link:hover {
-    text-decoration: underline;
+    text-decoration: none !important ;
+    border-color: rgba(196, 182, 232, 0.62);
+    background: rgba(196, 182, 232, 0.06);
+    color:white !important;
 }
 
-.back-to-sell {
-    text-decoration: none;
-    font-size: 14px;
+.back-to-sell{
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    color: #f6f5f2;
+    font-size: 13px;
     font-weight: 600;
-    color: #5b4bb7;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .back-to-sell:hover {
-    text-decoration: underline;
+    text-decoration: none !important ;
+    border-color: rgba(196, 182, 232, 0.62);
+    background: rgba(196, 182, 232, 0.06);
+    color:white !important;
 }
 
 .history-heading {
@@ -974,15 +986,22 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     margin-bottom: 25px;
 }
 
-.back-to-top {
-    text-decoration: none;
-    font-size: 14px;
+.back-to-top{
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    color: #f6f5f2;
+    font-size: 13px;
     font-weight: 600;
-    color: #5b4bb7;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .back-to-top:hover {
-    text-decoration: underline;
+    text-decoration: none !important ;
+    border-color: rgba(196, 182, 232, 0.62);
+    background: rgba(196, 182, 232, 0.06);
+    color:white !important;
 }
 
 
@@ -1612,7 +1631,7 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 @media (max-width: 680px) {
     .home-hero-inner { grid-template-columns: 1fr; gap: 5px; padding: 56px 24px 26px; }
-    .home-hero h1 { font-size: clamp(42px, 12vw, 58px); letter-spacing: -2px; }
+    .home-hero h1 { font-size: clamp(42px, 12vw, 58px); letter-spacing: -4px; }
     .home-page .home-hero-description { font-size: 14px; }
     .home-hero-art { width: 100%; max-width: 390px; height: 270px; justify-self: center; transform: scale(0.82); transform-origin: center top; margin-bottom: -37px; }
     .home-search-section { padding: 0 20px; }
@@ -1692,14 +1711,6 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     color: var(--browse-muted);
     font-size: 14px;
     line-height: 1.6;
-}
-
-.browse-eyebrow {
-    margin: 0 0 11px;
-    color: var(--browse-lavender);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.8px;
 }
 
 .browse-page .my-requests-button {
@@ -1846,7 +1857,31 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .browse-page .browse-item-condition { margin: 8px 0 18px; color: var(--browse-muted); font-size: 12px; }
 .browse-request-area { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--browse-line); }
 .browse-request-state form { margin: 0; }
-.browse-status-message { margin: 0 0 10px; color: var(--browse-lavender); font-size: 12px; font-weight: 600; }
+
+.browse-message-sent { 
+    margin: 0 0 10px; 
+    color: #FFEE58 !important; 
+    font-size: 12px; 
+    font-weight: 600; }
+
+.browse-message-can{
+    margin: 0 0 10px; 
+    color: #e27602 !important; 
+    font-size: 12px; 
+    font-weight: 600;
+}
+.browse-message-acc { 
+    margin: 0 0 10px; 
+    color: #95bb72 !important; 
+    font-size: 12px; 
+    font-weight: 600; }
+
+.browse-message-rej{
+    margin: 0 0 10px; 
+    color: #f94449 !important; 
+    font-size: 12px; 
+    font-weight: 600;
+}
 
 .browse-page .browse-request-button.submit-button {
     width: 100%;
@@ -1873,7 +1908,11 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     color: var(--browse-lavender);
 }
 
-.browse-page .browse-cancel-button.submit-button:hover { background: rgba(161, 139, 174, 0.09); }
+.browse-page .browse-cancel-button.submit-button:hover {
+    background: rgba(161, 139, 174, 0.09); 
+    color:white;
+    border-color:#49385b;
+}
 
 .browse-page .browse-empty-state.no-items-message {
     grid-column: 1 / -1;
@@ -1945,16 +1984,9 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .my-requests-page .requests-heading > div { text-align: center; }
 .my-requests-page .requests-heading > div h1 { order: 2; margin: 0 0 10px; color: var(--my-text); font-size: 34px; letter-spacing: -1px; }
-.my-requests-page .requests-heading > div .my-requests-eyebrow { order: 1; margin: 0 0 10px; color: var(--my-lavender); }
 .my-requests-page .requests-heading > div > p:last-child { order: 3; margin: 0; color: var(--my-muted); font-size: 13px; line-height: 1.6; }
 .my-requests-page .requests-heading > div { display: flex; flex-direction: column; align-items: center; }
 
-.my-requests-page .my-requests-eyebrow {
-    color: var(--my-lavender);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.8px;
-}
 
 .my-requests-page .back-to-sell,
 .my-requests-page .history-link,
@@ -1981,7 +2013,6 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     margin-bottom: 21px;
 }
 
-.my-requests-section-heading .my-requests-eyebrow { margin: 0 0 8px; }
 .my-requests-section-heading h2 { margin: 0; color: var(--my-text); font-size: 23px; letter-spacing: -0.4px; }
 .my-requests-section-heading > p { margin: 0 0 2px; color: var(--my-muted); font-size: 12px; }
 
@@ -2000,8 +2031,9 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     box-shadow: none;
 }
 
-.my-requests-page .my-request-group.pending-request { border-top: 2px solid rgba(161, 139, 174, 0.62); }
-.my-requests-page .my-request-group.accepted-request { border-top: 2px solid rgba(215, 210, 202, 0.6); }
+.my-requests-page .my-request-group.pending-request { border: 1px solid var(--my-line); }
+.my-requests-page .my-request-group.accepted-request { border: 1px solid var(--my-line); }
+
 
 .my-requests-page .request-item-header {
     align-items: center;
@@ -2038,9 +2070,9 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .my-requests-page .request-card strong { color: var(--my-text); font-weight: 600; }
 .my-requests-page .my-request-status { display: inline-block; padding: 4px 8px; border: 1px solid transparent; border-radius: 5px; font-size: 11px; }
 .my-requests-page .pending-status { border-color: rgba(161, 139, 174, 0.2); background: rgba(161, 139, 174, 0.1); color: var(--my-lavender) !important; }
-.my-requests-page .accepted-status { border-color: rgba(215, 210, 202, 0.2); background: rgba(215, 210, 202, 0.1); color: var(--my-warm) !important; }
-.my-requests-page .rejected-status,
-.my-requests-page .cancelled-status { border-color: var(--my-line); background: rgba(215, 210, 202, 0.05); color: var(--my-muted) !important; }
+.my-requests-page .accepted-status { border-color: rgba(215, 210, 202, 0.2); background: #95bb72; color: var(--my-warm) !important; }
+.my-requests-page .rejected-status{border-color: var(--my-line); background: #f94449; color: white !important; }
+.my-requests-page .cancelled-status { border-color: var(--my-line); background:#e27602; color: white !important; }
 
 .my-requests-page .request-card form { margin: 13px 0 0; }
 
@@ -2483,7 +2515,7 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .my-listings-page .no-listings p { margin: 0; color: var(--listings-muted); }
 .my-listings-page .empty-list-item-link { display: inline-block; margin-top: 12px; color: var(--listings-lavender); font-size: 11px; font-weight: 600; text-decoration: none; }
-.my-listings-page .empty-list-item-link:hover { color: var(--listings-purple-hover); text-decoration: underline; text-underline-offset: 4px; }
+.my-listings-page .empty-list-item-link:hover { color: white !important; text-decoration: underline; text-underline-offset: 4px; }
 
 .my-listings-page .my-listing-history {
     background: transparent;

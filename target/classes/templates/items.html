@@ -8,7 +8,10 @@
 </head>
 <body class="browse-page">
     <header class="navbar site-navbar">
-        <a class="logo" href="/" aria-label="UniLoop home">UniLoop<span class="nav-logo-dot">.</span></a>
+        <a class="logo" href="/" aria-label="UniLoop home">
+            <span class="logo-icon"></span>
+            <span>UniLoop</span>
+        </a>
         <nav aria-label="Main navigation">
             <a href="/">Home</a>
             <a class="nav-current" href="/items">Browse</a>
@@ -22,7 +25,6 @@
         <section class="browse-intro" aria-labelledby="browse-title">
             <div class="browse-heading">
                 <div>
-                    <p class="browse-eyebrow">THE CAMPUS EXCHANGE</p>
                     <h1 id="browse-title">Browse Items</h1>
                     <p>Find secondhand things students are offering around your campus.</p>
                 </div>
@@ -79,7 +81,7 @@
                         </div>
 
                         <div class="browse-request-state" th:if="${item.requestStatus == 'PENDING'}">
-                            <p class="browse-status-message">Request Sent</p>
+                            <p class="browse-message-sent">Request Sent</p>
                             <form action="/cancel-request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to cancel this request?');">
                                 <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="requestId" th:value="${item.requestId}">
@@ -89,11 +91,11 @@
                         </div>
 
                         <div class="browse-request-state" th:if="${item.requestStatus == 'ACCEPTED'}">
-                            <p class="browse-status-message">Request Accepted</p>
+                            <p class="browse-message-acc">Request Accepted</p>
                         </div>
 
                         <div class="browse-request-state" th:if="${item.requestStatus == 'REJECTED'}">
-                            <p class="browse-status-message">Request Rejected</p>
+                            <p class="browse-message-rej">Request Rejected</p>
                             <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item again?');">
                                 <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
@@ -103,7 +105,7 @@
                         </div>
 
                         <div class="browse-request-state" th:if="${item.requestStatus == 'CANCELLED'}">
-                            <p class="browse-status-message">Request Cancelled</p>
+                            <p class="browse-message-can">Request Cancelled</p>
                             <form action="/request" method="post" onclick="event.stopPropagation()" onsubmit="return confirm('Are you sure you want to request this item again?');">
                                 <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
