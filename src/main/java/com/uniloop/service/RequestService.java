@@ -30,6 +30,18 @@ public class RequestService {
         return requestRepository.getRequestsForSeller(sellerId);
     }
 
+    public List<Request> getActiveRequestsForItem(int itemId, int sellerId) {
+        List<Request> itemRequests = new ArrayList<>();
+        for (Request request : requestRepository.getRequestsForSeller(sellerId)) {
+            if (request.getItemId() == itemId
+                    && ("PENDING".equals(request.getRequestStatus())
+                    || "ACCEPTED".equals(request.getRequestStatus()))) {
+                itemRequests.add(request);
+            }
+        }
+        return itemRequests;
+    }
+
     public boolean updateRequestStatus(int requestId, String status) {
 
         if (status.equals("REJECTED")) {

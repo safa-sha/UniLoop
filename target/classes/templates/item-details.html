@@ -33,7 +33,6 @@
 
                 <div class="details-actions" th:if="${isSeller}">
                     <a class="details-primary" th:href="@{/list-item(id=${item.itemId},edit=true)}">Edit Listing</a>
-                    <a class="details-secondary" href="/requests">View Requests</a>
                 </div>
                 <div class="details-actions" th:unless="${isSeller}">
                     <form action="/request" method="post" th:if="${item.itemStatus == 'AVAILABLE' and (request == null or request.requestStatus == 'REJECTED' or request.requestStatus == 'CANCELLED')}">
@@ -62,6 +61,34 @@
         <section class="details-description">
             <p class="details-section-label">ABOUT THIS LISTING</p><h2>Description</h2>
             <p class="details-description-copy" th:text="${item.description != null and !item.description.isEmpty() ? item.description : 'No description has been added for this listing.'}">Full item description</p>
+        </section>
+        <section class="details-item-requests" th:if="${isSeller}">
+            <p class="details-section-label">SELLER INBOX</p>
+            <h2>Requests for this item</h2>
+            <div class="details-request-list">
+                <div class="request-card seller-request-card" th:each="itemRequest : ${itemRequests}">
+                    <p>👤 <strong th:text="${itemRequest.buyerName}">Student Name</strong></p>
+                    <p>Status:
+                        <strong class="seller-request-status pending-request-status" th:if="${itemRequest.requestStatus == 'PENDING'}">⏳ Pending</strong>
+                        <strong class="seller-request-status accepted-request-status" th:if="${itemRequest.requestStatus == 'ACCEPTED'}">✓ Accepted</strong>
+                    </p>
+                    <p>Requested on: <span th:text="${itemRequest.requestDate}">Date</span></p>
+                    <div class="seller-request-actions pending-actions" th:if="${itemRequest.requestStatus == 'PENDING'}">
+                        <form action="/accept-request" method="post" onsubmit="return confirm('Are you sure you want to accept this request?');">
+                            <input type="hidden" name="requestId" th:value="${itemRequest.requestId}">
+                            <button type="submit" class="submit-button seller-action-button accept-request-button">Accept</button>
+                        </form>
+                        <form action="/reject-request" method="post" onsubmit="return confirm('Are you sure you want to reject this request?');">
+                            <input type="hidden" name="requestId" th:value="${itemRequest.requestId}">
+                            <button type="submit" class="submit-button seller-action-button reject-request-button">Reject</button>
+                        </form>
+                    </div>
+                    <div class="seller-request-actions accepted-actions" th:if="${itemRequest.requestStatus == 'ACCEPTED'}">
+                        <button type="button" class="submit-button seller-action-button seller-chat-placeholder">💬 Chat</button>
+                    </div>
+                </div>
+                <p class="details-no-requests" th:if="${#lists.isEmpty(itemRequests)}">No active requests for this listing.</p>
+            </div>
         </section>
     </div>
 </main>

@@ -393,6 +393,9 @@ public String listItemPage(
         );
 
         model.addAttribute("isSeller", item.getSellerId() == 1);
+        if (item.getSellerId() == 1) {
+            model.addAttribute("itemRequests", requestService.getActiveRequestsForItem(id, 1));
+        }
 
         return "item-details";
     }

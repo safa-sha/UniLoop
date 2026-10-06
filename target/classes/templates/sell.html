@@ -82,6 +82,8 @@
             <div class="my-listing-container active-listing-grid">
 
                 <div class="my-listing-card"
+                     role="link" tabindex="0"
+                     th:attr="data-item-url=@{/item(id=${item.itemId})}"
                      th:each="item : ${myListings}">
 
                     <div class="my-listing-image">
@@ -199,6 +201,8 @@
             <div class="my-listing-container">
 
                 <div class="my-listing-card"
+                     role="link" tabindex="0"
+                     th:attr="data-item-url=@{/item(id=${item.itemId})}"
                      th:each="item : ${listingHistory}">
 
                     <div class="my-listing-image">
@@ -275,6 +279,19 @@
     </div>
 
 </main>
+
+<script>
+    document.querySelectorAll('.my-listing-card[data-item-url]').forEach(function (card) {
+        function openItem(event) {
+            if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+            if (event.target.closest('a, button, form, input, select, textarea')) return;
+            if (event.type === 'keydown') event.preventDefault();
+            window.location.href = card.dataset.itemUrl;
+        }
+        card.addEventListener('click', openItem);
+        card.addEventListener('keydown', openItem);
+    });
+</script>
 
 </body>
 

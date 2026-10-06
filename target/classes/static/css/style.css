@@ -2833,11 +2833,29 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .details-description-copy { max-width: 850px; margin: 0; color: #C5BECA; font-size: 14px; line-height: 1.8; white-space: pre-line; }
 .my-listings-page .edit-listing-button { display: inline-flex; margin: 8px 7px 8px 0; padding: 9px 12px; border: 1px solid rgba(161,139,174,.3); border-radius: 7px; color: #C4B5CE; font-size: 11px; font-weight: 600; text-decoration: none; }
 .my-listings-page .edit-listing-button:hover { background: rgba(161,139,174,.08); }
+.my-listings-page .my-listing-card[role="link"] { cursor: pointer; }
+.my-listings-page .my-listing-card[role="link"]:focus-visible { outline: 2px solid #A18BAE; outline-offset: 3px; }
+.item-details-page-body .details-item-requests { margin-top: 20px; padding: 27px 30px; border: 1px solid rgba(215,210,202,.1); border-radius: 16px; background: #172438; }
+.item-details-page-body .details-item-requests h2 { margin: 0 0 16px; color: #F2F0EC; font-size: 21px; }
+.item-details-page-body .details-request-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 13px; }
+.item-details-page-body .details-request-list .request-card { border-color: rgba(215,210,202,.1); background: #1B2940; color: #B9AFBF; }
+.item-details-page-body .details-request-list .request-card p { color: #B9AFBF; font-size: 12px; line-height: 1.55; }
+.item-details-page-body .details-request-list .request-card strong { color: #F2F0EC; }
+.item-details-page-body .details-request-list .seller-request-status { display: inline-block; padding: 4px 7px; border: 1px solid transparent; border-radius: 4px; font-size: 10px; }
+.item-details-page-body .details-request-list .pending-request-status { border-color: rgba(161,139,174,.2); background: rgba(161,139,174,.09); color: #C4B5CE !important; }
+.item-details-page-body .details-request-list .accepted-request-status { border-color: rgba(215,210,202,.2); background: rgba(215,210,202,.09); color: #D7D2CA !important; }
+.item-details-page-body .details-request-list .seller-request-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.item-details-page-body .details-request-list .seller-request-actions form { margin: 0; }
+.item-details-page-body .details-request-list .seller-action-button { padding: 9px 14px; border: 1px solid #574267; border-radius: 7px; background: #574267; color: #F2F0EC; cursor: pointer; }
+.item-details-page-body .details-request-list .reject-request-button { border-color: rgba(215,210,202,.35); background: transparent; color: #D7D2CA; }
+.item-details-page-body .details-request-list .seller-chat-placeholder { border-color: rgba(161,139,174,.3); background: transparent; color: #C4B5CE; }
+.details-no-requests { margin: 0; color: #B9AFBF; font-size: 13px; }
 @media (max-width: 760px) {
     .item-details-page { padding: 26px 16px 48px; }
     .item-details-page-body .item-details-card { grid-template-columns: 1fr; gap: 20px; padding: 15px; }
     .item-details-page-body .item-details-image { min-height: 0; aspect-ratio: 1.15 / 1; }
     .item-details-info { padding: 4px 2px; }
     .details-description { padding: 22px 19px; }
+    .item-details-page-body .details-item-requests { padding: 22px 19px; }
     .details-facts { gap: 0 13px; }
 }
