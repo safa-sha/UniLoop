@@ -349,8 +349,8 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .my-requests-button {
     display: inline-block;
     padding: 12px 20px;
-    background: #5b4bdb;
-    color: white;
+    background: var(--browse-surface);
+    color: var(--browse-lavender) !important;
     border: 1px solid #5b4bdb;
     border-radius: 8px;
     text-decoration: none;
@@ -361,8 +361,8 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 }
 
 .my-requests-button:hover {
-    background: #4939c7;
-    border-color: #4939c7;
+    color:white !important;
+    border-color: rgba(161, 139, 174, 0.38);
     transform: translateY(-1px);
 }
 
@@ -501,6 +501,7 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     align-items: stretch;
     gap: 12px;
     width: 200px;
+    margin-left:-60px;
 }
 
 
@@ -580,12 +581,12 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .list-item-button {
     display: block;
     width: 100%;
-    padding: 15px 20px;
-    background: #5b4bdb;
+    padding: 11px 16px;
+    background: var(--listings-purple);
     color: white;
     text-decoration: none;
-    border-radius: 10px;
-    font-size: 16px;
+    border-radius: 7px;
+    font-size: 14px;
     font-weight: 600;
     text-align: center;
     box-sizing: border-box;
@@ -593,28 +594,28 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 }
 
 .list-item-button:hover {
-    background: #4939c5;
     transform: translateY(-1px);
 }
 
 .view-requests-button {
     display: block;
     width: 100%;
-    padding: 13px 20px;
-    background: white;
-    color: #5b4bdb;
+    padding: 15px 20px;
+    background: transparent;
+    color:  white;
     border: 1px solid #dcd8ff;
     text-align: center;
     text-decoration: none;
     box-sizing: border-box;
-    border-radius: 9px;
+    border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
     transition: 0.2s;
 }
 
 .view-requests-button:hover {
-    background: #eeeaff;
+    background: rgba(196, 182, 232, 0.06);
+    color:white !important;
     transform: translateY(-1px);
 }
 
@@ -623,14 +624,17 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .history-scroll-button,
 .back-to-top-button {
-    display: inline-block;
-    width: fit-content;
-    padding: 8px 14px;
-    background: #f1efff;
-    color: #5b4bdb;
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    background: transparent;
+    color:  white;
+    border: 1px solid #dcd8ff;
+    text-align: center;
     text-decoration: none;
-    border-radius: 8px;
-    font-size: 13px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 14px;
     font-weight: 600;
     transition: 0.2s;
 }
@@ -639,14 +643,11 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     margin-top: 15px;
 }
 
-.back-to-top-button {
-    margin: 0;
-    flex-shrink: 0;
-}
-
 .history-scroll-button:hover,
 .back-to-top-button:hover {
-    background: #e5e2ff;
+    background: rgba(196, 182, 232, 0.06);
+    color:white !important;
+    transform: translateY(-1px);
 }
 
 
@@ -1090,11 +1091,6 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
         width: 100%;
     }
 
-    .back-to-top-button {
-        margin: 0;
-    }
-
-
     /* Browse */
 
     .browse-heading {
@@ -1169,14 +1165,8 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
         align-items: flex-end;
         gap: 18px;
     }
-
-    .list-item-button,
-    .view-requests-button {
-        width: fit-content;
-        flex: 0 0 auto;
-    }
-
 }
+
 
 @media (max-width: 900px) {
 
@@ -1729,6 +1719,7 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 }
 
 .browse-page .my-requests-button:hover {
+    color:white;
     border-color: rgba(161, 139, 174, 0.38);
     background: var(--browse-raised);
 }
@@ -2003,9 +1994,13 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .my-requests-page .back-to-sell:hover,
 .my-requests-page .history-link:hover,
-.my-requests-page .back-to-top:hover { color: var(--my-purple-hover); text-decoration: underline; text-underline-offset: 4px; }
+.my-requests-page .back-to-top:hover { 
+    color: var(--my-purple-hover); 
+}
 .my-requests-page .requests-heading .history-link { justify-self: end; }
-.my-requests-page .requests-heading .back-to-sell { justify-self: start; }
+.my-requests-page .requests-heading .back-to-sell {
+     justify-self: start; 
+    }
 
 .my-requests-section-heading,
 .my-requests-page .history-heading {
@@ -2406,56 +2401,103 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .my-listings-page .history-scroll-button,
 .my-listings-page .back-to-top-button {
-    padding: 8px 0;
-    border-radius: 0;
-    background: transparent;
-    color: var(--listings-lavender);
-    font-size: 11px;
+    width: 100%;
+    min-height: 37px;
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    color: var(--my-lavender) !important;
+    background-color: #111C2D !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
-.my-listings-page .history-scroll-button { margin-top: 10px; }
+.my-listings-page .history-scroll-button { 
+    margin-top: 0.2px; 
+}
 .my-listings-page .history-scroll-button:hover,
-.my-listings-page .back-to-top-button:hover { background: transparent; color: var(--listings-purple-hover); text-decoration: underline; text-underline-offset: 4px; }
-
-.my-listings-page .listing-actions { width: 190px; gap: 9px; }
-
-.my-listings-page .list-item-button,
-.my-listings-page .view-requests-button {
-    width: 70%;
-    min-height: 37px;
-    padding: 11px 14px;
-    border: 1px solid var(--listings-purple);
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+.my-listings-page .back-to-top-button:hover { 
+    text-decoration: none !important ;
+    border-color: rgba(196, 182, 232, 0.62);
+    background: rgba(196, 182, 232, 0.06) !important;
+    color:white !important; 
 }
 
-.my-listings-page .list-item-button { background: var(--listings-purple); color: #F2F0EC; }
-.my-listings-page .list-item-button:hover { transform: none; border-color: var(--listings-purple-hover); background: var(--listings-purple-hover); }
-.my-listings-page .view-requests-button {
-    width: 70%;
-    color:var(--browse-lavender) !important;
-    background:var(--browse-surface) !important;
+.my-listings-page .listing-actions { 
+    width: 190px; 
+    gap: 9px; }
+
+.my-listings-page .list-item-button {    
+    width: 100%;
     min-height: 37px;
-    padding: 11px 14px;
-    border: 1px solid var(--listings-purple);
-    border-radius: 6px;
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    color: #F2F0EC !important;
+    background: var(--listings-purple) !important;
     font-size: 12px;
     font-weight: 600;
-    text-align: center;
-    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.my-listings-page .list-item-button:hover { 
+    transform: none; 
+    border-color: var(--listings-purple-hover); 
+    background: var(--listings-purple-hover); 
+    transform: translateY(-1px) !important;
+}
+.my-listings-page .view-requests-button {
+    width: 100%;
+    min-height: 37px;
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    color: var(--my-lavender) !important;
+    background-color: #111C2D !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .my-listings-page .view-requests-button:hover {
-    border-color: rgba(161, 139, 174, 0.38);
-    background: var(--browse-raised);
+    text-decoration: none !important ;
+    border-color: rgba(196, 182, 232, 0.62);
+    background: rgba(196, 182, 232, 0.06) !important;
+    color:white !important;
 }
+
+.my-listings-page .history-scroll-button{
+    width: 100%;
+    min-height: 37px;
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    color: var(--my-lavender) !important;
+    background-color: #111C2D !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.my-listings-page .history-scroll-button:hover{
+    text-decoration: none !important ;
+    border-color: rgba(196, 182, 232, 0.62);
+    background: rgba(196, 182, 232, 0.06);
+    color:white !important;
+}
+
 
 .my-listings-page .listing-section-heading { margin: 0 0 17px; }
 .my-listings-page .listings-eyebrow { margin: 0 0 7px; color: var(--listings-lavender); font-size: 9px; font-weight: 700; letter-spacing: 1.7px; }
-.my-listings-page .listing-section-heading h2 { margin: 0; color: var(--listings-text); font-size: 19px; letter-spacing: -0.3px; }
+.my-listings-page .listing-section-heading h2 { 
+    margin: 0; 
+    color: var(--listings-text); 
+    font-size: 19px; letter-spacing: -0.3px; }
 
 .my-listings-page .my-listing-container {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2562,11 +2604,15 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 @media (max-width: 680px) {
     .my-listings-page .sell-page.my-listings-main { padding: 30px 15px 50px; }
     .my-listings-page .listings-heading { flex-direction: column; gap: 16px; }
-    .my-listings-page .listing-actions { width: 100%; flex-direction: row; align-items: stretch; }
+    .my-listings-page .listing-actions { 
+        width: 100%; 
+        flex-direction: row; 
+        align-items: stretch; 
+    }
     .my-listings-page .listing-actions > a { flex: 1; }
     .my-listings-page .my-listing-container { grid-template-columns: 1fr; gap: 13px; }
     .my-listings-page .my-listing-image { aspect-ratio: 1.7 / 1; }
-    .my-listings-page .back-to-top-button { align-self: flex-start; }
+
 }
 
 
@@ -2712,10 +2758,21 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 
 .seller-requests-page .request-card p { margin: 0 0 10px; color: var(--seller-requests-muted); font-size: 11px; line-height: 1.55; }
 .seller-requests-page .request-card p:last-of-type { margin-bottom: 0; }
-.seller-requests-page .request-card strong { color: var(--seller-requests-text); font-weight: 600; }
+.seller-requests-page .request-card strong { 
+    color: var(--seller-requests-text); 
+    font-weight: 600; 
+}
+
+
 .seller-requests-page .seller-request-status { display: inline-block; padding: 4px 7px; border: 1px solid transparent; border-radius: 4px; font-size: 10px; }
-.seller-requests-page .pending-request-status { border-color: rgba(161, 139, 174, 0.2); background: rgba(161, 139, 174, 0.09); color: var(--seller-requests-lavender) !important; }
-.seller-requests-page .accepted-request-status { border-color: rgba(215, 210, 202, 0.2); background: rgba(215, 210, 202, 0.09); color: var(--seller-requests-warm) !important; }
+.seller-requests-page .pending-request-status { 
+    border-color: rgba(161, 139, 174, 0.2); 
+    background: #FFEE58; 
+    color: var(--seller-requests-lavender) !important; }
+.seller-requests-page .accepted-request-status {
+     border-color: rgba(215, 210, 202, 0.2);
+     background: #95bb72; 
+     color: var(--seller-requests-warm) !important; }
 
 .seller-requests-page .seller-request-actions {
     display: flex;
@@ -2869,7 +2926,10 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .item-details-page-body .details-request-list .request-card strong { color: #F2F0EC; }
 .item-details-page-body .details-request-list .seller-request-status { display: inline-block; padding: 4px 7px; border: 1px solid transparent; border-radius: 4px; font-size: 10px; }
 .item-details-page-body .details-request-list .pending-request-status { border-color: rgba(161,139,174,.2); background: rgba(161,139,174,.09); color: #C4B5CE !important; }
-.item-details-page-body .details-request-list .accepted-request-status { border-color: rgba(215,210,202,.2); background: rgba(215,210,202,.09); color: #D7D2CA !important; }
+.item-details-page-body .details-request-list .accepted-request-status {
+     border-color: rgba(215,210,202,.2); 
+     background: rgba(215,210,202,.09); 
+     color: #95bb72 !important; }
 .item-details-page-body .details-request-list .seller-request-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .item-details-page-body .details-request-list .seller-request-actions form { margin: 0; }
 .item-details-page-body .details-request-list .seller-action-button { padding: 9px 14px; border: 1px solid #574267; border-radius: 7px; background: #574267; color: #F2F0EC; cursor: pointer; }
@@ -2899,3 +2959,79 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     .item-details-page-body .details-item-requests { padding: 22px 19px; }
     .details-facts { gap: 0 13px; }
 }
+
+/* Match the history-section return link to the Listing History action button. */
+.my-listings-page .my-listing-history .back-to-top-button {
+    width: 190px;
+    margin: 0.2px 0 0 auto;
+}
+
+@media (max-width: 680px) {
+    .my-listings-page .my-listing-history .back-to-top-button {
+        width: calc((100% - 18px) / 3);
+    }
+}
+/* Styling limited to the seven links requested to match Listing History. */
+.browse-page .my-requests-button,
+.my-requests-page .back-to-sell,
+.my-requests-page .history-link,
+.my-requests-page .back-to-top,
+.seller-requests-page .back-to-sell,
+.seller-requests-page .history-link,
+.seller-requests-page .back-to-top {
+    display: block;
+    box-sizing: border-box;
+    width: 190px;
+    min-height: 37px;
+    margin: 0.2px 0 0 auto;
+    padding: 11px 16px;
+    border: 1px solid rgba(196, 182, 232, 0.42);
+    border-radius: 7px;
+    background: #111C2D !important;
+    color: #A18BAE !important;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.browse-page .my-requests-button:hover,
+.my-requests-page .back-to-sell:hover,
+.my-requests-page .history-link:hover,
+.my-requests-page .back-to-top:hover,
+.seller-requests-page .back-to-sell:hover,
+.seller-requests-page .history-link:hover,
+.seller-requests-page .back-to-top:hover {
+    transform: translateY(-1px);
+    border-color: rgba(196, 182, 232, 0.62);
+    background: rgba(196, 182, 232, 0.06) !important;
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+}
+
+@media (max-width: 768px) {
+    .browse-page .my-requests-button,
+    .my-requests-page .back-to-sell,
+    .my-requests-page .history-link,
+    .my-requests-page .back-to-top,
+    .seller-requests-page .back-to-sell,
+    .seller-requests-page .history-link,
+    .seller-requests-page .back-to-top {
+        width: min(190px, calc((100% - 18px) / 3));
+    }
+}
+.my-requests-page .requests-heading .back-to-sell {
+    justify-self: start;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+
+.seller-requests-page .requests-heading .back-to-sell {
+    justify-self: start;
+    margin-left: 0;
+    margin-right: auto;
+}
+
