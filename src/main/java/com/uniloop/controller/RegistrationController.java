@@ -23,7 +23,7 @@ public class RegistrationController {
         if (result == RegistrationResult.SUCCESS) {
             redirectAttributes.addFlashAttribute(
                     "registrationSuccessMessage",
-                    "Account created. You can sign in when login is available.");
+                    "Registration successful. You can now sign in with your new account.");
         } else {
             redirectAttributes.addFlashAttribute("fullName", fullName == null ? "" : fullName.trim());
             redirectAttributes.addFlashAttribute("email", email == null ? "" : email.trim());
