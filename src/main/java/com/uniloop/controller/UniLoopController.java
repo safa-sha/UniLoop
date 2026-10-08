@@ -5,6 +5,7 @@ import com.uniloop.model.Item;
 import com.uniloop.repository.ItemRepository;
 import com.uniloop.service.ItemService;
 import com.uniloop.service.RequestService;
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +13,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 public class UniLoopController {
@@ -48,21 +52,21 @@ public class UniLoopController {
     public String getItems(
             @RequestParam(name = "category", required = false)
             Integer category,
-            Model model) {
+            Model model,
+            HttpSession session) {
 
+        Integer buyerId = authenticatedUserId(session);
         List<Item> items;
 
         if (category != null) {
             items =
-                    itemRepository.getItemsByCategory(category);
+                    itemRepository.getItemsByCategory(category, buyerId);
         } else {
             items =
-                    itemRepository.getAllItems();
+                    itemRepository.getAllItems(buyerId);
         }
 
-        int buyerId = 2;
-
-        for (Item item : items) {
+        if (buyerId != null) for (Item item : items) {
 
             Request request =
                     requestService.getLatestRequest(
@@ -95,9 +99,6 @@ public class UniLoopController {
     public String sellItem(
             @RequestParam(name = "itemId", required = false) Integer itemId,
 
-            @RequestParam(name = "sellerId")
-            int sellerId,
-
             @RequestParam(name = "categoryId")
             int categoryId,
 
@@ -120,7 +121,17 @@ public class UniLoopController {
             String condition,
 
             @RequestParam(name = "listingType")
-            String listingType) {
+            String listingType,
+            HttpSession session) {
+
+        Integer sellerId = authenticatedUserId(session);
+        if (sellerId == null) return loginRedirect(itemId == null ? "/sell" : "/list-item?id=" + itemId + "&edit=true");
+        if (itemId != null) {
+            Item existingItem = itemRepository.getItemById(itemId);
+            if (existingItem == null || existingItem.getSellerId() != sellerId) {
+                return "redirect:/sell";
+            }
+        }
 
         String imagePath = null;
 
@@ -174,7 +185,7 @@ public class UniLoopController {
         }
 
         if (itemId != null) {
-            itemRepository.updateItem(itemId, 1, categoryId, itemName, description,
+            itemRepository.updateItem(itemId, sellerId, categoryId, itemName, description,
                     price, imagePath, condition, listingType);
             return "redirect:/item?id=" + itemId;
         }
@@ -199,14 +210,22 @@ public class UniLoopController {
             @RequestParam(name = "itemId")
             int itemId,
 
-            @RequestParam(name = "buyerId")
-            int buyerId,
-
             @RequestParam(
                     name = "source",
                     defaultValue = "items"
             )
-            String source) {
+            String source,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Integer buyerId = authenticatedUserId(session);
+        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId));
+
+        Item requestedItem = itemRepository.getItemById(itemId);
+        if (requestedItem != null && requestedItem.getSellerId() == buyerId) {
+            redirectAttributes.addFlashAttribute("requestError", "You cannot request your own listing.");
+            return "redirect:/item?id=" + itemId;
+        }
 
         requestService.requestItem(
                 itemId,
@@ -226,25 +245,29 @@ return "redirect:/items#item-" + itemId;
 
 
     @GetMapping("/requests")
-    public String viewRequests(Model model) {
+    public String viewRequests(Model model, HttpSession session) {
+
+        Integer sellerId = authenticatedUserId(session);
+        if (sellerId == null) return loginRedirect("/requests");
 
         model.addAttribute(
                 "requestGroups",
-                requestService.getRequestGroupsForSeller(1)
+                requestService.getRequestGroupsForSeller(sellerId)
         );
 
         model.addAttribute(
                 "historyGroups",
-                requestService.getRequestHistoryGroupsForSeller(1)
+                requestService.getRequestHistoryGroupsForSeller(sellerId)
         );
 
         return "requests";
     }
     
     @GetMapping("/my-requests")
-public String myRequests(Model model) {
+public String myRequests(Model model, HttpSession session) {
 
-    int buyerId = 2;
+    Integer buyerId = authenticatedUserId(session);
+    if (buyerId == null) return loginRedirect("/my-requests");
 
     model.addAttribute(
             "myRequests",
@@ -263,11 +286,16 @@ public String myRequests(Model model) {
     @PostMapping("/accept-request")
     public String acceptRequest(
             @RequestParam(name = "requestId")
-            int requestId) {
+            int requestId,
+            HttpSession session) {
+
+        Integer sellerId = authenticatedUserId(session);
+        if (sellerId == null) return loginRedirect("/requests");
 
         requestService.updateRequestStatus(
                 requestId,
-                "ACCEPTED"
+                "ACCEPTED",
+                sellerId
         );
 
         return "redirect:/requests";
@@ -277,11 +305,16 @@ public String myRequests(Model model) {
     @PostMapping("/reject-request")
     public String rejectRequest(
             @RequestParam(name = "requestId")
-            int requestId) {
+            int requestId,
+            HttpSession session) {
+
+        Integer sellerId = authenticatedUserId(session);
+        if (sellerId == null) return loginRedirect("/requests");
 
         requestService.updateRequestStatus(
                 requestId,
-                "REJECTED"
+                "REJECTED",
+                sellerId
         );
 
         return "redirect:/requests";
@@ -293,17 +326,16 @@ public String myRequests(Model model) {
             @RequestParam(name = "requestId")
             int requestId,
 
-            @RequestParam(name = "buyerId")
-            int buyerId,
-
             @RequestParam(
                     name = "source",
                     defaultValue = "items"
             )
-            String source) {
+            String source,
+            HttpSession session) {
 
-        int itemId =
-                requestService.getItemIdByRequestId(requestId);
+        Integer buyerId = authenticatedUserId(session);
+        int itemId = requestService.getItemIdByRequestId(requestId);
+        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId));
 
         requestService.cancelRequest(
                 requestId,
@@ -323,9 +355,10 @@ return "redirect:/items#item-" + itemId;
 
 
     @GetMapping("/sell")
-public String sellPage(Model model) {
+public String sellPage(Model model, HttpSession session) {
 
-    int sellerId = 1;
+    Integer sellerId = authenticatedUserId(session);
+    if (sellerId == null) return loginRedirect("/sell");
 
     model.addAttribute(
             "myListings",
@@ -343,18 +376,21 @@ public String sellPage(Model model) {
 public String listItemPage(
         @RequestParam(name = "id", required = false) Integer id,
         @RequestParam(name = "edit", defaultValue = "false") boolean edit,
-        Model model) {
+        Model model,
+        HttpSession session) {
+
+    if (authenticatedUserId(session) == null) return loginRedirect(id == null ? "/list-item" : "/list-item?id=" + id + (edit ? "&edit=true" : ""));
 
     if (id != null) {
 
         Item item =
                 itemRepository.getItemById(id);
 
-        if (item != null) {
+        if (item != null && item.getSellerId() == authenticatedUserId(session)) {
             model.addAttribute("item", item);
             model.addAttribute("listAgain", true);
             model.addAttribute("editing", edit);
-        }
+        } else return "redirect:/sell";
     }
 
     return "list-item";
@@ -365,7 +401,8 @@ public String listItemPage(
             @RequestParam(name = "id")
             int id,
 
-            Model model) {
+            Model model,
+            HttpSession session) {
 
         Item item =
                 itemRepository.getItemById(id);
@@ -374,9 +411,9 @@ public String listItemPage(
             return "redirect:/items";
         }
 
-        int buyerId = 2;
+        Integer buyerId = authenticatedUserId(session);
 
-        Request request =
+        Request request = buyerId == null ? null :
                 requestService.getLatestRequest(
                         id,
                         buyerId
@@ -392,19 +429,40 @@ public String listItemPage(
                 request
         );
 
-        model.addAttribute("isSeller", item.getSellerId() == 1);
-        if (item.getSellerId() == 1) {
-            model.addAttribute("itemRequests", requestService.getActiveRequestsForItem(id, 1));
+        boolean isSeller = buyerId != null && item.getSellerId() == buyerId;
+        model.addAttribute("isSeller", isSeller);
+        if (isSeller) {
+            model.addAttribute("itemRequests", requestService.getActiveRequestsForItem(id, buyerId));
         }
 
         return "item-details";
     }
     @PostMapping("/delete-listing")
 public String deleteListing(
-        @RequestParam(name = "itemId") int itemId) {
+        @RequestParam(name = "itemId") int itemId,
+        HttpSession session) {
 
-    itemRepository.markItemUnavailable(itemId);
+    Integer sellerId = authenticatedUserId(session);
+    if (sellerId == null) return loginRedirect("/sell");
+
+    itemRepository.markItemUnavailable(itemId, sellerId);
 
     return "redirect:/sell";
 }
+
+    private Integer authenticatedUserId(HttpSession session) {
+        Object userId = session.getAttribute("authenticatedUserId");
+        return userId instanceof Number ? ((Number) userId).intValue() : null;
+    }
+
+    private String loginRedirect(String returnTo) {
+        return "redirect:/login?required=true&returnTo="
+                + URLEncoder.encode(returnTo, StandardCharsets.UTF_8);
+    }
+
+    private String destinationForSource(String source, int itemId) {
+        if ("item".equals(source) && itemId > 0) return "/item?id=" + itemId;
+        if ("my-requests".equals(source)) return "/my-requests";
+        return itemId > 0 ? "/items#item-" + itemId : "/items";
+    }
 }

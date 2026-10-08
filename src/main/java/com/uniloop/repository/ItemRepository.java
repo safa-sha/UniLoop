@@ -13,6 +13,10 @@ public class ItemRepository {
 
     // Get all AVAILABLE items for Browse
     public List<Item> getAllItems() {
+        return getAllItems(null);
+    }
+
+    public List<Item> getAllItems(Integer excludedSellerId) {
 
         List<Item> items = new ArrayList<>();
 
@@ -20,12 +24,17 @@ public class ItemRepository {
                 SELECT *
                 FROM items
                 WHERE item_status = 'AVAILABLE'
-                ORDER BY item_id DESC
-                """;
+                """ + (excludedSellerId == null ? "" : " AND seller_id <> ?")
+                + " ORDER BY item_id DESC";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            if (excludedSellerId != null) {
+                statement.setInt(1, excludedSellerId);
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
 
@@ -76,6 +85,8 @@ public class ItemRepository {
                 );
 
                 items.add(item);
+            }
+
             }
 
         } catch (Exception e) {
@@ -166,6 +177,10 @@ public class ItemRepository {
 
     // Get AVAILABLE items by category for Browse
     public List<Item> getItemsByCategory(int categoryId) {
+        return getItemsByCategory(categoryId, null);
+    }
+
+    public List<Item> getItemsByCategory(int categoryId, Integer excludedSellerId) {
 
         List<Item> items = new ArrayList<>();
 
@@ -174,14 +189,17 @@ public class ItemRepository {
                 FROM items
                 WHERE category_id = ?
                 AND item_status = 'AVAILABLE'
-                ORDER BY item_id DESC
-                """;
+                """ + (excludedSellerId == null ? "" : " AND seller_id <> ?")
+                + " ORDER BY item_id DESC";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(sql)) {
 
             statement.setInt(1, categoryId);
+            if (excludedSellerId != null) {
+                statement.setInt(2, excludedSellerId);
+            }
 
             try (ResultSet resultSet =
                          statement.executeQuery()) {
@@ -337,7 +355,7 @@ public class ItemRepository {
                 SELECT *
                 FROM items
                 WHERE seller_id = ?
-                AND item_status = 'UNAVAILABLE'
+                AND item_status IN ('UNAVAILABLE', 'SOLD')
                 ORDER BY item_id DESC
                 """;
 
@@ -512,20 +530,22 @@ public class ItemRepository {
         }
     }
 
-    public void markItemUnavailable(int itemId) {
+    public boolean markItemUnavailable(int itemId, int sellerId) {
 
     String sql =
-            "UPDATE items SET item_status = 'UNAVAILABLE' WHERE item_id = ?";
+            "UPDATE items SET item_status = 'UNAVAILABLE' WHERE item_id = ? AND seller_id = ?";
 
     try (Connection connection = DatabaseConnection.getConnection();
          PreparedStatement statement =
                  connection.prepareStatement(sql)) {
 
         statement.setInt(1, itemId);
-        statement.executeUpdate();
+        statement.setInt(2, sellerId);
+        return statement.executeUpdate() > 0;
 
     } catch (Exception e) {
         e.printStackTrace();
+        return false;
     }
 }
 }

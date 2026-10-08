@@ -17,20 +17,7 @@
 
 <body class="list-item-page">
 
-<header class="navbar site-navbar">
-    <a class="logo" href="/" aria-label="UniLoop home">
-            <span class="logo-icon"></span>
-            <span>UniLoop</span>
-        </a>
-    <nav aria-label="Main navigation">
-        <a href="/">Home</a>
-        <a href="/items">Browse</a>
-        <a class="nav-current" href="/sell">Sell</a>
-        <a href="#">Login</a>
-    </nav>
-    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
-
-</header>
+<header th:replace="~{fragments/navbar :: navbar('sell')}"></header>
 
 
 <main class="sell-form-page list-item-main">
@@ -63,10 +50,6 @@
 
             <input th:if="${editing == true}" type="hidden" name="itemId" th:value="${item.itemId}">
 
-
-            <input type="hidden"
-                   name="sellerId"
-                   value="1">
 
             <div class="listing-fields-grid">
 

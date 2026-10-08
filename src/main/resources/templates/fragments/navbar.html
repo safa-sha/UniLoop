@@ -1,0 +1,28 @@
+<header class="navbar site-navbar" xmlns:th="http://www.thymeleaf.org" th:fragment="navbar(currentPage)">
+    <a class="logo" href="/" aria-label="UniLoop home">
+        <span class="logo-icon"></span>
+        <span>UniLoop</span>
+    </a>
+    <nav class="site-navbar-links" aria-label="Main navigation">
+        <a href="/" th:classappend="${currentPage == 'home'} ? ' nav-current' : ''">Home</a>
+        <a href="/items" th:classappend="${currentPage == 'browse'} ? ' nav-current' : ''">Browse</a>
+        <a href="/sell" th:classappend="${currentPage == 'sell'} ? ' nav-current' : ''">Sell</a>
+    </nav>
+    <div class="site-navbar-actions">
+        <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
+        <details class="navbar-profile-menu">
+            <summary class="navbar-profile-toggle" aria-label="Open account menu" title="Account">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.7-3.6 3.2-5.5 7-5.5s6.3 1.9 7 5.5"></path></svg>
+            </summary>
+            <div class="navbar-profile-dropdown" th:if="${session != null and session.authenticatedUserId != null}">
+                <span class="navbar-profile-name" th:text="${session.authenticatedUserName}">Account</span>
+                <a href="/my-requests">My Requests</a>
+                <form action="/logout" method="post"><button type="submit">Logout</button></form>
+            </div>
+            <div class="navbar-profile-dropdown" th:if="${session == null or session.authenticatedUserId == null}">
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            </div>
+        </details>
+    </div>
+</header>

@@ -24,20 +24,7 @@
      NAVBAR
      ========================= -->
 
-<header class="navbar site-navbar">
-    <a class="logo" href="/" aria-label="UniLoop home">
-            <span class="logo-icon"></span>
-            <span>UniLoop</span>
-        </a>
-    <nav aria-label="Main navigation">
-        <a href="/">Home</a>
-        <a href="/items">Browse</a>
-        <a href="/sell">Sell</a>
-        <a href="#">Login</a>
-    </nav>
-    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
-
-</header>
+<header th:replace="~{fragments/navbar :: navbar('sell')}"></header>
 
 
 <!-- =========================
@@ -191,10 +178,6 @@
                             <input type="hidden"
                                    name="requestId"
                                    th:value="${request.requestId}">
-
-                            <input type="hidden"
-                                   name="buyerId"
-                                   value="2">
 
                             <input type="hidden"
                                    name="source"

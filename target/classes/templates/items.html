@@ -7,19 +7,7 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="browse-page">
-    <header class="navbar site-navbar">
-        <a class="logo" href="/" aria-label="UniLoop home">
-            <span class="logo-icon"></span>
-            <span>UniLoop</span>
-        </a>
-        <nav aria-label="Main navigation">
-            <a href="/">Home</a>
-            <a class="nav-current" href="/items">Browse</a>
-            <a href="/sell">Sell</a>
-            <a href="#">Login</a>
-        </nav>
-        <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
-    </header>
+    <header th:replace="~{fragments/navbar :: navbar('browse')}"></header>
 
     <main class="items browse-page-main">
         <section class="browse-intro" aria-labelledby="browse-title">
@@ -73,7 +61,6 @@
                     <div class="browse-request-area">
                         <div class="browse-request-state" th:if="${item.requestStatus == null}">
                             <form action="/request" method="post" onclick="event.stopPropagation()" data-confirm-title="Request Item?" data-confirm-message="Are you sure you want to request this item?" data-confirm-text="Request Item">
-                                <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
                                 <input type="hidden" name="source" value="items">
                                 <button type="submit" class="submit-button browse-request-button">Request Item</button>
@@ -83,7 +70,6 @@
                         <div class="browse-request-state" th:if="${item.requestStatus == 'PENDING'}">
                             <p class="browse-message-sent">Request Sent</p>
                             <form action="/cancel-request" method="post" onclick="event.stopPropagation()" data-confirm-title="Cancel Request?" data-confirm-message="Are you sure you want to cancel this request?" data-confirm-text="Cancel Request">
-                                <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="requestId" th:value="${item.requestId}">
                                 <input type="hidden" name="source" value="items">
                                 <button type="submit" class="submit-button browse-request-button browse-cancel-button">Cancel Request</button>
@@ -97,7 +83,6 @@
                         <div class="browse-request-state" th:if="${item.requestStatus == 'REJECTED'}">
                             <p class="browse-message-rej">Request Rejected</p>
                             <form action="/request" method="post" onclick="event.stopPropagation()" data-confirm-title="Request Item Again?" data-confirm-message="Are you sure you want to request this item again?" data-confirm-text="Request Again">
-                                <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
                                 <input type="hidden" name="source" value="items">
                                 <button type="submit" class="submit-button browse-request-button">Request Again</button>
@@ -107,7 +92,6 @@
                         <div class="browse-request-state" th:if="${item.requestStatus == 'CANCELLED'}">
                             <p class="browse-message-can">Request Cancelled</p>
                             <form action="/request" method="post" onclick="event.stopPropagation()" data-confirm-title="Request Item Again?" data-confirm-message="Are you sure you want to request this item again?" data-confirm-text="Request Again">
-                                <input type="hidden" name="buyerId" value="2">
                                 <input type="hidden" name="itemId" th:value="${item.itemId}">
                                 <input type="hidden" name="source" value="items">
                                 <button type="submit" class="submit-button browse-request-button">Request Again</button>

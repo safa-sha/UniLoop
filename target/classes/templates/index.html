@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +7,7 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="home-page">
-    <header class="navbar site-navbar">
-        <a class="logo" href="/" aria-label="UniLoop home">
-            <span class="logo-icon"></span>
-            <span>UniLoop</span>
-        </a>
-        <nav aria-label="Main navigation">
-            <a class="nav-current" href="/">Home</a>
-            <a href="/items">Browse</a>
-            <a href="/sell">Sell</a>
-            <a href="#">Login</a>
-        </nav>
-        <a class="navbar-cta" href="/list-item">Sell an Item <span aria-hidden="true">↗</span></a>
-    </header>
+    <header th:replace="~{fragments/navbar :: navbar('home')}"></header>
 
     <main>
         <section class="home-hero">
@@ -58,33 +46,33 @@
                 <a href="/items" class="home-text-link">Browse all items <span aria-hidden="true">→</span></a>
             </div>
             <div class="home-category-grid">
-                <a href="#" class="category-card books">
+                <a href="/items?category=1" class="category-card books">
                     <h3>Books</h3>
                     <p>Textbooks & novels</p>
                 </a>
     
 
-                <a href="#" class="category-card electronics">
+                <a href="/items?category=2" class="category-card electronics">
                     <h3>Electronics</h3>
                     <p>Gadgets & devices</p>
                 </a>
 
-                <a href="#" class="category-card stationary">
+                <a href="/items?category=3" class="category-card stationary">
                     <h3>Stationery</h3>
                     <p>Study essentials</p>
                 </a>
 
-                <a href="#" class="category-card clothing">
+                <a href="/items?category=4" class="category-card clothing">
                     <h3>Clothing</h3>
                     <p>Campus wear</p>
                 </a>
 
-                <a href="#" class="category-card hostel">
+                <a href="/items?category=5" class="category-card hostel">
                     <h3>Hostel Items</h3>
                     <p>Room essentials</p>
                 </a>
 
-                <a href="#" class="category-card sports">
+                <a href="/items?category=6" class="category-card sports">
                     <h3>Sports & Fitness</h3>
                     <p>Gear & equipment</p>
                 </a>

@@ -17,20 +17,7 @@
 
 <body class="my-listings-page">
 
-<header class="navbar site-navbar">
-    <a class="logo" href="/" aria-label="UniLoop home">
-            <span class="logo-icon"></span>
-            <span>UniLoop</span>
-        </a>
-    <nav aria-label="Main navigation">
-        <a href="/">Home</a>
-        <a href="/items">Browse</a>
-        <a class="nav-current" href="/sell">Sell</a>
-        <a href="#">Login</a>
-    </nav>
-    <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
-
-</header>
+<header th:replace="~{fragments/navbar :: navbar('sell')}"></header>
 
 
 <main class="sell-page my-listings-main">
@@ -65,8 +52,8 @@
                         View Requests
                     </a>
 
-                    <a href="/listing-history" class="history-scroll-button">
-                        Listing History
+                    <a href="#listing-history" class="history-scroll-button">
+                        Listing History ↓
                     </a>
 
                 </div>

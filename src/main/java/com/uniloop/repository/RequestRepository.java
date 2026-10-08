@@ -15,7 +15,7 @@ public class RequestRepository {
 
         // Check whether the item is still available
         String itemSql = """
-                SELECT item_status
+                SELECT item_status, seller_id
                 FROM items
                 WHERE item_id = ?
                 """;
@@ -52,6 +52,10 @@ public class RequestRepository {
 
             String itemStatus =
                     itemResult.getString("item_status");
+
+            if (itemResult.getInt("seller_id") == buyerId) {
+                return false;
+            }
 
             // Don't allow requests for unavailable items
             if (!"AVAILABLE".equals(itemStatus)) {
@@ -174,31 +178,43 @@ public class RequestRepository {
     }
 
 
-    public boolean updateRequestStatus(
-            int requestId,
-            String status) {
-
+    public int getItemIdByRequestIdForSeller(int requestId, int sellerId) {
         String sql = """
-                UPDATE requests
-                SET request_status = ?
-                WHERE request_id = ?
+                SELECT r.item_id
+                FROM requests r
+                JOIN items i ON i.item_id = r.item_id
+                WHERE r.request_id = ? AND i.seller_id = ?
                 """;
-
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, requestId);
+            statement.setInt(2, sellerId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? resultSet.getInt("item_id") : -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
+    public boolean updateRequestStatusForSeller(int requestId, String status, int sellerId) {
+        String sql = """
+                UPDATE requests r
+                JOIN items i ON i.item_id = r.item_id
+                SET r.request_status = ?
+                WHERE r.request_id = ?
+                  AND i.seller_id = ?
+                  AND r.request_status = 'PENDING'
+                """;
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, status);
             statement.setInt(2, requestId);
-
-            statement.executeUpdate();
-
-            return true;
-
+            statement.setInt(3, sellerId);
+            return statement.executeUpdate() > 0;
         } catch (Exception e) {
-
             e.printStackTrace();
-
             return false;
         }
     }
@@ -237,12 +253,13 @@ public class RequestRepository {
 
     public boolean updateItemStatus(
             int itemId,
-            String status) {
+            String status,
+            int sellerId) {
 
         String sql = """
                 UPDATE items
                 SET item_status = ?
-                WHERE item_id = ?
+                WHERE item_id = ? AND seller_id = ?
                 """;
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -251,10 +268,9 @@ public class RequestRepository {
 
             statement.setString(1, status);
             statement.setInt(2, itemId);
+            statement.setInt(3, sellerId);
 
-            statement.executeUpdate();
-
-            return true;
+            return statement.executeUpdate() > 0;
 
         } catch (Exception e) {
 
@@ -267,12 +283,14 @@ public class RequestRepository {
 
     public boolean rejectOtherRequests(
             int itemId,
-            int acceptedRequestId) {
+            int acceptedRequestId,
+            int sellerId) {
 
         String sql = """
                 UPDATE requests
                 SET request_status = 'REJECTED'
                 WHERE item_id = ?
+                  AND EXISTS (SELECT 1 FROM items i WHERE i.item_id = ? AND i.seller_id = ?)
                   AND request_id <> ?
                   AND request_status = 'PENDING'
                 """;
@@ -282,7 +300,9 @@ public class RequestRepository {
                      connection.prepareStatement(sql)) {
 
             statement.setInt(1, itemId);
-            statement.setInt(2, acceptedRequestId);
+            statement.setInt(2, itemId);
+            statement.setInt(3, sellerId);
+            statement.setInt(4, acceptedRequestId);
 
             statement.executeUpdate();
 

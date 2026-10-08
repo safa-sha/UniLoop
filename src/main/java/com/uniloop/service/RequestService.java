@@ -42,29 +42,30 @@ public class RequestService {
         return itemRequests;
     }
 
-    public boolean updateRequestStatus(int requestId, String status) {
+    public boolean updateRequestStatus(int requestId, String status, int sellerId) {
 
         if (status.equals("REJECTED")) {
 
-            return requestRepository.updateRequestStatus(
+            return requestRepository.updateRequestStatusForSeller(
                     requestId,
-                    status
+                    status,
+                    sellerId
             );
         }
 
         if (status.equals("ACCEPTED")) {
 
-            int itemId =
-                    requestRepository.getItemIdByRequestId(requestId);
+            int itemId = requestRepository.getItemIdByRequestIdForSeller(requestId, sellerId);
 
             if (itemId == -1) {
                 return false;
             }
 
             boolean accepted =
-                    requestRepository.updateRequestStatus(
+                    requestRepository.updateRequestStatusForSeller(
                             requestId,
-                            "ACCEPTED"
+                            "ACCEPTED",
+                            sellerId
                     );
 
             if (!accepted) {
@@ -74,7 +75,8 @@ public class RequestService {
             boolean itemUpdated =
                     requestRepository.updateItemStatus(
                             itemId,
-                            "UNAVAILABLE"
+                            "UNAVAILABLE",
+                            sellerId
                     );
 
             if (!itemUpdated) {
@@ -83,7 +85,8 @@ public class RequestService {
 
             return requestRepository.rejectOtherRequests(
                     itemId,
-                    requestId
+                    requestId,
+                    sellerId
             );
         }
 

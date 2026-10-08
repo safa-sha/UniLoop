@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="registration-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="registration-main">
+    <section class="registration-card" aria-labelledby="registration-title">
+        <p class="registration-eyebrow">JOIN THE CAMPUS EXCHANGE</p>
+        <h1 id="registration-title">Create your UniLoop account</h1>
+        <p class="registration-intro">Register with your Saintgits college email to get started.</p>
+        <div class="registration-message registration-error" role="alert" th:if="${registrationError != null}" th:text="${registrationError}"></div>
+        <div class="registration-message registration-success" role="status" th:if="${registrationSuccessMessage != null}" th:text="${registrationSuccessMessage}"></div>
+        <form class="registration-form" action="/register" method="post">
+            <label for="fullName">Full name</label>
+            <input id="fullName" name="fullName" type="text" maxlength="100" autocomplete="name" required th:value="${fullName}">
+            <label for="email">College email</label>
+            <input id="email" name="email" type="email" maxlength="100" autocomplete="email" required th:value="${email}" aria-describedby="college-email-help">
+            <small id="college-email-help">Use an address ending in @saintgits.org.</small>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" required>
+            <small>At least 8 characters.</small>
+            <button class="submit-button registration-submit" type="submit">Register</button>
+        </form>
+        <p class="registration-login-link">Already registered? <a href="/login">Login</a></p>
+    </section>
+</main>
+<script>
+    window.addEventListener("pageshow", function (event) {
+        const navigation = performance.getEntriesByType("navigation")[0];
+        const restoredNavigation = event.persisted
+            || (navigation && (navigation.type === "reload" || navigation.type === "back_forward"));
+
+        const password = document.getElementById("password");
+        if (password) password.value = "";
+        if (!restoredNavigation) return;
+
+        const form = document.querySelector(".registration-form");
+        if (form) form.reset();
+
+        ["fullName", "email", "password"].forEach(function (fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) field.value = "";
+        });
+
+        document.querySelectorAll(".registration-message").forEach(function (message) {
+            message.remove();
+        });
+    });
+</script>
+</body>
+</html>

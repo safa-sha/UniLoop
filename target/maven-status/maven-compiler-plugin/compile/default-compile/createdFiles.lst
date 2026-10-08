@@ -1,10 +1,16 @@
+com\uniloop\model\User.class
+com\uniloop\controller\RegistrationController.class
 com\uniloop\model\Request.class
 com\uniloop\model\Item.class
 com\uniloop\controller\UniLoopController.class
 com\uniloop\model\RequestGroup.class
+com\uniloop\service\UserService.class
 com\uniloop\service\RequestService.class
 com\uniloop\repository\RequestRepository.class
 com\uniloop\repository\ItemRepository.class
 com\uniloop\service\ItemService.class
+com\uniloop\service\UserService$RegistrationResult.class
 com\uniloop\Main.class
+com\uniloop\controller\RegistrationController$1.class
+com\uniloop\repository\UserRepository.class
 com\uniloop\DatabaseConnection.class
