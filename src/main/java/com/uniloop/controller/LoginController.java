@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,7 +66,17 @@ public class LoginController {
         request.changeSessionId();
         session.setAttribute("authenticatedUserId", user.getUserId());
         session.setAttribute("authenticatedUserName", user.getName());
+        String fullName = user.getName() == null ? "" : user.getName().trim();
+        String firstName = fullName.isEmpty() ? "there" : fullName.split("\\s+", 2)[0];
+        session.setAttribute("loginSuccessMessage",
+                "Welcome back, " + firstName + "! You have logged in successfully.");
         return "redirect:" + safeReturnTo(returnTo);
+    }
+
+    @PostMapping("/dismiss-login-notice")
+    public ResponseEntity<Void> dismissLoginNotice(HttpSession session) {
+        session.removeAttribute("loginSuccessMessage");
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout")

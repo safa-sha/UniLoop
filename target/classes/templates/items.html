@@ -29,6 +29,7 @@
                 <a href="/items?category=6" th:classappend="${param.category != null and param.category[0] == '6'} ? ' is-active' : ''">Sports</a>
                 <a href="/items?category=7" th:classappend="${param.category != null and param.category[0] == '7'} ? ' is-active' : ''">Other</a>
             </nav>
+            <a class="browse-how-link" href="/#how-it-works">How It Works <span aria-hidden="true">→</span></a>
         </section>
 
         <div class="item-container browse-item-container">
@@ -45,8 +46,9 @@
                 <div class="item-image browse-item-image">
                     <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
                          th:src="${item.imagePath}"
+                         onerror="this.hidden=true;this.nextElementSibling.classList.remove('is-hidden')"
                          alt="Item image">
-                    <span class="browse-image-fallback" th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}" aria-hidden="true">▤</span>
+                    <span class="browse-image-fallback" th:classappend="${item.imagePath != null and !item.imagePath.isEmpty()} ? ' is-hidden' : ''" aria-hidden="true">📦</span>
                     <span class="browse-listing-type" th:text="${item.listingType}">SELL</span>
                 </div>
 

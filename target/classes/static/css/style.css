@@ -1267,10 +1267,11 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     --home-accent-dark: #574267;
     --home-warm: #D7D2CA;
     --home-line: rgba(215, 210, 202, 0.16);
-    background: url("bgimage.png");
+    background: url("bg.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     color: var(--home-text);
     font-family: Arial, sans-serif;
 }
@@ -3117,6 +3118,60 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
 .registration-message { margin: 0 0 16px; padding: 11px 13px; border: 1px solid rgba(215,210,202,.16); border-radius: 7px; font-size: 12px; line-height: 1.5; }
 .registration-error { border-color: rgba(215,210,202,.24); background: rgba(215,210,202,.05); color: var(--ul-warm); }
 .registration-success { border-color: rgba(161,139,174,.25); background: rgba(161,139,174,.12); color: #D7CADD; }
+.success-notification {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid rgba(149,187,114,.34);
+    border-radius: 9px;
+    background: #1B2B2A;
+    color: #DDEBD3;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.success-notification-floating {
+    position: fixed;
+    z-index: 11000;
+    top: 88px;
+    right: clamp(16px, 4vw, 40px);
+    width: min(460px, calc(100vw - 32px));
+    box-shadow: 0 12px 32px rgba(0,0,0,.24);
+}
+.success-notification-icon {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(149,187,114,.18);
+    color: #B8D99A;
+    font-size: 13px;
+    font-weight: 700;
+}
+.success-notification-text { flex: 1; }
+.success-notification-dismiss {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #DDEBD3;
+    font: inherit;
+    font-size: 19px;
+    cursor: pointer;
+}
+.success-notification-dismiss:hover { background: rgba(221,235,211,.1); }
+.success-notification-dismiss:focus-visible { outline: 2px solid #B8D99A; outline-offset: 2px; }
+.registration-success.success-notification { margin-bottom: 16px; }
+@media (max-width: 680px) {
+    .success-notification-floating { top: 82px; right: 12px; width: calc(100vw - 24px); }
+}
 .registration-login-link { margin: 22px 0 0; color: #B9AFBF; font-size: 12px; text-align: center; }
 .registration-login-link a { color: #C4B5CE; text-decoration: none; }
 .registration-login-link a:hover { color: #F2F0EC; text-decoration: underline; }
@@ -3253,3 +3308,36 @@ body:not(.home-page) .site-navbar .navbar-cta span { color: #A18BAE; }
     height: 100%;
     object-fit: contain;
 }
+
+/* Keep marketplace and seller listing grids in sync at every container width. */
+.browse-page .browse-item-container.item-container,
+.my-listings-page .my-listing-container {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr));
+}
+.browse-page .browse-image-fallback,
+.my-listings-page .listing-image-fallback {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: #A18BAE;
+    font-size: 54px;
+}
+.browse-page .browse-item-image .browse-image-fallback,
+.my-listings-page .my-listing-image .listing-image-fallback { font-size: 54px; }
+.browse-page .browse-image-fallback.is-hidden,
+.my-listings-page .listing-image-fallback.is-hidden { display: none; }
+.browse-page .browse-item-image img[hidden],
+.my-listings-page .my-listing-image img[hidden] { display: none !important; }
+.browse-page .browse-how-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 15px;
+    color: var(--browse-lavender);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.browse-page .browse-how-link:hover { color: var(--browse-text); }
+.home-page #how-it-works { scroll-margin-block: 35vh; }

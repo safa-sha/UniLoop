@@ -7,7 +7,6 @@
         <a href="/" th:classappend="${currentPage == 'home'} ? ' nav-current' : ''">Home</a>
         <a href="/items" th:classappend="${currentPage == 'browse'} ? ' nav-current' : ''">Browse</a>
         <a href="/sell" th:classappend="${currentPage == 'sell'} ? ' nav-current' : ''">Sell</a>
-        <a href="/#how-it-works">How It Works</a>
     </nav>
     <div class="site-navbar-actions">
         <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
@@ -33,5 +32,13 @@
             </div>
         </details>
     </div>
+    <div class="success-notification success-notification-floating" role="status" aria-live="polite"
+         th:if="${session != null and session.loginSuccessMessage != null}"
+         data-dismiss-url="/dismiss-login-notice">
+        <span class="success-notification-icon" aria-hidden="true">✓</span>
+        <span class="success-notification-text" th:text="${session.loginSuccessMessage}">Welcome back!</span>
+        <button class="success-notification-dismiss" type="button" aria-label="Dismiss success message">×</button>
+    </div>
     <script src="/js/confirmation-modal.js" defer></script>
+    <script src="/js/success-notification.js" defer></script>
 </header>

@@ -1,7 +1,11 @@
 package com.uniloop.controller;
+import com.uniloop.model.User;
 import com.uniloop.repository.UserRepository;
+import com.uniloop.service.LoginService;
 import com.uniloop.service.UserService;
 import com.uniloop.service.UserService.RegistrationResult;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class RegistrationController {
-    private final UserService userService = new UserService(new UserRepository());
+    private final UserRepository userRepository = new UserRepository();
+    private final UserService userService = new UserService(userRepository);
+    private final LoginService loginService = new LoginService(userRepository);
     @GetMapping("/register")
     public String registrationPage() {
         return "register";
@@ -18,12 +24,26 @@ public class RegistrationController {
     public String register(@RequestParam(name = "fullName", required = false) String fullName,
                            @RequestParam(name = "email", required = false) String email,
                            @RequestParam(name = "password", required = false) String password,
+                           HttpServletRequest request,
                            RedirectAttributes redirectAttributes) {
         RegistrationResult result = userService.register(fullName, email, password);
         if (result == RegistrationResult.SUCCESS) {
-            redirectAttributes.addFlashAttribute(
-                    "registrationSuccessMessage",
-                    "Registration successful. You can now sign in with your new account.");
+            User user = loginService.authenticate(email, password);
+            if (user != null) {
+                HttpSession session = request.getSession(true);
+                request.changeSessionId();
+                session.setAttribute("authenticatedUserId", user.getUserId());
+                session.setAttribute("authenticatedUserName", user.getName());
+                String name = user.getName() == null ? "" : user.getName().trim();
+                String firstName = name.isEmpty() ? "there" : name.split("\\s+", 2)[0];
+                session.setAttribute("loginSuccessMessage", "Welcome to UniLoop, "
+                        + firstName + "! Your account has been created successfully.");
+                return "redirect:/";
+            }
+
+            redirectAttributes.addFlashAttribute("loginNotice",
+                    "Your account was created, but we couldn't sign you in. Please log in.");
+            return "redirect:/login";
         } else {
             redirectAttributes.addFlashAttribute("fullName", fullName == null ? "" : fullName.trim());
             redirectAttributes.addFlashAttribute("email", email == null ? "" : email.trim());

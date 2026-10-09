@@ -98,5 +98,25 @@
     </main>
 
     <footer class="home-footer"><a class="home-footer-logo" href="/">UniLoop<span>.</span></a><p>A campus marketplace, made for passing good things along.</p><span class="home-footer-copy">© 2026 UniLoop</span></footer>
+<script>
+    (() => {
+        const section = document.getElementById('how-it-works');
+        const scrollToSection = () => {
+            if (!section) return;
+            const top = section.getBoundingClientRect().top + window.scrollY - (window.innerHeight - section.offsetHeight) / 2;
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        };
+        document.querySelectorAll('a[href="/#how-it-works"], a[href="#how-it-works"]').forEach(link =>
+            link.addEventListener('click', event => {
+                if (window.location.pathname === '/' || window.location.pathname === '') {
+                    event.preventDefault();
+                    history.replaceState(null, '', '#how-it-works');
+                    scrollToSection();
+                }
+            })
+        );
+        if (window.location.hash === '#how-it-works') requestAnimationFrame(scrollToSection);
+    })();
+</script>
 </body>
 </html>

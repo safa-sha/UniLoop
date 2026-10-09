@@ -79,11 +79,10 @@
 
                         <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
                              th:src="${item.imagePath}"
+                             onerror="this.hidden=true;this.nextElementSibling.classList.remove('is-hidden')"
                              alt="Item image">
 
-                        <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
-                            📦
-                        </span>
+                        <span class="listing-image-fallback" th:classappend="${item.imagePath != null and !item.imagePath.isEmpty()} ? ' is-hidden' : ''" aria-hidden="true">📦</span>
 
                     </div>
 
@@ -197,11 +196,10 @@
 
                         <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
                              th:src="${item.imagePath}"
+                             onerror="this.hidden=true;this.nextElementSibling.classList.remove('is-hidden')"
                              alt="Item image">
 
-                        <span th:unless="${item.imagePath != null and !item.imagePath.isEmpty()}">
-                            📦
-                        </span>
+                        <span class="listing-image-fallback" th:classappend="${item.imagePath != null and !item.imagePath.isEmpty()} ? ' is-hidden' : ''" aria-hidden="true">📦</span>
 
                     </div>
 

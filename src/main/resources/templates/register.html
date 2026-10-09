@@ -14,7 +14,12 @@
         <h1 id="registration-title">Create your UniLoop account</h1>
         <p class="registration-intro">Register with your Saintgits college email to get started.</p>
         <div class="registration-message registration-error" role="alert" th:if="${registrationError != null}" th:text="${registrationError}"></div>
-        <div class="registration-message registration-success" role="status" th:if="${registrationSuccessMessage != null}" th:text="${registrationSuccessMessage}"></div>
+        <div class="registration-message registration-success success-notification" role="status" aria-live="polite"
+             th:if="${registrationSuccessMessage != null}">
+            <span class="success-notification-icon" aria-hidden="true">✓</span>
+            <span class="success-notification-text" th:text="${registrationSuccessMessage}"></span>
+            <button class="success-notification-dismiss" type="button" aria-label="Dismiss success message">×</button>
+        </div>
         <form class="registration-form" action="/register" method="post">
             <label for="fullName">Full name</label>
             <input id="fullName" name="fullName" type="text" maxlength="100" autocomplete="name" required th:value="${fullName}">
@@ -29,6 +34,7 @@
         <p class="registration-login-link">Already registered? <a href="/login">Login</a></p>
     </section>
 </main>
+<script src="/js/success-notification.js" defer></script>
 <script>
     window.addEventListener("pageshow", function (event) {
         const navigation = performance.getEntriesByType("navigation")[0];
