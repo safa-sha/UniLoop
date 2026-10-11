@@ -34,7 +34,7 @@
             <div>
 
                 <p class="list-item-eyebrow">THE CAMPUS EXCHANGE</p>
-                <h1 th:text="${editing == true ? 'Edit Listing' : 'List an Item'}">List an Item</h1>
+                <h1 th:text="${editing == true ? 'Edit Listing' : (listAgain == true ? 'List Again' : 'List an Item')}">List an Item</h1>
 
                 <p>Give something you no longer need a second life on campus.</p>
 
@@ -49,6 +49,7 @@
               >
 
             <input th:if="${editing == true}" type="hidden" name="itemId" th:value="${item.itemId}">
+            <input th:if="${listAgain == true}" type="hidden" name="relistItemId" th:value="${item.itemId}">
 
 
             <div class="listing-fields-grid">
@@ -221,6 +222,12 @@
 
             <small>Help other students get a better look at your item.</small>
 
+            <div class="relist-photo-note" th:if="${listAgain == true and item.imagePath != null and !item.imagePath.isEmpty()}">
+                <img th:src="${item.imagePath}" th:alt="${item.itemName}">
+                <small>Your current photo will be reused unless you upload a replacement.</small>
+            </div>
+            <small th:if="${listAgain == true and (item.imagePath == null or item.imagePath.isEmpty())}">This listing has no saved photo. You can add one above.</small>
+
             <input type="file"
                    id="image"
                    name="image"
@@ -233,7 +240,7 @@
             <button type="submit"
                     class="submit-button">
 
-                <span th:text="${editing == true ? 'Update Listing' : 'List Item'}">List Item</span>
+                <span th:text="${editing == true ? 'Update Listing' : (listAgain == true ? 'Publish New Listing' : 'List Item')}">List Item</span>
 
             </button>
 

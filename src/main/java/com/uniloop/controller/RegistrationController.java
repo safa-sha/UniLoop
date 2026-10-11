@@ -33,11 +33,17 @@ public class RegistrationController {
                 HttpSession session = request.getSession(true);
                 request.changeSessionId();
                 session.setAttribute("authenticatedUserId", user.getUserId());
-                session.setAttribute("authenticatedUserName", user.getName());
-                String name = user.getName() == null ? "" : user.getName().trim();
-                String firstName = name.isEmpty() ? "there" : name.split("\\s+", 2)[0];
-                session.setAttribute("loginSuccessMessage", "Welcome to UniLoop, "
-                        + firstName + "! Your account has been created successfully.");
+                String name = usableDisplayName(user.getName());
+                if (name == null) {
+                    session.removeAttribute("authenticatedUserName");
+                    session.setAttribute("loginSuccessMessage",
+                            "Welcome to UniLoop! Your account has been created successfully.");
+                } else {
+                    session.setAttribute("authenticatedUserName", name);
+                    String firstName = name.split("\\s+", 2)[0];
+                    session.setAttribute("loginSuccessMessage", "Welcome to UniLoop, "
+                            + firstName + "! Your account has been created successfully.");
+                }
                 return "redirect:/";
             }
 
@@ -60,5 +66,11 @@ public class RegistrationController {
             case DUPLICATE_EMAIL -> "An account with this email already exists.";
             default -> "We could not create your account right now. Please try again.";
         };
+    }
+
+    private String usableDisplayName(String name) {
+        if (name == null) return null;
+        String trimmed = name.trim();
+        return trimmed.isEmpty() || "null".equalsIgnoreCase(trimmed) ? null : trimmed;
     }
 }

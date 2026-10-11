@@ -65,11 +65,16 @@ public class LoginController {
         HttpSession session = request.getSession(true);
         request.changeSessionId();
         session.setAttribute("authenticatedUserId", user.getUserId());
-        session.setAttribute("authenticatedUserName", user.getName());
-        String fullName = user.getName() == null ? "" : user.getName().trim();
-        String firstName = fullName.isEmpty() ? "there" : fullName.split("\\s+", 2)[0];
-        session.setAttribute("loginSuccessMessage",
-                "Welcome back, " + firstName + "! You have logged in successfully.");
+        String fullName = usableDisplayName(user.getName());
+        if (fullName == null) {
+            session.removeAttribute("authenticatedUserName");
+            session.setAttribute("loginSuccessMessage", "Welcome back! You have logged in successfully.");
+        } else {
+            session.setAttribute("authenticatedUserName", fullName);
+            String firstName = fullName.split("\\s+", 2)[0];
+            session.setAttribute("loginSuccessMessage",
+                    "Welcome back, " + firstName + "! You have logged in successfully.");
+        }
         return "redirect:" + safeReturnTo(returnTo);
     }
 
@@ -112,6 +117,12 @@ public class LoginController {
     private String loginPageRedirect(String returnTo) {
         return "redirect:/login?returnTo="
                 + URLEncoder.encode(safeReturnTo(returnTo), StandardCharsets.UTF_8);
+    }
+
+    private String usableDisplayName(String name) {
+        if (name == null) return null;
+        String trimmed = name.trim();
+        return trimmed.isEmpty() || "null".equalsIgnoreCase(trimmed) ? null : trimmed;
     }
 
     private void preventLoginCaching(HttpServletResponse response) {

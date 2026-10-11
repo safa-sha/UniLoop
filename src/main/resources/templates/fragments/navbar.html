@@ -11,8 +11,8 @@
     <div class="site-navbar-actions">
         <a href="/list-item" class="navbar-cta">Sell an Item <span aria-hidden="true">↗</span></a>
         <span class="navbar-greeting"
-              th:if="${session != null and session.authenticatedUserId != null and session.authenticatedUserName != null and !#strings.isEmpty(session.authenticatedUserName)}"
-              th:text="${'Hi, ' + #strings.substringBefore(session.authenticatedUserName, ' ')}">Hi</span>
+              th:if="${session != null and session.authenticatedUserId != null and session.authenticatedUserName != null and !#strings.isEmpty(#strings.trim(session.authenticatedUserName)) and #strings.toLowerCase(#strings.trim(session.authenticatedUserName)) != 'null'}"
+              th:text="${'Hi, ' + #strings.substringBefore(#strings.trim(session.authenticatedUserName), ' ')}">Hi</span>
         <details class="navbar-profile-menu">
             <summary class="navbar-profile-toggle" aria-label="Open account menu" title="Account">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.7-3.6 3.2-5.5 7-5.5s6.3 1.9 7 5.5"></path></svg>

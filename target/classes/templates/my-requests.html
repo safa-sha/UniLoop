@@ -43,7 +43,7 @@
         <a href="/items"
            class="back-to-sell">
 
-            Back to Browse
+           <span aria-hidden="true">&larr;</span> Back to Browse
 
         </a>
 
@@ -58,21 +58,19 @@
         </div>
 
 
-        <a href="#request-history"
-           class="history-link">
-
-            Request History
-
-        </a>
-
     </div>
+
+    <nav class="my-requests-section-nav" aria-label="My Requests sections">
+        <a href="#active-requests" class="is-active" aria-current="location" data-my-requests-section-link="active-requests">Active Requests</a>
+        <a href="#request-history" data-my-requests-section-link="request-history">Request History</a>
+    </nav>
 
 
     <!-- =========================
          ACTIVE REQUESTS
          ========================= -->
 
-    <div class="my-requests-section-heading">
+    <div id="active-requests" class="my-requests-section-heading">
         <div>
             <h2>Active Requests</h2>
         </div>
@@ -129,7 +127,7 @@
 
                     <p>
 
-                        👤 Seller:
+                        Seller:
 
                         <strong th:text="${request.sellerName}">
                             Seller Name
@@ -166,7 +164,7 @@
 
                     <!-- PENDING -->
 
-                    <div th:if="${request.requestStatus == 'PENDING'}">
+                    <div class="my-request-actions pending-actions" th:if="${request.requestStatus == 'PENDING'}">
 
                         <form action="/cancel-request"
                               method="post"
@@ -197,14 +195,14 @@
 
                     <!-- ACCEPTED -->
 
-                    <div th:if="${request.requestStatus == 'ACCEPTED'}">
+                    <div class="my-request-actions accepted-actions" th:if="${request.requestStatus == 'ACCEPTED'}">
 
                         <!-- Chat will be added later -->
 
                         <button type="button"
                                 class="submit-button">
 
-                            💬 Chat
+                            Chat
 
                         </button>
 
@@ -234,14 +232,6 @@
                     Request History
                 </h2>
             </div>
-
-
-            <a href="#top"
-               class="back-to-top">
-
-                Active Requests
-
-            </a>
 
 
         </div>
@@ -312,7 +302,7 @@
 
                         <p>
 
-                            👤 Seller:
+                            Seller:
 
                             <strong th:text="${request.sellerName}">
                                 Seller Name
@@ -422,6 +412,69 @@ function toggleHistory(button) {
     }
 
 }
+
+(function setupMyRequestsSectionNavigation() {
+    const navbar = document.querySelector('.my-requests-page > .site-navbar');
+    const main = document.querySelector('.my-requests-main');
+    const heading = document.querySelector('.my-requests-page .requests-heading');
+    const sectionNav = document.querySelector('.my-requests-section-nav');
+    const activeSection = document.getElementById('active-requests');
+    const historySection = document.getElementById('request-history');
+    const links = Array.from(document.querySelectorAll('[data-my-requests-section-link]'));
+    if (!sectionNav || !activeSection || !historySection || links.length === 0) return;
+
+    function syncStickyOffsets() {
+        const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 76;
+        const mainStyles = main ? window.getComputedStyle(main) : null;
+        const topSpacing = mainStyles ? parseFloat(mainStyles.paddingTop) || 0 : 58;
+        const headingHeight = heading ? heading.getBoundingClientRect().height : 0;
+        const headingStyles = heading ? window.getComputedStyle(heading) : null;
+        const headingBottomGap = headingStyles ? parseFloat(headingStyles.marginBottom) || 0 : 0;
+        document.documentElement.style.setProperty('--my-requests-navbar-height', navbarHeight + 'px');
+        document.documentElement.style.setProperty('--my-requests-top-spacing', topSpacing + 'px');
+        document.documentElement.style.setProperty('--my-requests-heading-margin-bottom', headingBottomGap + 'px');
+        document.documentElement.style.setProperty('--my-requests-heading-height', (headingHeight + headingBottomGap) + 'px');
+        document.documentElement.style.setProperty('--my-requests-nav-height', sectionNav.getBoundingClientRect().height + 'px');
+        updateCurrentSection();
+    }
+
+    function updateCurrentSection() {
+        const activationLine = sectionNav.getBoundingClientRect().bottom + 20;
+        let currentId = historySection.getBoundingClientRect().top <= activationLine
+            ? 'request-history'
+            : 'active-requests';
+        if (document.documentElement.scrollHeight > window.innerHeight + 2
+                && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+            currentId = 'request-history';
+        }
+        links.forEach(function(link) {
+            const isCurrent = link.dataset.myRequestsSectionLink === currentId;
+            link.classList.toggle('is-active', isCurrent);
+            if (isCurrent) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+        });
+    }
+
+    let scrollQueued = false;
+    window.addEventListener('scroll', function() {
+        if (scrollQueued) return;
+        scrollQueued = true;
+        window.requestAnimationFrame(function() {
+            scrollQueued = false;
+            updateCurrentSection();
+        });
+    }, { passive: true });
+
+    window.addEventListener('resize', syncStickyOffsets);
+    if ('ResizeObserver' in window) {
+        const resizeObserver = new ResizeObserver(syncStickyOffsets);
+        if (navbar) resizeObserver.observe(navbar);
+        if (main) resizeObserver.observe(main);
+        if (heading) resizeObserver.observe(heading);
+        resizeObserver.observe(sectionNav);
+    }
+    syncStickyOffsets();
+})();
 
 </script>
 

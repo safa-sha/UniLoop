@@ -72,7 +72,7 @@
 
                 <div class="my-listing-card"
                      role="link" tabindex="0"
-                     th:attr="data-item-url=@{/item(id=${item.itemId})}"
+                     th:attr="data-item-url=@{/item(id=${item.itemId},source='sell')}"
                      th:each="item : ${myListings}">
 
                     <div class="my-listing-image">
@@ -97,7 +97,8 @@
                             Condition
                         </p>
 
-                        <strong th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
+                        <strong th:classappend="${item.listingType == 'DONATE'} ? ' listing-free-price' : ''"
+                                th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
                             ₹0
                         </strong>
 
@@ -189,7 +190,7 @@
 
                 <div class="my-listing-card"
                      role="link" tabindex="0"
-                     th:attr="data-item-url=@{/item(id=${item.itemId})}"
+                     th:attr="data-item-url=@{/item(id=${item.itemId},source='sell')}"
                      th:each="item : ${listingHistory}">
 
                     <div class="my-listing-image">
@@ -214,7 +215,8 @@
                             Condition
                         </p>
 
-                        <strong th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
+                        <strong th:classappend="${item.listingType == 'DONATE'} ? ' listing-free-price' : ''"
+                                th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
                             ₹0
                         </strong>
 
@@ -231,7 +233,7 @@
                             </span>
                         </p>
 
-                        <a th:href="@{/item(id=${item.itemId})}" class="edit-listing-button">View Listing</a>
+                        <a th:href="@{/item(id=${item.itemId},source='sell')}" class="edit-listing-button">View Listing</a>
 
 
                         <!-- List Again -->

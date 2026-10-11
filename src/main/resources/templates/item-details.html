@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="item-details-page-body">
-<header th:replace="~{fragments/navbar :: navbar('browse')}"></header>
+<header th:replace="~{fragments/navbar :: navbar(${navigationSource})}"></header>
 
 <main class="item-details-page">
     <div class="item-details-wrap">
-        <a href="/items" class="details-back">← Back to Browse</a>
+        <a th:href="${detailBackHref}" class="details-back"><span aria-hidden="true">←</span><span th:text="${detailBackLabel}">Back to Home</span></a>
         <section class="item-details-card">
             <div class="item-details-image">
                 <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}" th:src="${item.imagePath}" th:alt="${item.itemName}">
@@ -25,7 +25,7 @@
                 <div class="details-price" th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">₹0</div>
                 <p class="details-condition" th:text="${item.condition}">Condition</p>
 
-                <div class="details-actions" th:if="${isSeller}">
+                <div class="details-actions" th:if="${isSeller and item.itemStatus == 'AVAILABLE'}">
                     <a class="details-primary" th:href="@{/list-item(id=${item.itemId},edit=true)}">Edit Listing</a>
                     <form action="/delete-listing" method="post"
                           data-confirm-title="Delete Listing?"
@@ -35,13 +35,16 @@
                         <button type="submit" class="details-secondary">Delete Item</button>
                     </form>
                 </div>
+                <div class="details-actions" th:if="${isSeller and item.itemStatus == 'UNAVAILABLE'}">
+                    <a class="details-primary" th:href="@{/list-item(id=${item.itemId})}">List Again</a>
+                </div>
                 <div class="details-actions" th:unless="${isSeller}">
                     <form action="/request" method="post" th:if="${item.itemStatus == 'AVAILABLE' and (request == null or request.requestStatus == 'REJECTED' or request.requestStatus == 'CANCELLED')}">
-                        <input type="hidden" name="itemId" th:value="${item.itemId}"><input type="hidden" name="source" value="item">
+                        <input type="hidden" name="itemId" th:value="${item.itemId}"><input type="hidden" name="source" value="item"><input type="hidden" name="navigationSource" th:value="${navigationSource}">
                         <button type="submit" class="details-primary" th:text="${request != null ? 'Request Again' : 'Request Item'}">Request Item</button>
                     </form>
                     <form action="/cancel-request" method="post" th:if="${item.itemStatus == 'AVAILABLE' and request != null and request.requestStatus == 'PENDING'}">
-                        <input type="hidden" name="requestId" th:value="${request.requestId}"><input type="hidden" name="source" value="item">
+                        <input type="hidden" name="requestId" th:value="${request.requestId}"><input type="hidden" name="source" value="item"><input type="hidden" name="navigationSource" th:value="${navigationSource}">
                         <button type="submit" class="details-secondary">Cancel Request</button>
                     </form>
                     <p class="details-request-state" th:if="${request != null and request.requestStatus == 'PENDING'}">Your request is pending.</p>
@@ -63,12 +66,12 @@
             <p class="details-section-label">ABOUT THIS LISTING</p><h2>Description</h2>
             <p class="details-description-copy" th:text="${item.description != null and !item.description.isEmpty() ? item.description : 'No description has been added for this listing.'}">Full item description</p>
         </section>
-        <section class="details-item-requests" th:if="${isSeller}">
+        <section class="details-item-requests" th:if="${isSeller and item.itemStatus == 'AVAILABLE'}">
             <p class="details-section-label">SELLER INBOX</p>
             <h2>Requests for this item</h2>
             <div class="details-request-list">
                 <div class="request-card seller-request-card" th:each="itemRequest : ${itemRequests}">
-                    <p>👤 <strong th:text="${itemRequest.buyerName}">Student Name</strong></p>
+                    <p> <strong th:text="${itemRequest.buyerName}">Student Name</strong></p>
                     <p>Status:
                         <strong class="seller-request-status pending-request-status" th:if="${itemRequest.requestStatus == 'PENDING'}">⏳ Pending</strong>
                         <strong class="seller-request-status accepted-request-status" th:if="${itemRequest.requestStatus == 'ACCEPTED'}">✓ Accepted</strong>
@@ -85,7 +88,7 @@
                         </form>
                     </div>
                     <div class="seller-request-actions accepted-actions" th:if="${itemRequest.requestStatus == 'ACCEPTED'}">
-                        <button type="button" class="submit-button seller-action-button seller-chat-placeholder">💬 Chat</button>
+                        <button type="button" class="submit-button seller-action-button seller-chat-placeholder">Chat</button>
                     </div>
                 </div>
                 <p class="details-no-requests" th:if="${#lists.isEmpty(itemRequests)}">No active requests for this listing.</p>

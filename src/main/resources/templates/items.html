@@ -19,22 +19,24 @@
                 <a href="/my-requests" class="my-requests-button">My Requests <span aria-hidden="true">→</span></a>
             </div>
 
-            <nav class="category-filter" aria-label="Filter items by category">
-                <a href="/items" th:classappend="${param.category == null} ? ' is-active' : ''">All</a>
-                <a href="/items?category=1" th:classappend="${param.category != null and param.category[0] == '1'} ? ' is-active' : ''">Books</a>
-                <a href="/items?category=2" th:classappend="${param.category != null and param.category[0] == '2'} ? ' is-active' : ''">Electronics</a>
-                <a href="/items?category=3" th:classappend="${param.category != null and param.category[0] == '3'} ? ' is-active' : ''">Stationery</a>
-                <a href="/items?category=4" th:classappend="${param.category != null and param.category[0] == '4'} ? ' is-active' : ''">Clothing</a>
-                <a href="/items?category=5" th:classappend="${param.category != null and param.category[0] == '5'} ? ' is-active' : ''">Hostel Items</a>
-                <a href="/items?category=6" th:classappend="${param.category != null and param.category[0] == '6'} ? ' is-active' : ''">Sports</a>
-                <a href="/items?category=7" th:classappend="${param.category != null and param.category[0] == '7'} ? ' is-active' : ''">Other</a>
-            </nav>
-            <a class="browse-how-link" href="/#how-it-works">How It Works <span aria-hidden="true">→</span></a>
+            <div class="browse-control-row">
+                <nav class="category-filter" aria-label="Filter items by category">
+                    <a href="/items" th:classappend="${param.category == null} ? ' is-active' : ''">All</a>
+                    <a href="/items?category=1" th:classappend="${param.category != null and param.category[0] == '1'} ? ' is-active' : ''">Books</a>
+                    <a href="/items?category=2" th:classappend="${param.category != null and param.category[0] == '2'} ? ' is-active' : ''">Electronics</a>
+                    <a href="/items?category=3" th:classappend="${param.category != null and param.category[0] == '3'} ? ' is-active' : ''">Stationery</a>
+                    <a href="/items?category=4" th:classappend="${param.category != null and param.category[0] == '4'} ? ' is-active' : ''">Clothing</a>
+                    <a href="/items?category=5" th:classappend="${param.category != null and param.category[0] == '5'} ? ' is-active' : ''">Hostel Items</a>
+                    <a href="/items?category=6" th:classappend="${param.category != null and param.category[0] == '6'} ? ' is-active' : ''">Sports</a>
+                    <a href="/items?category=7" th:classappend="${param.category != null and param.category[0] == '7'} ? ' is-active' : ''">Other</a>
+                </nav>
+                <a class="browse-how-link" href="/#how-it-works">How It Works <span aria-hidden="true">→</span></a>
+            </div>
         </section>
 
         <div class="item-container browse-item-container">
             <div class="no-items-message browse-empty-state" th:if="${#lists.isEmpty(items)}">
-                <span class="browse-empty-icon" aria-hidden="true">▤</span>
+                <span class="browse-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m15.5 15.5 4.2 4.2"></path></svg></span>
                 <h3>No items yet</h3>
                 <p>There are no items available in this category. Try another category or check back later.</p>
             </div>
@@ -42,7 +44,7 @@
             <article class="item-card browse-item-card"
                      th:each="item : ${items}"
                      th:id="'item-' + ${item.itemId}"
-                     th:onclick="'window.location.href=\'/item?id=' + ${item.itemId} + '\''">
+                     th:onclick="'window.location.href=\'/item?id=' + ${item.itemId} + '&amp;source=browse\''">
                 <div class="item-image browse-item-image">
                     <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
                          th:src="${item.imagePath}"

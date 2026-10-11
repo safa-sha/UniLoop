@@ -98,6 +98,7 @@ public class UniLoopController {
     @PostMapping("/sell")
     public String sellItem(
             @RequestParam(name = "itemId", required = false) Integer itemId,
+            @RequestParam(name = "relistItemId", required = false) Integer relistItemId,
 
             @RequestParam(name = "categoryId")
             int categoryId,
@@ -126,9 +127,20 @@ public class UniLoopController {
 
         Integer sellerId = authenticatedUserId(session);
         if (sellerId == null) return loginRedirect(itemId == null ? "/sell" : "/list-item?id=" + itemId + "&edit=true");
+        if (itemId != null && relistItemId != null) return "redirect:/sell";
         if (itemId != null) {
             Item existingItem = itemRepository.getItemById(itemId);
-            if (existingItem == null || existingItem.getSellerId() != sellerId) {
+            if (existingItem == null || existingItem.getSellerId() != sellerId
+                    || !"AVAILABLE".equals(existingItem.getItemStatus())) {
+                return "redirect:/sell";
+            }
+        }
+
+        Item itemToRelist = null;
+        if (relistItemId != null) {
+            itemToRelist = itemRepository.getItemById(relistItemId);
+            if (itemToRelist == null || itemToRelist.getSellerId() != sellerId
+                    || !"UNAVAILABLE".equals(itemToRelist.getItemStatus())) {
                 return "redirect:/sell";
             }
         }
@@ -184,6 +196,11 @@ public class UniLoopController {
             }
         }
 
+        // Reuse the prior photo for a relisted copy unless the seller uploaded a replacement.
+        if (imagePath == null && itemToRelist != null) {
+            imagePath = itemToRelist.getImagePath();
+        }
+
         if (itemId != null) {
             itemRepository.updateItem(itemId, sellerId, categoryId, itemName, description,
                     price, imagePath, condition, listingType);
@@ -215,16 +232,18 @@ public class UniLoopController {
                     defaultValue = "items"
             )
             String source,
+            @RequestParam(name = "navigationSource", required = false)
+            String navigationSource,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         Integer buyerId = authenticatedUserId(session);
-        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId));
+        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId, navigationSource));
 
         Item requestedItem = itemRepository.getItemById(itemId);
         if (requestedItem != null && requestedItem.getSellerId() == buyerId) {
             redirectAttributes.addFlashAttribute("requestError", "You cannot request your own listing.");
-            return "redirect:/item?id=" + itemId;
+            return "redirect:" + itemDetailsPath(itemId, navigationSource);
         }
 
         requestService.requestItem(
@@ -233,7 +252,7 @@ public class UniLoopController {
         );
 
         if (source.equals("item")) {
-    return "redirect:/item?id=" + itemId;
+    return "redirect:" + itemDetailsPath(itemId, navigationSource);
 }
 
 if (source.equals("my-requests")) {
@@ -331,11 +350,13 @@ public String myRequests(Model model, HttpSession session) {
                     defaultValue = "items"
             )
             String source,
+            @RequestParam(name = "navigationSource", required = false)
+            String navigationSource,
             HttpSession session) {
 
         Integer buyerId = authenticatedUserId(session);
         int itemId = requestService.getItemIdByRequestId(requestId);
-        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId));
+        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId, navigationSource));
 
         requestService.cancelRequest(
                 requestId,
@@ -343,7 +364,7 @@ public String myRequests(Model model, HttpSession session) {
         );
 
         if (source.equals("item")) {
-    return "redirect:/item?id=" + itemId;
+    return "redirect:" + itemDetailsPath(itemId, navigationSource);
 }
 
 if (source.equals("my-requests")) {
@@ -387,8 +408,11 @@ public String listItemPage(
                 itemRepository.getItemById(id);
 
         if (item != null && item.getSellerId() == authenticatedUserId(session)) {
+            if (edit && !"AVAILABLE".equals(item.getItemStatus())) {
+                return "redirect:/item?id=" + id;
+            }
             model.addAttribute("item", item);
-            model.addAttribute("listAgain", true);
+            model.addAttribute("listAgain", !edit && "UNAVAILABLE".equals(item.getItemStatus()));
             model.addAttribute("editing", edit);
         } else return "redirect:/sell";
     }
@@ -400,6 +424,8 @@ public String listItemPage(
     public String itemDetails(
             @RequestParam(name = "id")
             int id,
+            @RequestParam(name = "source", required = false)
+            String source,
 
             Model model,
             HttpSession session) {
@@ -410,6 +436,22 @@ public String listItemPage(
         if (item == null) {
             return "redirect:/items";
         }
+
+        String navigationSource = "home";
+        String backHref = "/";
+        String backLabel = "Back to Home";
+        if ("browse".equals(source)) {
+            navigationSource = "browse";
+            backHref = "/items";
+            backLabel = "Back to Browse";
+        } else if ("sell".equals(source)) {
+            navigationSource = "sell";
+            backHref = "/sell";
+            backLabel = "Back to My Listings";
+        }
+        model.addAttribute("navigationSource", navigationSource);
+        model.addAttribute("detailBackHref", backHref);
+        model.addAttribute("detailBackLabel", backLabel);
 
         Integer buyerId = authenticatedUserId(session);
 
@@ -431,7 +473,7 @@ public String listItemPage(
 
         boolean isSeller = buyerId != null && item.getSellerId() == buyerId;
         model.addAttribute("isSeller", isSeller);
-        if (isSeller) {
+        if (isSeller && "AVAILABLE".equals(item.getItemStatus())) {
             model.addAttribute("itemRequests", requestService.getActiveRequestsForItem(id, buyerId));
         }
 
@@ -460,9 +502,17 @@ public String deleteListing(
                 + URLEncoder.encode(returnTo, StandardCharsets.UTF_8);
     }
 
-    private String destinationForSource(String source, int itemId) {
-        if ("item".equals(source) && itemId > 0) return "/item?id=" + itemId;
+    private String destinationForSource(String source, int itemId, String navigationSource) {
+        if ("item".equals(source) && itemId > 0) return itemDetailsPath(itemId, navigationSource);
         if ("my-requests".equals(source)) return "/my-requests";
         return itemId > 0 ? "/items#item-" + itemId : "/items";
+    }
+
+    private String itemDetailsPath(int itemId, String navigationSource) {
+        String path = "/item?id=" + itemId;
+        if ("browse".equals(navigationSource) || "sell".equals(navigationSource)) {
+            path += "&source=" + navigationSource;
+        }
+        return path;
     }
 }

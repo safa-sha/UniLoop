@@ -27,27 +27,21 @@
         <!-- REQUESTS HEADING -->
 
         <div class="requests-heading">
-
-            <a href="/sell" class="back-to-sell">
-        ← Back to My Listings
-    </a>
-
-            <div>
-                <h1>📩 Requests</h1>
-                <p class="seller-requests-eyebrow">SELLER INBOX</p>
-                <p>Manage requests from students interested in your listings.</p>
-            </div>
-
-            <a href="#request-history" class="history-link">
-                📜 View Request History →
-            </a>
-
+            <a href="/sell" class="back-to-sell"><span aria-hidden="true">&larr;</span> Back to My Listings</a>
+            <h1>Requests</h1>
+            <p>Manage requests from students interested in your listings.</p>
         </div>
 
+        <nav class="requests-section-nav" aria-label="Requests sections">
+            <a href="#active-requests" class="is-active" aria-current="location" data-requests-section-link="active-requests">Active Requests</a>
+            <a href="#request-history" data-requests-section-link="request-history">Request History</a>
+        </nav>
 
         <!-- =========================
              ACTIVE REQUESTS
              ========================= -->
+
+        <section id="active-requests" class="seller-active-requests-section">
 
         <div class="seller-requests-section-heading">
             <div>
@@ -97,7 +91,7 @@
                          th:each="request : ${group.requests}">
 
                         <p>
-                            👤
+
                             <strong th:text="${request.buyerName}">
                                 Student Name
                             </strong>
@@ -177,7 +171,7 @@
 
                             <button type="button"
                                     class="submit-button seller-action-button seller-chat-placeholder">
-                                💬 Chat
+                                Chat
                             </button>
 
                         </div>
@@ -191,6 +185,8 @@
         </div>
 
 
+        </section>
+
         <!-- =========================
              REQUEST HISTORY
              ========================= -->
@@ -202,10 +198,6 @@
         <div>
             <h2>Request History</h2>
         </div>
-
-        <a href="#top" class="back-to-top">
-            ↑ Back to Active Requests
-        </a>
     </div>
 
 
@@ -262,7 +254,7 @@
                              th:classappend="${stat.index >= 1} ? ' hidden-history' : ''">
 
                             <p>
-                                👤
+
 
                                 <strong th:text="${request.buyerName}">
                                     Student Name
@@ -273,11 +265,11 @@
                             <p>
                                 Status:
 
-                                <strong th:if="${request.requestStatus == 'REJECTED'}">
+                                <strong class="seller-request-status rejected-request-status" th:if="${request.requestStatus == 'REJECTED'}">
                                     ✕ Rejected
                                 </strong>
 
-                                <strong th:if="${request.requestStatus == 'CANCELLED'}">
+                                <strong class="seller-request-status cancelled-request-status" th:if="${request.requestStatus == 'CANCELLED'}">
                                     ↩ Cancelled
                                 </strong>
 
@@ -297,21 +289,17 @@
 
                         <!-- Expand / collapse button -->
 
-                        <button type="button"
-                                class="history-toggle"
-                                th:if="${group.requests.size() > 1}"
-                                th:attr="data-count=${group.requests.size() - 1}"
-                                onclick="toggleHistory(this)">
-
-                            ▼ View
-
-                            <span th:text="${group.requests.size() - 2}">
-                                0
-                            </span>
-
-                            more requests
-
-                        </button>
+                        <div class="history-toggle-slot">
+                            <button type="button"
+                                    class="history-toggle"
+                                    th:if="${group.requests.size() > 1}"
+                                    onclick="toggleHistory(this)">
+                                <span class="history-toggle-arrow" aria-hidden="true">&#9662;</span>
+                                <span class="history-toggle-action">View</span>
+                                <span class="history-toggle-count" th:text="${group.requests.size() - 1}">1</span>
+                                <span class="history-toggle-suffix" th:text="${group.requests.size() == 2 ? 'more request' : 'more requests'}">more requests</span>
+                            </button>
+                        </div>
 
                     </div>
 
@@ -331,59 +319,96 @@
     <script>
 
         function toggleHistory(button) {
+            const requestList = button.closest(".request-list");
+            if (!requestList) return;
 
-            const requestList =
-                button.parentElement;
-
-            const hiddenCards =
-                requestList.querySelectorAll(
-                    ".hidden-history"
-                );
-
-            const isExpanded =
-                button.getAttribute(
-                    "data-expanded"
-                ) === "true";
-
-
+            const hiddenCards = requestList.querySelectorAll(".hidden-history");
+            const isExpanded = button.getAttribute("data-expanded") === "true";
             hiddenCards.forEach(function(card) {
-
-                card.style.display =
-                    isExpanded ? "none" : "block";
-
+                card.style.display = isExpanded ? "none" : "block";
             });
 
-
+            const action = button.querySelector(".history-toggle-action");
+            const count = button.querySelector(".history-toggle-count");
+            const suffix = button.querySelector(".history-toggle-suffix");
+            const arrow = button.querySelector(".history-toggle-arrow");
             if (isExpanded) {
-
-                const count =
-                    button.getAttribute(
-                        "data-count"
-                    );
-
-                button.innerHTML =
-                    "▼ View " +
-                    count +
-                    " more requests";
-
-                button.setAttribute(
-                    "data-expanded",
-                    "false"
-                );
-
+                const hiddenCount = requestList.querySelectorAll(".hidden-history").length;
+                arrow.textContent = String.fromCharCode(9662);
+                action.textContent = "View";
+                count.textContent = hiddenCount;
+                suffix.textContent = hiddenCount === 1 ? "more request" : "more requests";
+                button.setAttribute("data-expanded", "false");
             } else {
+                arrow.textContent = String.fromCharCode(9652);
+                action.textContent = "Hide previous requests";
+                count.textContent = "";
+                suffix.textContent = "";
+                button.setAttribute("data-expanded", "true");
+            }
+        }
 
-                button.innerHTML =
-                    "▲ Hide previous requests";
+        (function setupRequestsSectionNavigation() {
+            const navbar = document.querySelector('.seller-requests-page > .site-navbar');
+            const main = document.querySelector('.seller-requests-main');
+            const heading = document.querySelector('.seller-requests-page .requests-heading');
+            const sectionNav = document.querySelector('.requests-section-nav');
+            const activeSection = document.getElementById('active-requests');
+            const historySection = document.getElementById('request-history');
+            const links = Array.from(document.querySelectorAll('[data-requests-section-link]'));
+            if (!sectionNav || !activeSection || !historySection || links.length === 0) return;
 
-                button.setAttribute(
-                    "data-expanded",
-                    "true"
-                );
-
+            function syncStickyOffsets() {
+                const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 76;
+                const mainStyles = main ? window.getComputedStyle(main) : null;
+                const topSpacing = mainStyles ? parseFloat(mainStyles.paddingTop) || 0 : 38;
+                const headingHeight = heading ? heading.getBoundingClientRect().height : 0;
+                const headingStyles = heading ? window.getComputedStyle(heading) : null;
+                const headingBottomGap = headingStyles ? parseFloat(headingStyles.marginBottom) || 0 : 0;
+                document.documentElement.style.setProperty('--seller-requests-navbar-height', navbarHeight + 'px');
+                document.documentElement.style.setProperty('--seller-requests-top-spacing', topSpacing + 'px');
+                document.documentElement.style.setProperty('--seller-requests-heading-height', (headingHeight + headingBottomGap) + 'px');
+                document.documentElement.style.setProperty('--seller-requests-nav-height', sectionNav.getBoundingClientRect().height + 'px');
+                updateCurrentSection();
             }
 
-        }
+            function updateCurrentSection() {
+                const activationLine = sectionNav.getBoundingClientRect().bottom + 20;
+                let currentId = historySection.getBoundingClientRect().top <= activationLine
+                    ? 'request-history'
+                    : 'active-requests';
+                if (document.documentElement.scrollHeight > window.innerHeight + 2
+                        && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+                    currentId = 'request-history';
+                }
+                links.forEach(function (link) {
+                    const isCurrent = link.dataset.requestsSectionLink === currentId;
+                    link.classList.toggle('is-active', isCurrent);
+                    if (isCurrent) link.setAttribute('aria-current', 'location');
+                    else link.removeAttribute('aria-current');
+                });
+            }
+
+            let scrollQueued = false;
+            window.addEventListener('scroll', function () {
+                if (scrollQueued) return;
+                scrollQueued = true;
+                window.requestAnimationFrame(function () {
+                    scrollQueued = false;
+                    updateCurrentSection();
+                });
+            }, { passive: true });
+
+            window.addEventListener('resize', syncStickyOffsets);
+            if ('ResizeObserver' in window) {
+                const resizeObserver = new ResizeObserver(syncStickyOffsets);
+                if (navbar) resizeObserver.observe(navbar);
+                if (main) resizeObserver.observe(main);
+                if (heading) resizeObserver.observe(heading);
+                resizeObserver.observe(sectionNav);
+            }
+            syncStickyOffsets();
+        })();
 
     </script>
 
