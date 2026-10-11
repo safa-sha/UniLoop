@@ -24,42 +24,29 @@
 
     <div class="listings-column">
 
+        <div class="listings-sticky-header">
+            <div class="listings-heading page-listings-heading">
+
+                <div>
+                    <h1>My Listings</h1>
+                    <p>Manage the items you've listed on UniLoop.</p>
+                </div>
+
+                <div class="listing-actions">
+                    <a href="/list-item" class="list-item-button">+ List an Item</a>
+                    <a href="/requests" class="view-requests-button">View Requests</a>
+                </div>
+            </div>
+
+            <nav class="listing-section-nav" aria-label="My Listings sections">
+                <a href="#active-listings" class="is-active" aria-current="location" data-listing-section-link="active-listings">Active Listings</a>
+                <a href="#listing-history" data-listing-section-link="listing-history">Listing History</a>
+            </nav>
+        </div>
 
         <!-- My Listings -->
 
-        <div class="my-listings active-listings-section">
-
-            <div class="listings-heading">
-
-                <div>
-
-                    <h1>My Listings</h1>
-
-                    <p>Manage the items you've listed on UniLoop.</p>
-
-                    
-
-                </div>
-
-
-                <div class="listing-actions">
-
-                    <a href="/list-item" class="list-item-button">
-                        + List an Item
-                    </a>
-
-                    <a href="/requests" class="view-requests-button">
-                        View Requests
-                    </a>
-
-                    <a href="#listing-history" class="history-scroll-button">
-                        Listing History ↓
-                    </a>
-
-                </div>
-
-            </div>
-
+        <div class="my-listings active-listings-section" id="active-listings">
 
             <div class="listing-section-heading">
                 <div>
@@ -70,12 +57,12 @@
 
             <div class="my-listing-container active-listing-grid">
 
-                <div class="my-listing-card"
+                <div class="my-listing-card browse-item-card"
                      role="link" tabindex="0"
                      th:attr="data-item-url=@{/item(id=${item.itemId},source='sell')}"
                      th:each="item : ${myListings}">
 
-                    <div class="my-listing-image">
+                    <div class="my-listing-image item-image browse-item-image">
 
                         <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
                              th:src="${item.imagePath}"
@@ -83,59 +70,41 @@
                              alt="Item image">
 
                         <span class="listing-image-fallback" th:classappend="${item.imagePath != null and !item.imagePath.isEmpty()} ? ' is-hidden' : ''" aria-hidden="true">📦</span>
+                        <span class="browse-listing-type" th:text="${item.listingType}">SELL</span>
 
                     </div>
 
 
-                    <div class="my-listing-info">
+                    <div class="my-listing-info browse-item-content">
 
-                        <h3 th:text="${item.itemName}">
-                            Item Name
-                        </h3>
+                        <div class="browse-item-heading">
+                            <h2 th:text="${item.itemName}">Item Name</h2>
+                            <strong class="browse-item-price"
+                                    th:if="${item.listingType == 'SELL'}"
+                                    th:text="'₹' + ${item.price}">₹0</strong>
+                            <strong class="browse-item-price browse-free-price"
+                                    th:if="${item.listingType == 'DONATE'}">FREE</strong>
+                        </div>
 
-                        <p th:text="${item.condition}">
+                        <p class="browse-item-condition" th:text="${item.condition}">
                             Condition
                         </p>
 
-                        <strong th:classappend="${item.listingType == 'DONATE'} ? ' listing-free-price' : ''"
-                                th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
-                            ₹0
-                        </strong>
+                        <div class="browse-request-area listing-card-action-area">
+                            <div class="listing-card-actions">
+                                <a th:href="@{/list-item(id=${item.itemId},edit=true)}"
+                                   class="edit-listing-button">Edit Listing</a>
 
-                        <p class="listing-type-row">
-                            Listing type:
-                            <span class="listing-type-label" th:text="${item.listingType}">
-                                SELL
-                            </span>
-                        </p>
-
-                        <p class="listing-status-available">
-                            <span th:text="${item.itemStatus}">
-                                AVAILABLE
-                            </span>
-                        </p>
-
-                        <a th:href="@{/list-item(id=${item.itemId},edit=true)}" class="edit-listing-button">Edit Listing</a>
-
-
-                        <!-- Delete Listing -->
-
-                        <form action="/delete-listing"
-                              method="post"
-                              data-confirm-title="Delete Listing?"
-                              data-confirm-message="Are you sure you want to delete this listing? It will be moved to Listing History."
-                              data-confirm-text="Delete Listing">
-
-                            <input type="hidden"
-                                   name="itemId"
-                                   th:value="${item.itemId}">
-
-                            <button type="submit"
-                                    class="delete-listing-button">
-                                Delete Listing
-                            </button>
-
-                        </form>
+                                <form action="/delete-listing"
+                                      method="post"
+                                      data-confirm-title="Delete Listing?"
+                                      data-confirm-message="Are you sure you want to delete this listing? It will be moved to Listing History."
+                                      data-confirm-text="Delete Listing">
+                                    <input type="hidden" name="itemId" th:value="${item.itemId}">
+                                    <button type="submit" class="delete-listing-button">Delete Listing</button>
+                                </form>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -166,34 +135,20 @@
         <div class="listing-history my-listing-history" id="listing-history">
 
             <div class="listings-heading">
-
                 <div>
-
                     <h1>Listing History</h1>
-
-                    
-
                 </div>
-
-
-                <a href="#"
-                   class="back-to-top-button">
-
-                    ↑ Back to Active listings
-
-                </a>
-
             </div>
 
 
             <div class="my-listing-container">
 
-                <div class="my-listing-card"
+                <div class="my-listing-card browse-item-card"
                      role="link" tabindex="0"
                      th:attr="data-item-url=@{/item(id=${item.itemId},source='sell')}"
                      th:each="item : ${listingHistory}">
 
-                    <div class="my-listing-image">
+                    <div class="my-listing-image item-image browse-item-image">
 
                         <img th:if="${item.imagePath != null and !item.imagePath.isEmpty()}"
                              th:src="${item.imagePath}"
@@ -201,47 +156,34 @@
                              alt="Item image">
 
                         <span class="listing-image-fallback" th:classappend="${item.imagePath != null and !item.imagePath.isEmpty()} ? ' is-hidden' : ''" aria-hidden="true">📦</span>
+                        <span class="browse-listing-type" th:text="${item.listingType}">SELL</span>
 
                     </div>
 
 
-                    <div class="my-listing-info">
+                    <div class="my-listing-info browse-item-content">
 
-                        <h3 th:text="${item.itemName}">
-                            Item Name
-                        </h3>
+                        <div class="browse-item-heading">
+                            <h2 th:text="${item.itemName}">Item Name</h2>
+                            <strong class="browse-item-price"
+                                    th:if="${item.listingType == 'SELL'}"
+                                    th:text="'₹' + ${item.price}">₹0</strong>
+                            <strong class="browse-item-price browse-free-price"
+                                    th:if="${item.listingType == 'DONATE'}">FREE</strong>
+                        </div>
 
-                        <p th:text="${item.condition}">
+                        <p class="browse-item-condition" th:text="${item.condition}">
                             Condition
                         </p>
 
-                        <strong th:classappend="${item.listingType == 'DONATE'} ? ' listing-free-price' : ''"
-                                th:text="${item.listingType == 'DONATE' ? 'Free' : '₹' + item.price}">
-                            ₹0
-                        </strong>
-
-                        <p class="listing-type-row">
-                            Listing type:
-                            <span class="listing-type-label" th:text="${item.listingType}">
-                                SELL
-                            </span>
-                        </p>
-
-                        <p class="listing-status-unavailable">
-                            <span th:text="${item.itemStatus}">
-                                UNAVAILABLE
-                            </span>
-                        </p>
-
-                        <a th:href="@{/item(id=${item.itemId},source='sell')}" class="edit-listing-button">View Listing</a>
-
-
-                        <!-- List Again -->
-
-                        <a th:href="@{/list-item(id=${item.itemId})}"
-   class="list-again-button">
-    List Again
-</a>
+                        <div class="browse-request-area listing-card-action-area">
+                            <div class="listing-card-actions listing-history-actions">
+                                <a th:href="@{/item(id=${item.itemId},source='sell')}"
+                                   class="edit-listing-button">View Listing</a>
+                                <a th:href="@{/list-item(id=${item.itemId})}"
+                                   class="list-again-button">List Again</a>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -269,6 +211,67 @@
 
 
 <script>
+    (function setupListingSectionNavigation() {
+        const navbar = document.querySelector('.my-listings-page > .site-navbar');
+        const stickyHeader = document.querySelector('.listings-sticky-header');
+        const sectionNav = document.querySelector('.listing-section-nav');
+        const activeSection = document.getElementById('active-listings');
+        const historySection = document.getElementById('listing-history');
+        const links = Array.from(document.querySelectorAll('[data-listing-section-link]'));
+        if (!sectionNav || !activeSection || !historySection || links.length === 0) return;
+
+        function selectSection(sectionId) {
+            links.forEach(function(link) {
+                const isCurrent = link.dataset.listingSectionLink === sectionId;
+                link.classList.toggle('is-active', isCurrent);
+                if (isCurrent) link.setAttribute('aria-current', 'location');
+                else link.removeAttribute('aria-current');
+            });
+        }
+
+        function syncStickyOffsets() {
+            const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 76;
+            document.documentElement.style.setProperty('--listing-nav-navbar-height', navbarHeight + 'px');
+            document.documentElement.style.setProperty('--listing-sticky-height', (stickyHeader ? stickyHeader.getBoundingClientRect().height : sectionNav.getBoundingClientRect().height) + 'px');
+            updateCurrentSection();
+        }
+
+        function updateCurrentSection() {
+            const activationLine = sectionNav.getBoundingClientRect().bottom + 20;
+            let currentId = historySection.getBoundingClientRect().top <= activationLine
+                ? 'listing-history'
+                : 'active-listings';
+            if (document.documentElement.scrollHeight > window.innerHeight + 2
+                    && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+                currentId = 'listing-history';
+            }
+            selectSection(currentId);
+        }
+
+        sectionNav.addEventListener('click', function(event) {
+            const link = event.target.closest('[data-listing-section-link]');
+            if (link) selectSection(link.dataset.listingSectionLink);
+        });
+
+        let scrollQueued = false;
+        window.addEventListener('scroll', function() {
+            if (scrollQueued) return;
+            scrollQueued = true;
+            window.requestAnimationFrame(function() {
+                scrollQueued = false;
+                updateCurrentSection();
+            });
+        }, { passive: true });
+
+        window.addEventListener('resize', syncStickyOffsets);
+        if ('ResizeObserver' in window) {
+            const resizeObserver = new ResizeObserver(syncStickyOffsets);
+            if (navbar) resizeObserver.observe(navbar);
+            if (stickyHeader) resizeObserver.observe(stickyHeader);
+        }
+        syncStickyOffsets();
+    })();
+
     document.querySelectorAll('.my-listing-card[data-item-url]').forEach(function (card) {
         function openItem(event) {
             if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;

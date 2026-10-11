@@ -19,19 +19,16 @@
                 <a href="/my-requests" class="my-requests-button">My Requests <span aria-hidden="true">→</span></a>
             </div>
 
-            <div class="browse-control-row">
-                <nav class="category-filter" aria-label="Filter items by category">
-                    <a href="/items" th:classappend="${param.category == null} ? ' is-active' : ''">All</a>
-                    <a href="/items?category=1" th:classappend="${param.category != null and param.category[0] == '1'} ? ' is-active' : ''">Books</a>
-                    <a href="/items?category=2" th:classappend="${param.category != null and param.category[0] == '2'} ? ' is-active' : ''">Electronics</a>
-                    <a href="/items?category=3" th:classappend="${param.category != null and param.category[0] == '3'} ? ' is-active' : ''">Stationery</a>
-                    <a href="/items?category=4" th:classappend="${param.category != null and param.category[0] == '4'} ? ' is-active' : ''">Clothing</a>
-                    <a href="/items?category=5" th:classappend="${param.category != null and param.category[0] == '5'} ? ' is-active' : ''">Hostel Items</a>
-                    <a href="/items?category=6" th:classappend="${param.category != null and param.category[0] == '6'} ? ' is-active' : ''">Sports</a>
-                    <a href="/items?category=7" th:classappend="${param.category != null and param.category[0] == '7'} ? ' is-active' : ''">Other</a>
-                </nav>
-                <a class="browse-how-link" href="/#how-it-works">How It Works <span aria-hidden="true">→</span></a>
-            </div>
+            <nav class="category-filter" aria-label="Filter items by category">
+                <a href="/items" th:classappend="${param.category == null} ? ' is-active' : ''">All</a>
+                <a href="/items?category=1" th:classappend="${param.category != null and param.category[0] == '1'} ? ' is-active' : ''">Books</a>
+                <a href="/items?category=2" th:classappend="${param.category != null and param.category[0] == '2'} ? ' is-active' : ''">Electronics</a>
+                <a href="/items?category=3" th:classappend="${param.category != null and param.category[0] == '3'} ? ' is-active' : ''">Stationery</a>
+                <a href="/items?category=4" th:classappend="${param.category != null and param.category[0] == '4'} ? ' is-active' : ''">Clothing</a>
+                <a href="/items?category=5" th:classappend="${param.category != null and param.category[0] == '5'} ? ' is-active' : ''">Hostel Items</a>
+                <a href="/items?category=6" th:classappend="${param.category != null and param.category[0] == '6'} ? ' is-active' : ''">Sports</a>
+                <a href="/items?category=7" th:classappend="${param.category != null and param.category[0] == '7'} ? ' is-active' : ''">Other</a>
+            </nav>
         </section>
 
         <div class="item-container browse-item-container">
@@ -107,5 +104,22 @@
         </div>
     </main>
 
-</body>
-</html>
+    <script>
+        (function syncBrowseStickyOffset() {
+            const navbar = document.querySelector('.browse-page > .site-navbar');
+            if (!navbar) return;
+
+            function updateNavbarHeight() {
+                document.documentElement.style.setProperty('--browse-navbar-height', navbar.getBoundingClientRect().height + 'px');
+            }
+
+            window.addEventListener('resize', updateNavbarHeight);
+            if ('ResizeObserver' in window) {
+                new ResizeObserver(updateNavbarHeight).observe(navbar);
+            }
+            updateNavbarHeight();
+        })();
+    </script>
+
+    </body>
+    </html>
