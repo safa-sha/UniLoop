@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page profile-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">YOUR CAMPUS IDENTITY</p>
+        <h1>My Profile</h1>
+        <p>Manage the details other UniLoop members can use to know you around campus.</p>
+    </div>
+
+    <div class="account-message account-message-error" role="alert"
+         th:if="${profileError != null}" th:text="${profileError}"></div>
+    <div class="account-message account-message-success" role="status"
+         th:if="${profileSuccess != null}" th:text="${profileSuccess}"></div>
+
+    <section class="profile-overview account-panel" th:if="${profileComplete}" aria-labelledby="profile-name">
+        <div class="profile-identity">
+            <div class="profile-avatar" aria-hidden="true" th:text="${profileInitials}">UL</div>
+            <div>
+                <p class="account-eyebrow">UNILOOP MEMBER</p>
+                <h2 id="profile-name" th:text="${profileName}">Full name</h2>
+                <p class="profile-email" th:text="${profileEmail}">student@saintgits.org</p>
+            </div>
+        </div>
+        <dl class="profile-details">
+            <div>
+                <dt>Department</dt>
+                <dd th:text="${userDepartment}">Department</dd>
+            </div>
+            <div>
+                <dt>Admission year</dt>
+                <dd th:text="${userAdmissionYear}">2025</dd>
+            </div>
+            <div>
+                <dt>Course / program</dt>
+                <dd th:text="${userCourseProgram}">Course or program</dd>
+            </div>
+            <div th:if="${userPhone != null and !#strings.isEmpty(#strings.trim(userPhone))}">
+                <dt>Phone</dt>
+                <dd th:text="${userPhone}">Phone</dd>
+            </div>
+        </dl>
+        <a class="account-secondary-button" href="/profile?edit=true" th:if="${!editProfile}">Edit profile</a>
+    </section>
+
+    <section class="account-panel account-form-panel" th:if="${editProfile}" aria-labelledby="profile-form-title">
+        <div class="account-panel-heading">
+            <p class="account-eyebrow" th:text="${profileComplete ? 'PROFILE DETAILS' : 'A FEW DETAILS TO GET STARTED'}">PROFILE DETAILS</p>
+            <h2 id="profile-form-title" th:text="${profileComplete ? 'Edit Your Profile' : 'Complete Your Profile'}">Complete Your Profile</h2>
+            <p>Department, admission year, and course/program are required. Phone is optional.</p>
+        </div>
+        <form class="account-form" action="/profile" method="post">
+            <label for="department">Department</label>
+            <input id="department" name="department" type="text" maxlength="100" autocomplete="organization-title"
+                   required th:value="${profileDepartment != null ? profileDepartment : userDepartment}">
+
+            <label for="admissionYear">Admission year</label>
+            <input id="admissionYear" name="admissionYear" type="text" inputmode="numeric" maxlength="4"
+                   pattern="[0-9]{4}" required
+                   th:value="${profileAdmissionYear != null ? profileAdmissionYear : userAdmissionYear}">
+            <small th:text="|Enter a year from 1900 through ${maximumAdmissionYear}.|">Enter a valid admission year.</small>
+
+            <label for="courseProgram">Course / program</label>
+            <input id="courseProgram" name="courseProgram" type="text" maxlength="150" required
+                   th:value="${profileCourseProgram != null ? profileCourseProgram : userCourseProgram}">
+
+            <label for="phone">Phone <span class="account-optional">(optional)</span></label>
+            <input id="phone" name="phone" type="tel" maxlength="20" autocomplete="tel"
+                   th:value="${profilePhone != null ? profilePhone : userPhone}">
+
+            <div class="account-form-actions">
+                <button class="account-primary-button" type="submit">Save profile</button>
+                <a class="account-text-link" href="/profile" th:if="${profileComplete}">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

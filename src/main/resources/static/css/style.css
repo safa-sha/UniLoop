@@ -3704,15 +3704,15 @@ body.seller-requests-page .site-navbar {
 }
 
 .my-listings-page .listing-card-actions .delete-listing-button {
-    border: 1px solid #B32932;
-    background: #B32932;
+    border: 1px solid #895363;
+    background: #713B4A;
     color: #FFFFFF;
     cursor: pointer;
 }
 
 .my-listings-page .listing-card-actions .delete-listing-button:hover {
-    border-color: #92252D;
-    background: #92252D;
+    border-color: #70404C;
+    background: #5B2F3B;
     color: #FFFFFF;
 }
 
@@ -3725,4 +3725,134 @@ body.seller-requests-page .site-navbar {
     font-size: clamp(29px, 3vw, 34px);
     line-height: 1.18;
     letter-spacing: -0.7px;
+}
+
+/* Profile and account settings */
+.account-page { min-height: 100vh; color: var(--ul-text); }
+.account-main {
+    width: min(100%, 900px);
+    min-height: calc(100vh - 76px);
+    margin: 0 auto;
+    padding: 52px var(--ul-content-gutter) 80px;
+}
+.account-heading { margin: 0 0 27px; }
+.account-eyebrow {
+    margin: 0 0 9px;
+    color: var(--ul-lavender);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+.account-heading h1 {
+    margin: 0 0 9px;
+    color: var(--ul-text);
+    font-size: clamp(29px, 4vw, 36px);
+    letter-spacing: -.7px;
+}
+.account-heading > p:last-child,
+.account-panel-heading > p:last-child {
+    color: var(--ul-muted);
+    font-size: 13px;
+    line-height: 1.65;
+}
+.account-panel {
+    margin: 0 0 18px;
+    padding: 28px;
+    border: 1px solid var(--ul-line);
+    border-radius: 14px;
+    background: var(--ul-surface);
+    box-shadow: 0 16px 40px rgba(0,0,0,.14);
+}
+.account-message {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border: 1px solid rgba(215,210,202,.2);
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.account-message-error { background: rgba(215,210,202,.06); color: var(--ul-warm); }
+.account-message-success { background: rgba(161,139,174,.12); color: #D7CADD; }
+.profile-identity { display: flex; align-items: center; gap: 18px; }
+.profile-avatar {
+    display: grid;
+    width: 68px;
+    height: 68px;
+    flex: 0 0 68px;
+    place-items: center;
+    border: 1px solid rgba(196,181,206,.34);
+    border-radius: 50%;
+    background: linear-gradient(145deg, #574267, #34293F);
+    color: #F2F0EC;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+.profile-identity h2,
+.account-panel-heading h2 { margin: 0 0 5px; color: var(--ul-text); font-size: 21px; }
+.profile-email { color: var(--ul-muted); font-size: 13px; overflow-wrap: anywhere; }
+.profile-details,
+.settings-account-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+    margin: 26px 0 0;
+    border-top: 1px solid var(--ul-line);
+}
+.profile-details > div,
+.settings-account-details > div { min-width: 0; padding: 16px 0; border-bottom: 1px solid var(--ul-line); }
+.profile-details dt,
+.settings-account-details dt { margin: 0 0 6px; color: var(--ul-muted); font-size: 11px; }
+.profile-details dd,
+.settings-account-details dd { margin: 0; color: var(--ul-text); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.account-panel-heading { margin: 0 0 20px; }
+.account-panel-heading h2 { margin-bottom: 8px; }
+.account-form { display: flex; flex-direction: column; gap: 9px; }
+.account-form label { margin-top: 7px; color: var(--ul-text); font-size: 12px; font-weight: 600; }
+.account-form input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid rgba(215,210,202,.18);
+    border-radius: 7px;
+    background: #1B2940;
+    color: var(--ul-text);
+    font: inherit;
+    font-size: 13px;
+}
+.account-form small { margin: -3px 0 3px; color: var(--ul-muted); font-size: 11px; }
+.account-form input:focus { outline: 2px solid rgba(161,139,174,.55); outline-offset: 1px; }
+.account-optional { color: var(--ul-muted); font-weight: 400; }
+.account-form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 14px; }
+.account-primary-button,
+.account-secondary-button {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 1px solid var(--ul-purple);
+    border-radius: 7px;
+    background: var(--ul-purple);
+    color: var(--ul-text);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .18s ease, border-color .18s ease;
+}
+.account-primary-button:hover,
+.account-secondary-button:hover { border-color: var(--ul-purple-hover); background: var(--ul-purple-hover); }
+.account-secondary-button { margin-top: 22px; }
+.account-text-link { color: #C4B5CE; font-size: 12px; text-decoration: none; }
+.account-text-link:hover { color: var(--ul-text); text-decoration: underline; }
+.account-page a:focus-visible,
+.account-page button:focus-visible { outline: 2px solid var(--ul-lavender); outline-offset: 3px; }
+@media (max-width: 680px) {
+    .account-main { padding: 38px 20px 56px; }
+    .account-panel { padding: 22px 19px; }
+    .profile-details, .settings-account-details { grid-template-columns: 1fr; }
+    .profile-identity { align-items: flex-start; gap: 14px; }
+    .profile-avatar { width: 56px; height: 56px; flex-basis: 56px; font-size: 18px; }
 }

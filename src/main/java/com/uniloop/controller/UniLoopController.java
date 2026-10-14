@@ -2,9 +2,14 @@ package com.uniloop.controller;
 
 import com.uniloop.model.Request;
 import com.uniloop.model.Item;
+import com.uniloop.model.User;
 import com.uniloop.repository.ItemRepository;
+import com.uniloop.repository.UserRepository;
 import com.uniloop.service.ItemService;
 import com.uniloop.service.RequestService;
+import com.uniloop.service.UserService;
+import com.uniloop.service.UserService.PasswordChangeResult;
+import com.uniloop.service.UserService.ProfileUpdateResult;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -16,18 +21,27 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.sql.SQLException;
+import java.time.Year;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
 public class UniLoopController {
 
+    private static final Logger LOGGER = Logger.getLogger(UniLoopController.class.getName());
+
     private final ItemRepository itemRepository =
             new ItemRepository();
+
+    private final UserService userService =
+            new UserService(new UserRepository());
 
     private final ItemService itemService =
             new ItemService();
@@ -45,6 +59,145 @@ public class UniLoopController {
         );
 
         return "index";
+    }
+
+    @GetMapping("/profile")
+    public String profile(@RequestParam(name = "edit", defaultValue = "false") boolean edit,
+                          Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        Integer userId = authenticatedUserId(session);
+        if (userId == null) return loginRedirect("/profile");
+
+        try {
+            User user = userService.getUserById(userId);
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("profileError", "Your account could not be found.");
+                return "redirect:/";
+            }
+            boolean profileComplete = user.getDepartment() != null && !user.getDepartment().isBlank()
+                    && user.getAdmissionYear() != null
+                    && user.getCourseProgram() != null && !user.getCourseProgram().isBlank();
+            model.addAttribute("profileName", user.getName());
+            model.addAttribute("profileEmail", user.getEmail());
+            model.addAttribute("userDepartment", user.getDepartment());
+            model.addAttribute("userAdmissionYear", user.getAdmissionYear());
+            model.addAttribute("userCourseProgram", user.getCourseProgram());
+            model.addAttribute("userPhone", user.getPhone());
+            model.addAttribute("profileComplete", profileComplete);
+            model.addAttribute("editProfile", edit || !profileComplete);
+            model.addAttribute("profileInitials", profileInitials(user.getName()));
+            model.addAttribute("maximumAdmissionYear", Year.now().getValue() + 1);
+            return "profile";
+        } catch (SQLException exception) {
+            LOGGER.log(Level.WARNING, "Could not load profile", exception);
+            redirectAttributes.addFlashAttribute("profileError", "We could not load your profile. Please try again.");
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(@RequestParam(name = "phone", required = false) String phone,
+                                @RequestParam(name = "department", required = false) String department,
+                                @RequestParam(name = "admissionYear", required = false) String admissionYearInput,
+                                @RequestParam(name = "courseProgram", required = false) String courseProgram,
+                                HttpSession session, RedirectAttributes redirectAttributes) {
+        Integer userId = authenticatedUserId(session);
+        if (userId == null) return loginRedirect("/profile");
+
+        Integer admissionYear = null;
+        boolean invalidAdmissionYear = admissionYearInput == null || admissionYearInput.isBlank();
+        if (!invalidAdmissionYear) {
+            try {
+                admissionYear = Integer.valueOf(admissionYearInput.trim());
+            } catch (NumberFormatException exception) {
+                invalidAdmissionYear = true;
+            }
+        }
+
+        ProfileUpdateResult result = invalidAdmissionYear
+                ? ProfileUpdateResult.INVALID_ADMISSION_YEAR
+                : userService.updateProfile(userId, phone, department, admissionYear, courseProgram);
+        if (result == ProfileUpdateResult.SUCCESS) {
+            redirectAttributes.addFlashAttribute("profileSuccess", "Your profile was updated.");
+        } else {
+            redirectAttributes.addFlashAttribute("profileError", profileUpdateMessage(result));
+            redirectAttributes.addFlashAttribute("profilePhone", phone);
+            redirectAttributes.addFlashAttribute("profileDepartment", department);
+            redirectAttributes.addFlashAttribute("profileAdmissionYear", admissionYearInput);
+            redirectAttributes.addFlashAttribute("profileCourseProgram", courseProgram);
+            return "redirect:/profile?edit=true";
+        }
+        return "redirect:/profile";
+    }
+
+    @GetMapping("/settings")
+    public String settings(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        Integer userId = authenticatedUserId(session);
+        if (userId == null) return loginRedirect("/settings");
+
+        try {
+            User user = userService.getUserById(userId);
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("settingsError", "Your account could not be found.");
+                return "redirect:/";
+            }
+            model.addAttribute("userName", user.getName());
+            model.addAttribute("userEmail", user.getEmail());
+            return "settings";
+        } catch (SQLException exception) {
+            LOGGER.log(Level.WARNING, "Could not load account settings", exception);
+            redirectAttributes.addFlashAttribute("settingsError",
+                    "We could not load your account settings. Please try again.");
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/settings/password")
+    public String changePassword(@RequestParam(name = "currentPassword", required = false) String currentPassword,
+                                 @RequestParam(name = "newPassword", required = false) String newPassword,
+                                 @RequestParam(name = "confirmPassword", required = false) String confirmPassword,
+                                 HttpSession session, RedirectAttributes redirectAttributes) {
+        Integer userId = authenticatedUserId(session);
+        if (userId == null) return loginRedirect("/settings");
+
+        if (newPassword == null || !newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("settingsError", "The new password and confirmation do not match.");
+            return "redirect:/settings";
+        }
+
+        PasswordChangeResult result = userService.changePassword(userId, currentPassword, newPassword);
+        if (result == PasswordChangeResult.SUCCESS) {
+            redirectAttributes.addFlashAttribute("settingsSuccess", "Your password was changed.");
+        } else {
+            redirectAttributes.addFlashAttribute("settingsError", passwordChangeMessage(result));
+        }
+        return "redirect:/settings";
+    }
+
+    private String profileUpdateMessage(ProfileUpdateResult result) {
+        return switch (result) {
+            case INVALID_DEPARTMENT -> "Enter a department of up to 100 characters.";
+            case INVALID_ADMISSION_YEAR -> "Enter a valid admission year.";
+            case INVALID_COURSE_PROGRAM -> "Enter a course or program of up to 150 characters.";
+            case INVALID_PHONE -> "Enter a phone number of up to 20 characters.";
+            case INVALID_USER_ID, USER_NOT_FOUND -> "Your account could not be found.";
+            default -> "We could not update your profile. Please try again.";
+        };
+    }
+
+    private String passwordChangeMessage(PasswordChangeResult result) {
+        return switch (result) {
+            case INVALID_CURRENT_PASSWORD -> "The current password is incorrect.";
+            case INVALID_NEW_PASSWORD -> "Use a new password with at least 8 characters and no more than 72 UTF-8 bytes.";
+            case INVALID_USER_ID, USER_NOT_FOUND -> "Your account could not be found.";
+            default -> "We could not change your password. Please try again.";
+        };
+    }
+
+    private String profileInitials(String name) {
+        if (name == null || name.isBlank()) return "U";
+        String[] parts = name.trim().split("\\s+");
+        if (parts.length == 1) return parts[0].substring(0, 1).toUpperCase();
+        return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase();
     }
 
 

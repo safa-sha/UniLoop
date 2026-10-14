@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page settings-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">ACCOUNT PREFERENCES</p>
+        <h1>Settings</h1>
+        <p>Review your account details and keep your password up to date.</p>
+    </div>
+
+    <div class="account-message account-message-error" role="alert"
+         th:if="${settingsError != null}" th:text="${settingsError}"></div>
+    <div class="account-message account-message-success" role="status"
+         th:if="${settingsSuccess != null}" th:text="${settingsSuccess}"></div>
+
+    <section class="account-panel settings-account-panel" aria-labelledby="account-info-title">
+        <div class="account-panel-heading">
+            <p class="account-eyebrow">ACCOUNT</p>
+            <h2 id="account-info-title">Account information</h2>
+        </div>
+        <dl class="settings-account-details">
+            <div>
+                <dt>Full name</dt>
+                <dd th:text="${userName}">Full name</dd>
+            </div>
+            <div>
+                <dt>College email</dt>
+                <dd th:text="${userEmail}">student@saintgits.org</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="account-panel account-form-panel" aria-labelledby="password-title">
+        <div class="account-panel-heading">
+            <p class="account-eyebrow">SECURITY</p>
+            <h2 id="password-title">Change password</h2>
+            <p>Choose a password with at least 8 characters. Passwords may contain up to 72 UTF-8 bytes.</p>
+        </div>
+        <form class="account-form" action="/settings/password" method="post">
+            <label for="currentPassword">Current password</label>
+            <input id="currentPassword" name="currentPassword" type="password"
+                   autocomplete="current-password" required>
+
+            <label for="newPassword">New password</label>
+            <input id="newPassword" name="newPassword" type="password"
+                   autocomplete="new-password" minlength="8" maxlength="72" required>
+
+            <label for="confirmPassword">Confirm new password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password"
+                   autocomplete="new-password" minlength="8" maxlength="72" required>
+
+            <div class="account-form-actions">
+                <button class="account-primary-button" type="submit">Update password</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

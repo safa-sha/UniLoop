@@ -105,7 +105,8 @@ public class LoginController {
             if (uri.isAbsolute() || uri.getRawAuthority() != null || path == null) return "/";
             if (path.equals("/") || path.equals("/items") || path.equals("/item")
                     || path.equals("/sell") || path.equals("/requests")
-                    || path.equals("/my-requests") || path.equals("/list-item")) {
+                    || path.equals("/my-requests") || path.equals("/list-item")
+                    || path.equals("/profile") || path.equals("/settings")) {
                 return returnTo;
             }
         } catch (IllegalArgumentException ignored) {

@@ -18,12 +18,14 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.7-3.6 3.2-5.5 7-5.5s6.3 1.9 7 5.5"></path></svg>
             </summary>
             <div class="navbar-profile-dropdown" th:if="${session != null and session.authenticatedUserId != null}">
+                <a href="/profile">My Profile</a>
+                <a href="/settings">Settings</a>
                 <a href="/my-requests">My Requests</a>
                 <form action="/logout" method="post"
                       data-confirm-title="Log out of UniLoop?"
                       data-confirm-message="Are you sure you want to log out of your account?"
                       data-confirm-text="Log Out">
-                    <button type="submit">Logout</button>
+                    <button type="submit">Log Out</button>
                 </form>
             </div>
             <div class="navbar-profile-dropdown" th:if="${session == null or session.authenticatedUserId == null}">
