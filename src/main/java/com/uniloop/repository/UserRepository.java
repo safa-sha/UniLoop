@@ -1,8 +1,11 @@
 package com.uniloop.repository;
 import com.uniloop.DatabaseConnection;
+import com.uniloop.model.AdminUser;
 import com.uniloop.model.User;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -30,6 +33,46 @@ public class UserRepository {
                     return readUser(r);
                 }
             }
+        }
+    }
+
+    public int countUsers() throws SQLException {
+        return count("SELECT COUNT(*) FROM users");
+    }
+
+    public int countActiveUsers() throws SQLException {
+        return count("SELECT COUNT(*) FROM users WHERE status = 'ACTIVE'");
+    }
+
+    public List<AdminUser> findAllForAdmin() throws SQLException {
+        String sql = """
+                SELECT user_id, name, email, role, status, created_at
+                FROM users
+                ORDER BY user_id DESC
+                """;
+        List<AdminUser> users = new ArrayList<>();
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement s = c.prepareStatement(sql);
+             ResultSet r = s.executeQuery()) {
+            while (r.next()) {
+                users.add(new AdminUser(
+                        r.getInt("user_id"),
+                        r.getString("name"),
+                        r.getString("email"),
+                        r.getString("role"),
+                        r.getString("status"),
+                        r.getString("created_at")));
+            }
+        }
+        return users;
+    }
+
+    private int count(String sql) throws SQLException {
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement s = c.prepareStatement(sql);
+             ResultSet r = s.executeQuery()) {
+            r.next();
+            return r.getInt(1);
         }
     }
 
@@ -92,6 +135,7 @@ public class UserRepository {
     private User readUser(ResultSet r) throws SQLException {
         User user = new User(r.getString("name"), r.getString("email"), r.getString("password"));
         user.setUserId(r.getInt("user_id"));
+        user.setRole(r.getString("role"));
         user.setStatus(r.getString("status"));
         Set<String> columns = getResultColumns(r);
         if (columns.contains("phone")) user.setPhone(r.getString("phone"));

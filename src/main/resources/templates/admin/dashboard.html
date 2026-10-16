@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page admin-dashboard-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
+        <h1>Admin Dashboard</h1>
+        <p>Overview of registered users and marketplace listings.</p>
+    </div>
+
+    <p class="account-message account-message-error" role="alert"
+       th:if="${dashboardError != null}" th:text="${dashboardError}"></p>
+
+    <section class="admin-dashboard-stats" aria-label="Marketplace overview"
+             th:if="${dashboardError == null}">
+        <article class="account-panel admin-dashboard-stat">
+            <p>Total registered users</p>
+            <strong th:text="${totalUsers}">0</strong>
+        </article>
+        <article class="account-panel admin-dashboard-stat">
+            <p>Active users</p>
+            <strong th:text="${activeUsers}">0</strong>
+        </article>
+        <article class="account-panel admin-dashboard-stat">
+            <p>Total listings</p>
+            <strong th:text="${totalListings}">0</strong>
+        </article>
+        <article class="account-panel admin-dashboard-stat">
+            <p>Available listings</p>
+            <strong th:text="${availableListings}">0</strong>
+        </article>
+    </section>
+
+    <nav class="admin-navigation-cards" aria-label="Admin management">
+        <a class="account-panel admin-navigation-card" href="/admin/users">
+            <span class="account-eyebrow">ACCOUNTS</span>
+            <strong>User Management</strong>
+            <span>View registered users, roles, and account status.</span>
+        </a>
+        <a class="account-panel admin-navigation-card" href="/admin/listings">
+            <span class="account-eyebrow">MARKETPLACE</span>
+            <strong>Listing Management</strong>
+            <span>Review listing details and current status.</span>
+        </a>
+    </nav>
+
+    <a class="account-primary-button admin-dashboard-marketplace-link" href="/">Return to marketplace</a>
+</main>
+</body>
+</html>

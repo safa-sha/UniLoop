@@ -4,6 +4,7 @@ public class User {
     private String name;
     private String email;
     private String passwordHash;
+    private String role;
     private String status;
     private String phone;
     private String department;
@@ -17,6 +18,8 @@ public class User {
     public String getName() { return name; }
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public String getPhone() { return phone; }

@@ -42,4 +42,18 @@ public class LoginService {
             return null;
         }
     }
+
+    public boolean isActiveAdmin(int userId) {
+        if (userId <= 0) return false;
+
+        try {
+            User user = userRepository.findByUserId(userId);
+            return user != null
+                    && "ACTIVE".equalsIgnoreCase(user.getStatus())
+                    && "ADMIN".equalsIgnoreCase(user.getRole());
+        } catch (SQLException exception) {
+            LOGGER.log(Level.WARNING, "Could not verify admin account", exception);
+            return false;
+        }
+    }
 }

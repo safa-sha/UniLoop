@@ -29,8 +29,10 @@ public class LoginController {
                             Model model,
                             HttpServletResponse response,
                             RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("authenticatedUserId") != null) {
-            return "redirect:" + safeReturnTo(returnTo);
+        Object authenticatedUserId = session.getAttribute("authenticatedUserId");
+        if (authenticatedUserId != null) {
+            return "redirect:" + (isActiveAdminSession(authenticatedUserId)
+                    ? "/admin" : safeReturnTo(returnTo));
         }
         preventLoginCaching(response);
         if (Boolean.TRUE.equals(required)) {
@@ -51,7 +53,9 @@ public class LoginController {
         HttpSession existingSession = request.getSession(false);
         if (existingSession != null
                 && existingSession.getAttribute("authenticatedUserId") != null) {
-            return "redirect:" + safeReturnTo(returnTo);
+            Object authenticatedUserId = existingSession.getAttribute("authenticatedUserId");
+            return "redirect:" + (isActiveAdminSession(authenticatedUserId)
+                    ? "/admin" : safeReturnTo(returnTo));
         }
 
         preventLoginCaching(response);
@@ -75,7 +79,8 @@ public class LoginController {
             session.setAttribute("loginSuccessMessage",
                     "Welcome back, " + firstName + "! You have logged in successfully.");
         }
-        return "redirect:" + safeReturnTo(returnTo);
+        return "redirect:" + ("ADMIN".equalsIgnoreCase(user.getRole())
+                ? "/admin" : safeReturnTo(returnTo));
     }
 
     @PostMapping("/dismiss-login-notice")
@@ -106,7 +111,8 @@ public class LoginController {
             if (path.equals("/") || path.equals("/items") || path.equals("/item")
                     || path.equals("/sell") || path.equals("/requests")
                     || path.equals("/my-requests") || path.equals("/list-item")
-                    || path.equals("/profile") || path.equals("/settings")) {
+                    || path.equals("/profile") || path.equals("/settings")
+                    || path.equals("/admin")) {
                 return returnTo;
             }
         } catch (IllegalArgumentException ignored) {
@@ -118,6 +124,11 @@ public class LoginController {
     private String loginPageRedirect(String returnTo) {
         return "redirect:/login?returnTo="
                 + URLEncoder.encode(safeReturnTo(returnTo), StandardCharsets.UTF_8);
+    }
+
+    private boolean isActiveAdminSession(Object authenticatedUserId) {
+        return authenticatedUserId instanceof Number userId
+                && loginService.isActiveAdmin(userId.intValue());
     }
 
     private String usableDisplayName(String name) {

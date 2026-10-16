@@ -1,15 +1,64 @@
 package com.uniloop.repository;
 
 import com.uniloop.DatabaseConnection;
+import com.uniloop.model.AdminListing;
 import com.uniloop.model.Item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRepository {
+
+    public int countListings() throws SQLException {
+        return count("SELECT COUNT(*) FROM items");
+    }
+
+    public int countAvailableListings() throws SQLException {
+        return count("SELECT COUNT(*) FROM items WHERE item_status = 'AVAILABLE'");
+    }
+
+    public List<AdminListing> findAllForAdmin() throws SQLException {
+        String sql = """
+                SELECT i.item_id, i.item_name, u.name AS seller_name,
+                       c.category_name, i.listing_type, i.price,
+                       i.item_condition, i.date_posted, i.item_status
+                FROM items i
+                LEFT JOIN users u ON u.user_id = i.seller_id
+                LEFT JOIN categories c ON c.category_id = i.category_id
+                ORDER BY i.item_id DESC
+                """;
+        List<AdminListing> listings = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                listings.add(new AdminListing(
+                        resultSet.getInt("item_id"),
+                        resultSet.getString("item_name"),
+                        resultSet.getString("seller_name"),
+                        resultSet.getString("category_name"),
+                        resultSet.getString("listing_type"),
+                        resultSet.getBigDecimal("price"),
+                        resultSet.getString("item_condition"),
+                        resultSet.getString("date_posted"),
+                        resultSet.getString("item_status")));
+            }
+        }
+        return listings;
+    }
+
+    private int count(String sql) throws SQLException {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            resultSet.next();
+            return resultSet.getInt(1);
+        }
+    }
 
     // Get all AVAILABLE items for Browse
     public List<Item> getAllItems() {

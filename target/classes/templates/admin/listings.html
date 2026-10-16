@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listing Management - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page admin-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
+        <h1>Listing Management</h1>
+        <p>Marketplace listings and their current status. Listings are read-only.</p>
+    </div>
+
+    <nav class="admin-page-navigation" aria-label="Admin pages">
+        <a href="/admin">Admin Dashboard</a>
+        <a href="/admin/users">User Management</a>
+    </nav>
+
+    <p class="account-message account-message-error" role="alert"
+       th:if="${managementError != null}" th:text="${managementError}"></p>
+
+    <p class="account-panel admin-empty-state"
+       th:if="${managementError == null and #lists.isEmpty(listings)}">
+        No listings were found.
+    </p>
+
+    <div class="admin-table-wrap"
+         th:if="${managementError == null and !#lists.isEmpty(listings)}">
+        <table class="admin-data-table">
+            <caption>Marketplace listings</caption>
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Item</th>
+                <th scope="col">Seller</th>
+                <th scope="col">Category</th>
+                <th scope="col">Type</th>
+                <th scope="col">Price</th>
+                <th scope="col">Condition</th>
+                <th scope="col">Posted</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="listing : ${listings}">
+                <td th:text="${listing.itemId}">1</td>
+                <td th:text="${listing.itemName}">Item</td>
+                <td th:text="${listing.sellerName != null ? listing.sellerName : 'Unavailable'}">Seller</td>
+                <td th:text="${listing.categoryName != null ? listing.categoryName : 'Unavailable'}">Category</td>
+                <td th:text="${listing.listingType}">SELL</td>
+                <td th:text="${listing.price != null ? '₹' + listing.price : '—'}">₹0.00</td>
+                <td th:text="${listing.condition != null ? listing.condition : '—'}">Good</td>
+                <td th:text="${listing.datePosted}">2026-01-01 00:00:00</td>
+                <td><span class="admin-status admin-listing-status"
+                          th:text="${listing.itemStatus}">AVAILABLE</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

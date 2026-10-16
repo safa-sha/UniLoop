@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page admin-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
+        <h1>User Management</h1>
+        <p>Registered user accounts. Account details are read-only.</p>
+    </div>
+
+    <nav class="admin-page-navigation" aria-label="Admin pages">
+        <a href="/admin">Admin Dashboard</a>
+        <a href="/admin/listings">Listing Management</a>
+    </nav>
+
+    <p class="account-message account-message-error" role="alert"
+       th:if="${managementError != null}" th:text="${managementError}"></p>
+
+    <p class="account-panel admin-empty-state" th:if="${managementError == null and #lists.isEmpty(users)}">
+        No registered users were found.
+    </p>
+
+    <div class="admin-table-wrap"
+         th:if="${managementError == null and !#lists.isEmpty(users)}">
+        <table class="admin-data-table">
+            <caption>Registered users</caption>
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Registered</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.userId}">1</td>
+                <td th:text="${user.name}">Name</td>
+                <td class="admin-table-email" th:text="${user.email}">email@example.com</td>
+                <td th:text="${user.role}">STUDENT</td>
+                <td>
+                    <span class="admin-status"
+                          th:classappend="${user.status == 'ACTIVE'} ? ' admin-status-active' : ' admin-status-inactive'"
+                          th:text="${user.status}">ACTIVE</span>
+                </td>
+                <td th:text="${user.registeredAt}">2026-01-01 00:00:00</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>
