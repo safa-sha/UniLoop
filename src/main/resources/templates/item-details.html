@@ -41,10 +41,12 @@
                 <div class="details-actions" th:unless="${isSeller}">
                     <form action="/request" method="post" th:if="${item.itemStatus == 'AVAILABLE' and (request == null or request.requestStatus == 'REJECTED' or request.requestStatus == 'CANCELLED')}">
                         <input type="hidden" name="itemId" th:value="${item.itemId}"><input type="hidden" name="source" value="item"><input type="hidden" name="navigationSource" th:value="${navigationSource}">
+                        <input type="hidden" name="returnTo" th:if="${detailReturnTo != null}" th:value="${detailReturnTo}">
                         <button type="submit" class="details-primary" th:text="${request != null ? 'Request Again' : 'Request Item'}">Request Item</button>
                     </form>
                     <form action="/cancel-request" method="post" th:if="${item.itemStatus == 'AVAILABLE' and request != null and request.requestStatus == 'PENDING'}">
                         <input type="hidden" name="requestId" th:value="${request.requestId}"><input type="hidden" name="source" value="item"><input type="hidden" name="navigationSource" th:value="${navigationSource}">
+                        <input type="hidden" name="returnTo" th:if="${detailReturnTo != null}" th:value="${detailReturnTo}">
                         <button type="submit" class="details-secondary">Cancel Request</button>
                     </form>
                     <p class="details-request-state" th:if="${request != null and request.requestStatus == 'PENDING'}">Your request is pending.</p>

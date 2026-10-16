@@ -124,6 +124,9 @@
 
                 <div class="request-card">
 
+                    <a class="request-card-details-link"
+                       th:href="@{/item(id=${request.itemId}, returnTo='/my-requests')}"
+                       th:aria-label="|View ${request.itemName} details|"></a>
 
                     <p>
 
@@ -299,6 +302,9 @@
                          th:classappend="${requestStat.index >= 2} ? ' hidden-history' : ''"
                          class="request-card history-card">
 
+                        <a class="request-card-details-link"
+                           th:href="@{/item(id=${request.itemId}, returnTo='/my-requests')}"
+                           th:aria-label="|View ${group.itemName} details|"></a>
 
                         <p>
 

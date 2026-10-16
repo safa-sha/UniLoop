@@ -90,6 +90,10 @@
                     <div class="request-card seller-request-card"
                          th:each="request : ${group.requests}">
 
+                        <a class="request-card-details-link"
+                           th:href="@{/item(id=${request.itemId}, returnTo='/requests')}"
+                           th:aria-label="|View ${group.itemName} details|"></a>
+
                         <p>
 
                             <strong th:text="${request.buyerName}">
@@ -252,6 +256,10 @@
                         <div class="request-card history-card seller-history-card"
                              th:each="request, stat : ${group.requests}"
                              th:classappend="${stat.index >= 1} ? ' hidden-history' : ''">
+
+                            <a class="request-card-details-link"
+                               th:href="@{/item(id=${request.itemId}, returnTo='/requests')}"
+                               th:aria-label="|View ${group.itemName} details|"></a>
 
                             <p>
 

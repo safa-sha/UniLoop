@@ -387,16 +387,18 @@ public class UniLoopController {
             String source,
             @RequestParam(name = "navigationSource", required = false)
             String navigationSource,
+            @RequestParam(name = "returnTo", required = false)
+            String returnTo,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         Integer buyerId = authenticatedUserId(session);
-        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId, navigationSource));
+        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId, navigationSource, returnTo));
 
         Item requestedItem = itemRepository.getItemById(itemId);
         if (requestedItem != null && requestedItem.getSellerId() == buyerId) {
             redirectAttributes.addFlashAttribute("requestError", "You cannot request your own listing.");
-            return "redirect:" + itemDetailsPath(itemId, navigationSource);
+            return "redirect:" + itemDetailsPath(itemId, navigationSource, returnTo);
         }
 
         requestService.requestItem(
@@ -405,7 +407,7 @@ public class UniLoopController {
         );
 
         if (source.equals("item")) {
-    return "redirect:" + itemDetailsPath(itemId, navigationSource);
+    return "redirect:" + itemDetailsPath(itemId, navigationSource, returnTo);
 }
 
 if (source.equals("my-requests")) {
@@ -505,11 +507,13 @@ public String myRequests(Model model, HttpSession session) {
             String source,
             @RequestParam(name = "navigationSource", required = false)
             String navigationSource,
+            @RequestParam(name = "returnTo", required = false)
+            String returnTo,
             HttpSession session) {
 
         Integer buyerId = authenticatedUserId(session);
         int itemId = requestService.getItemIdByRequestId(requestId);
-        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId, navigationSource));
+        if (buyerId == null) return loginRedirect(destinationForSource(source, itemId, navigationSource, returnTo));
 
         requestService.cancelRequest(
                 requestId,
@@ -517,7 +521,7 @@ public String myRequests(Model model, HttpSession session) {
         );
 
         if (source.equals("item")) {
-    return "redirect:" + itemDetailsPath(itemId, navigationSource);
+    return "redirect:" + itemDetailsPath(itemId, navigationSource, returnTo);
 }
 
 if (source.equals("my-requests")) {
@@ -579,6 +583,8 @@ public String listItemPage(
             int id,
             @RequestParam(name = "source", required = false)
             String source,
+            @RequestParam(name = "returnTo", required = false)
+            String returnTo,
 
             Model model,
             HttpSession session) {
@@ -590,10 +596,32 @@ public String listItemPage(
             return "redirect:/items";
         }
 
+        String safeReturnTo = validatedReturnTo(returnTo);
         String navigationSource = "home";
         String backHref = "/";
         String backLabel = "Back to Home";
-        if ("browse".equals(source)) {
+        if (safeReturnTo != null) {
+            backHref = safeReturnTo;
+            switch (safeReturnTo) {
+                case "/my-requests" -> {
+                    navigationSource = "browse";
+                    backLabel = "Back to My Requests";
+                }
+                case "/requests" -> {
+                    navigationSource = "sell";
+                    backLabel = "Back to Seller Requests";
+                }
+                case "/items" -> {
+                    navigationSource = "browse";
+                    backLabel = "Back to Browse";
+                }
+                case "/sell" -> {
+                    navigationSource = "sell";
+                    backLabel = "Back to My Listings";
+                }
+                default -> throw new IllegalStateException("Unsupported validated return destination");
+            }
+        } else if ("browse".equals(source)) {
             navigationSource = "browse";
             backHref = "/items";
             backLabel = "Back to Browse";
@@ -605,6 +633,8 @@ public String listItemPage(
         model.addAttribute("navigationSource", navigationSource);
         model.addAttribute("detailBackHref", backHref);
         model.addAttribute("detailBackLabel", backLabel);
+        model.addAttribute("detailReturnTo", safeReturnTo != null ? safeReturnTo
+                : "browse".equals(source) ? "/items" : "sell".equals(source) ? "/sell" : null);
 
         Integer buyerId = authenticatedUserId(session);
 
@@ -655,17 +685,28 @@ public String deleteListing(
                 + URLEncoder.encode(returnTo, StandardCharsets.UTF_8);
     }
 
-    private String destinationForSource(String source, int itemId, String navigationSource) {
-        if ("item".equals(source) && itemId > 0) return itemDetailsPath(itemId, navigationSource);
+    private String destinationForSource(String source, int itemId, String navigationSource, String returnTo) {
+        if ("item".equals(source) && itemId > 0) return itemDetailsPath(itemId, navigationSource, returnTo);
         if ("my-requests".equals(source)) return "/my-requests";
         return itemId > 0 ? "/items#item-" + itemId : "/items";
     }
 
-    private String itemDetailsPath(int itemId, String navigationSource) {
+    private String itemDetailsPath(int itemId, String navigationSource, String returnTo) {
         String path = "/item?id=" + itemId;
-        if ("browse".equals(navigationSource) || "sell".equals(navigationSource)) {
+        String safeReturnTo = validatedReturnTo(returnTo);
+        if (safeReturnTo != null) {
+            path += "&returnTo=" + URLEncoder.encode(safeReturnTo, StandardCharsets.UTF_8);
+        } else if ("browse".equals(navigationSource) || "sell".equals(navigationSource)) {
             path += "&source=" + navigationSource;
         }
         return path;
+    }
+
+    private String validatedReturnTo(String returnTo) {
+        if (returnTo == null) return null;
+        return switch (returnTo) {
+            case "/my-requests", "/requests", "/items", "/sell" -> returnTo;
+            default -> null;
+        };
     }
 }

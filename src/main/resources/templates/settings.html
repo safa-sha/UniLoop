@@ -43,7 +43,10 @@
             <h2 id="password-title">Change password</h2>
             <p>Choose a password with at least 8 characters. Passwords may contain up to 72 UTF-8 bytes.</p>
         </div>
-        <form class="account-form" action="/settings/password" method="post">
+        <form class="account-form" action="/settings/password" method="post"
+              data-confirm-title="Change your password?"
+              data-confirm-message="Are you sure you want to change your password?"
+              data-confirm-text="Change Password">
             <label for="currentPassword">Current password</label>
             <input id="currentPassword" name="currentPassword" type="password"
                    autocomplete="current-password" required>
@@ -54,7 +57,10 @@
 
             <label for="confirmPassword">Confirm new password</label>
             <input id="confirmPassword" name="confirmPassword" type="password"
-                   autocomplete="new-password" minlength="8" maxlength="72" required>
+                   autocomplete="new-password" minlength="8" maxlength="72"
+                   aria-describedby="confirmPasswordError" required>
+            <small id="confirmPasswordError" class="account-field-error" role="alert"
+                   aria-live="assertive" hidden></small>
 
             <div class="account-form-actions">
                 <button class="account-primary-button" type="submit">Update password</button>

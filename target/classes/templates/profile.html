@@ -31,16 +31,16 @@
         </div>
         <dl class="profile-details">
             <div>
+                <dt>Course / program</dt>
+                <dd th:text="${userCourseProgram}">Course or program</dd>
+            </div>
+            <div>
                 <dt>Department</dt>
                 <dd th:text="${userDepartment}">Department</dd>
             </div>
             <div>
                 <dt>Admission year</dt>
                 <dd th:text="${userAdmissionYear}">2025</dd>
-            </div>
-            <div>
-                <dt>Course / program</dt>
-                <dd th:text="${userCourseProgram}">Course or program</dd>
             </div>
             <div th:if="${userPhone != null and !#strings.isEmpty(#strings.trim(userPhone))}">
                 <dt>Phone</dt>
@@ -56,7 +56,14 @@
             <h2 id="profile-form-title" th:text="${profileComplete ? 'Edit Your Profile' : 'Complete Your Profile'}">Complete Your Profile</h2>
             <p>Department, admission year, and course/program are required. Phone is optional.</p>
         </div>
-        <form class="account-form" action="/profile" method="post">
+        <form class="account-form" action="/profile" method="post"
+              data-confirm-title="Save profile changes?"
+              data-confirm-message="Save your profile changes?"
+              data-confirm-text="Save Changes">
+            <label for="courseProgram">Course / program</label>
+            <input id="courseProgram" name="courseProgram" type="text" maxlength="150" required
+                   th:value="${profileCourseProgram != null ? profileCourseProgram : userCourseProgram}">
+
             <label for="department">Department</label>
             <input id="department" name="department" type="text" maxlength="100" autocomplete="organization-title"
                    required th:value="${profileDepartment != null ? profileDepartment : userDepartment}">
@@ -66,10 +73,6 @@
                    pattern="[0-9]{4}" required
                    th:value="${profileAdmissionYear != null ? profileAdmissionYear : userAdmissionYear}">
             <small th:text="|Enter a year from 1900 through ${maximumAdmissionYear}.|">Enter a valid admission year.</small>
-
-            <label for="courseProgram">Course / program</label>
-            <input id="courseProgram" name="courseProgram" type="text" maxlength="150" required
-                   th:value="${profileCourseProgram != null ? profileCourseProgram : userCourseProgram}">
 
             <label for="phone">Phone <span class="account-optional">(optional)</span></label>
             <input id="phone" name="phone" type="tel" maxlength="20" autocomplete="tel"
