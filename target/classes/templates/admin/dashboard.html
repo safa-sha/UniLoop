@@ -12,44 +12,110 @@
     <div class="account-heading">
         <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
         <h1>Admin Dashboard</h1>
-        <p>Overview of registered users and marketplace listings.</p>
+        <p>Overview of users, listings, and marketplace activity.</p>
     </div>
+
+    <nav class="admin-navigation-cards" aria-label="Admin management">
+        <a class="account-panel admin-navigation-card admin-navigation-users" href="/admin/users">
+            <span class="admin-navigation-card-top">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="9" cy="8" r="3"></circle>
+                    <path d="M3.5 19c.5-3.2 2.3-4.8 5.5-4.8s5 1.6 5.5 4.8"></path>
+                    <path d="M16 5.5a3 3 0 0 1 0 5.8M17 14.4c2 .5 3.1 2 3.5 4.6"></path>
+                </svg>
+                <span class="account-eyebrow">ACCOUNTS</span>
+                <span class="admin-navigation-arrow" aria-hidden="true">→</span>
+            </span>
+            <strong>User Management</strong>
+            <span class="admin-navigation-description">View registered users, roles, and account status.</span>
+        </a>
+        <a class="account-panel admin-navigation-card admin-navigation-listings" href="/admin/listings">
+            <span class="admin-navigation-card-top">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 8.5 12 4l8 4.5v9L12 22l-8-4.5z"></path>
+                    <path d="m4.5 8.8 7.5 4.3 7.5-4.3M12 13v8.5M8 6.2l8 4.6"></path>
+                </svg>
+                <span class="account-eyebrow">MARKETPLACE</span>
+                <span class="admin-navigation-arrow" aria-hidden="true">→</span>
+            </span>
+            <strong>Listing Management</strong>
+            <span class="admin-navigation-description">Review and moderate listing availability.</span>
+        </a>
+        <a class="account-panel admin-navigation-card admin-navigation-requests" href="/admin/requests">
+            <span class="admin-navigation-card-top">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 4.5h14v15H5z"></path>
+                    <path d="M8 8h8M8 12h8M8 16h5"></path>
+                </svg>
+                <span class="account-eyebrow">ACTIVITY</span>
+                <span class="admin-navigation-arrow" aria-hidden="true">→</span>
+            </span>
+            <strong>Request Monitoring</strong>
+            <span class="admin-navigation-description">Review requests without changing buyer-seller decisions.</span>
+        </a>
+    </nav>
 
     <p class="account-message account-message-error" role="alert"
        th:if="${dashboardError != null}" th:text="${dashboardError}"></p>
 
-    <section class="admin-dashboard-stats" aria-label="Marketplace overview"
+    <section class="admin-dashboard-overview-stats" aria-label="Marketplace overview"
              th:if="${dashboardError == null}">
         <article class="account-panel admin-dashboard-stat">
-            <p>Total registered users</p>
             <strong th:text="${totalUsers}">0</strong>
+            <p>Total Users</p>
         </article>
         <article class="account-panel admin-dashboard-stat">
-            <p>Active users</p>
             <strong th:text="${activeUsers}">0</strong>
+            <p>Active Users</p>
         </article>
         <article class="account-panel admin-dashboard-stat">
-            <p>Total listings</p>
             <strong th:text="${totalListings}">0</strong>
+            <p>Total Listings</p>
         </article>
         <article class="account-panel admin-dashboard-stat">
-            <p>Available listings</p>
             <strong th:text="${availableListings}">0</strong>
+            <p>Available Listings</p>
         </article>
     </section>
 
-    <nav class="admin-navigation-cards" aria-label="Admin management">
-        <a class="account-panel admin-navigation-card" href="/admin/users">
-            <span class="account-eyebrow">ACCOUNTS</span>
-            <strong>User Management</strong>
-            <span>View registered users, roles, and account status.</span>
-        </a>
-        <a class="account-panel admin-navigation-card" href="/admin/listings">
-            <span class="account-eyebrow">MARKETPLACE</span>
-            <strong>Listing Management</strong>
-            <span>Review listing details and current status.</span>
-        </a>
-    </nav>
+    <section class="admin-dashboard-request-analytics" aria-label="Request analytics"
+             th:if="${dashboardError == null}">
+        <h2>Request Activity</h2>
+        <div class="admin-dashboard-request-stats">
+            <article class="account-panel admin-dashboard-stat">
+                <strong th:text="${totalRequests}">0</strong>
+                <p>Total Requests</p>
+            </article>
+            <article class="account-panel admin-dashboard-stat">
+                <strong th:text="${pendingRequests}">0</strong>
+                <p>Pending Requests</p>
+            </article>
+            <article class="account-panel admin-dashboard-stat">
+                <strong th:text="${acceptedRequests}">0</strong>
+                <p>Accepted Requests</p>
+            </article>
+            <article class="account-panel admin-dashboard-stat">
+                <strong th:text="${rejectedRequests}">0</strong>
+                <p>Rejected Requests</p>
+            </article>
+            <article class="account-panel admin-dashboard-stat">
+                <strong th:text="${cancelledRequests}">0</strong>
+                <p>Cancelled Requests</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="account-panel admin-category-summary"
+             aria-labelledby="admin-category-title"
+             th:if="${dashboardError == null and !#lists.isEmpty(categoryCounts)}">
+        <h2 id="admin-category-title">Listings by category</h2>
+        <div class="admin-category-list">
+            <div class="admin-category-row" th:each="category : ${categoryCounts}">
+                <span th:text="${category.categoryName}">Books</span>
+                <strong th:text="${category.listingCount}">0</strong>
+            </div>
+        </div>
+    </section>
 
     <a class="account-primary-button admin-dashboard-marketplace-link" href="/">Return to marketplace</a>
 </main>

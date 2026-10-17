@@ -1,15 +1,101 @@
 package com.uniloop.repository;
 
 import com.uniloop.DatabaseConnection;
+import com.uniloop.model.AdminRequest;
 import com.uniloop.model.Request;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestRepository {
+
+    public int countRequests() throws SQLException {
+        return count("SELECT COUNT(*) FROM requests", null);
+    }
+
+    public int countRequestsByStatus(String status) throws SQLException {
+        return count("SELECT COUNT(*) FROM requests WHERE request_status = ?", status);
+    }
+
+    private int count(String sql, String status) throws SQLException {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (status != null) statement.setString(1, status);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt(1);
+            }
+        }
+    }
+
+    public List<AdminRequest> findAllForAdmin(String search, String status) throws SQLException {
+        String sql = """
+                SELECT r.request_id, r.item_id, i.item_name,
+                       buyer.name AS buyer_name, seller.name AS seller_name,
+                       r.request_status, r.request_date
+                FROM requests r
+                JOIN items i ON i.item_id = r.item_id
+                JOIN users buyer ON buyer.user_id = r.buyer_id
+                JOIN users seller ON seller.user_id = i.seller_id
+                WHERE (? = '' OR LOWER(i.item_name) LIKE ?
+                       OR LOWER(buyer.name) LIKE ? OR LOWER(seller.name) LIKE ?)
+                  AND (? = '' OR r.request_status = ?)
+                ORDER BY r.request_id DESC
+                """;
+        List<AdminRequest> requests = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            String normalizedSearch = search == null ? "" : search.trim().toLowerCase(java.util.Locale.ROOT);
+            String normalizedStatus = status == null ? "" : status;
+            statement.setString(1, normalizedSearch);
+            statement.setString(2, "%" + normalizedSearch + "%");
+            statement.setString(3, "%" + normalizedSearch + "%");
+            statement.setString(4, "%" + normalizedSearch + "%");
+            statement.setString(5, normalizedStatus);
+            statement.setString(6, normalizedStatus);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    requests.add(readAdminRequest(resultSet));
+                }
+            }
+        }
+        return requests;
+    }
+
+    public AdminRequest findAdminRequestById(int requestId) throws SQLException {
+        String sql = """
+                SELECT r.request_id, r.item_id, i.item_name,
+                       buyer.name AS buyer_name, seller.name AS seller_name,
+                       r.request_status, r.request_date
+                FROM requests r
+                JOIN items i ON i.item_id = r.item_id
+                JOIN users buyer ON buyer.user_id = r.buyer_id
+                JOIN users seller ON seller.user_id = i.seller_id
+                WHERE r.request_id = ?
+                """;
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, requestId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? readAdminRequest(resultSet) : null;
+            }
+        }
+    }
+
+    private AdminRequest readAdminRequest(ResultSet resultSet) throws SQLException {
+        return new AdminRequest(
+                resultSet.getInt("request_id"),
+                resultSet.getInt("item_id"),
+                resultSet.getString("item_name"),
+                resultSet.getString("buyer_name"),
+                resultSet.getString("seller_name"),
+                resultSet.getString("request_status"),
+                resultSet.getString("request_date"));
+    }
 
     public boolean createRequest(int itemId, int buyerId) {
 

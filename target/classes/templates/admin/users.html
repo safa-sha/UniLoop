@@ -12,19 +12,49 @@
     <div class="account-heading">
         <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
         <h1>User Management</h1>
-        <p>Registered user accounts. Account details are read-only.</p>
+        <p>Search accounts and manage account status and administrator access.</p>
     </div>
 
     <nav class="admin-page-navigation" aria-label="Admin pages">
         <a href="/admin">Admin Dashboard</a>
         <a href="/admin/listings">Listing Management</a>
+        <a href="/admin/requests">Request Monitoring</a>
     </nav>
 
+    <p class="account-message account-message-success" role="status"
+       th:if="${adminSuccess != null}" th:text="${adminSuccess}"></p>
+    <p class="account-message account-message-error" role="alert"
+       th:if="${adminError != null}" th:text="${adminError}"></p>
     <p class="account-message account-message-error" role="alert"
        th:if="${managementError != null}" th:text="${managementError}"></p>
 
+    <form class="admin-filter-form" action="/admin/users" method="get">
+        <label>
+            Search name or email
+            <input type="search" name="q" maxlength="100" th:value="${search}">
+        </label>
+        <label>
+            Role
+            <select name="role">
+                <option value="">All roles</option>
+                <option th:each="roleOption : ${roleOptions}" th:value="${roleOption}"
+                        th:text="${roleOption}" th:selected="${selectedRole == roleOption}">STUDENT</option>
+            </select>
+        </label>
+        <label>
+            Status
+            <select name="status">
+                <option value="">All statuses</option>
+                <option th:each="statusOption : ${userStatusOptions}" th:value="${statusOption}"
+                        th:text="${statusOption}" th:selected="${selectedStatus == statusOption}">ACTIVE</option>
+            </select>
+        </label>
+        <button class="account-primary-button" type="submit">Filter users</button>
+        <a class="admin-filter-reset" href="/admin/users">Clear</a>
+    </form>
+
     <p class="account-panel admin-empty-state" th:if="${managementError == null and #lists.isEmpty(users)}">
-        No registered users were found.
+        No users match these filters.
     </p>
 
     <div class="admin-table-wrap"
@@ -39,6 +69,7 @@
                 <th scope="col">Role</th>
                 <th scope="col">Status</th>
                 <th scope="col">Registered</th>
+                <th scope="col">Admin actions</th>
             </tr>
             </thead>
             <tbody>
@@ -52,7 +83,34 @@
                           th:classappend="${user.status == 'ACTIVE'} ? ' admin-status-active' : ' admin-status-inactive'"
                           th:text="${user.status}">ACTIVE</span>
                 </td>
-                <td th:text="${user.registeredAt}">2026-01-01 00:00:00</td>
+                <td th:text="${user.registeredAt != null ? user.registeredAt : '—'}">2026-01-01 00:00:00</td>
+                <td class="admin-actions-cell">
+                    <form action="/admin/users/status" method="post" data-admin-action="true"
+                          th:if="${user.userId != currentAdminId and (user.status == 'ACTIVE' or user.status == 'INACTIVE')}"
+                          th:attr="data-confirm-title=${user.status == 'ACTIVE' ? 'Deactivate account?' : 'Reactivate account?'},
+                                   data-confirm-message=|${user.status == 'ACTIVE' ? 'Deactivate' : 'Reactivate'} ${user.name} (ID ${user.userId})? This changes whether the account can sign in.|,
+                                   data-confirm-text=${user.status == 'ACTIVE' ? 'Deactivate Account' : 'Reactivate Account'}">
+                        <input type="hidden" name="userId" th:value="${user.userId}">
+                        <input type="hidden" name="newStatus"
+                               th:value="${user.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'}">
+                        <input type="hidden" name="_adminCsrf" th:value="${adminCsrfToken}">
+                        <button class="admin-action-button" type="submit"
+                                th:text="${user.status == 'ACTIVE' ? 'Deactivate' : 'Reactivate'}">Deactivate</button>
+                    </form>
+                    <form action="/admin/users/role" method="post" data-admin-action="true"
+                          th:if="${user.userId != currentAdminId and ((user.role == 'STUDENT' and user.status == 'ACTIVE') or user.role == 'ADMIN')}"
+                          th:attr="data-confirm-title=${user.role == 'STUDENT' ? 'Promote to administrator?' : 'Remove administrator privileges?'},
+                                   data-confirm-message=|${user.role == 'STUDENT' ? 'Promote' : 'Remove administrator privileges from'} ${user.name} (ID ${user.userId})?|,
+                                   data-confirm-text=${user.role == 'STUDENT' ? 'Promote to Admin' : 'Remove Admin Role'}">
+                        <input type="hidden" name="userId" th:value="${user.userId}">
+                        <input type="hidden" name="newRole"
+                               th:value="${user.role == 'STUDENT' ? 'ADMIN' : 'STUDENT'}">
+                        <input type="hidden" name="_adminCsrf" th:value="${adminCsrfToken}">
+                        <button class="admin-action-button admin-role-action" type="submit"
+                                th:text="${user.role == 'STUDENT' ? 'Promote' : 'Remove Admin'}">Promote</button>
+                    </form>
+                    <span class="admin-self-note" th:if="${user.userId == currentAdminId}">Current admin</span>
+                </td>
             </tr>
             </tbody>
         </table>

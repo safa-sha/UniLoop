@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Monitoring - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page admin-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
+        <h1>Request Monitoring</h1>
+        <p>Read-only view of buyer-seller marketplace requests.</p>
+    </div>
+
+    <nav class="admin-page-navigation" aria-label="Admin pages">
+        <a href="/admin">Admin Dashboard</a>
+        <a href="/admin/users">User Management</a>
+        <a href="/admin/listings">Listing Management</a>
+    </nav>
+
+    <p class="account-message account-message-error" role="alert"
+       th:if="${managementError != null}" th:text="${managementError}"></p>
+
+    <form class="admin-filter-form" action="/admin/requests" method="get">
+        <label>
+            Search item, buyer, or seller
+            <input type="search" name="q" maxlength="150" th:value="${search}">
+        </label>
+        <label>
+            Request status
+            <select name="status">
+                <option value="">All statuses</option>
+                <option th:each="statusOption : ${requestStatusOptions}"
+                        th:value="${statusOption}" th:text="${statusOption}"
+                        th:selected="${selectedStatus == statusOption}">PENDING</option>
+            </select>
+        </label>
+        <button class="account-primary-button" type="submit">Filter requests</button>
+        <a class="admin-filter-reset" href="/admin/requests">Clear</a>
+    </form>
+
+    <p class="account-panel admin-empty-state"
+       th:if="${managementError == null and #lists.isEmpty(requests)}">
+        No requests match these filters.
+    </p>
+
+    <div class="admin-table-wrap"
+         th:if="${managementError == null and !#lists.isEmpty(requests)}">
+        <table class="admin-data-table admin-request-table">
+            <caption>Marketplace requests</caption>
+            <thead>
+            <tr>
+                <th scope="col">Request ID</th>
+                <th scope="col">Item</th>
+                <th scope="col">Buyer</th>
+                <th scope="col">Seller</th>
+                <th scope="col">Status</th>
+                <th scope="col">Requested</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request : ${requests}">
+                <td>
+                    <a class="admin-table-link"
+                       th:href="@{/admin/requests/{id}(id=${request.requestId})}"
+                       th:text="${request.requestId}">1</a>
+                </td>
+                <td th:text="${request.itemName}">Item</td>
+                <td th:text="${request.buyerName}">Buyer</td>
+                <td th:text="${request.sellerName}">Seller</td>
+                <td><span class="admin-status"
+                          th:classappend="${request.requestStatus == 'PENDING'} ? ' admin-status-pending' :
+                                          (${request.requestStatus == 'ACCEPTED'} ? ' admin-status-active' : '')"
+                          th:text="${request.requestStatus}">PENDING</span></td>
+                <td th:text="${request.requestDate}">2026-01-01 00:00:00</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

@@ -5,7 +5,10 @@ D:\uniloop\src\main\java\com\uniloop\controller\RegistrationController.java
 D:\uniloop\src\main\java\com\uniloop\controller\UniLoopController.java
 D:\uniloop\src\main\java\com\uniloop\DatabaseConnection.java
 D:\uniloop\src\main\java\com\uniloop\Main.java
+D:\uniloop\src\main\java\com\uniloop\model\AdminCategoryCount.java
+D:\uniloop\src\main\java\com\uniloop\model\AdminChangeResult.java
 D:\uniloop\src\main\java\com\uniloop\model\AdminListing.java
+D:\uniloop\src\main\java\com\uniloop\model\AdminRequest.java
 D:\uniloop\src\main\java\com\uniloop\model\AdminUser.java
 D:\uniloop\src\main\java\com\uniloop\model\Item.java
 D:\uniloop\src\main\java\com\uniloop\model\Request.java

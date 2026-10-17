@@ -118,6 +118,11 @@
     document.addEventListener('submit', function (event) {
         const form = event.target;
         if (!(form instanceof HTMLFormElement)) return;
+        if (form.dataset.adminAction === 'true'
+                && form.dataset.confirmSubmitting === 'true') {
+            event.preventDefault();
+            return;
+        }
         const confirmation = routeConfirmations[new URL(form.action, window.location.href).pathname];
         if (confirmation && confirmation.validatePasswordMatch && !validatePasswordMatch(form)) {
             event.preventDefault();
@@ -128,6 +133,15 @@
         if (!hasConfirmation(form)) return;
         if (form.dataset.confirmApproved === 'true') {
             delete form.dataset.confirmApproved;
+            if (form.dataset.adminAction === 'true') {
+                if (form.dataset.confirmSubmitting === 'true') {
+                    event.preventDefault();
+                    return;
+                }
+                form.dataset.confirmSubmitting = 'true';
+                form.querySelectorAll('button[type="submit"], input[type="submit"]')
+                    .forEach(function (button) { button.disabled = true; });
+            }
             return;
         }
         event.preventDefault();

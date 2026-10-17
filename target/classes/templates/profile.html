@@ -54,12 +54,16 @@
         <div class="account-panel-heading">
             <p class="account-eyebrow" th:text="${profileComplete ? 'PROFILE DETAILS' : 'A FEW DETAILS TO GET STARTED'}">PROFILE DETAILS</p>
             <h2 id="profile-form-title" th:text="${profileComplete ? 'Edit Your Profile' : 'Complete Your Profile'}">Complete Your Profile</h2>
-            <p>Department, admission year, and course/program are required. Phone is optional.</p>
+            <p>Full name, department, admission year, and course/program are required. Phone is optional.</p>
         </div>
         <form class="account-form" action="/profile" method="post"
               data-confirm-title="Save profile changes?"
               data-confirm-message="Save your profile changes?"
               data-confirm-text="Save Changes">
+            <label for="fullName">Full name</label>
+            <input id="fullName" name="fullName" type="text" maxlength="100" autocomplete="name" required
+                   th:value="${profileFullName != null ? profileFullName : userFullName}">
+
             <label for="courseProgram">Course / program</label>
             <input id="courseProgram" name="courseProgram" type="text" maxlength="150" required
                    th:value="${profileCourseProgram != null ? profileCourseProgram : userCourseProgram}">

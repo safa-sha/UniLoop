@@ -1,6 +1,8 @@
 package com.uniloop.repository;
 
 import com.uniloop.DatabaseConnection;
+import com.uniloop.model.AdminCategoryCount;
+import com.uniloop.model.AdminChangeResult;
 import com.uniloop.model.AdminListing;
 import com.uniloop.model.Item;
 
@@ -21,7 +23,8 @@ public class ItemRepository {
         return count("SELECT COUNT(*) FROM items WHERE item_status = 'AVAILABLE'");
     }
 
-    public List<AdminListing> findAllForAdmin() throws SQLException {
+    public List<AdminListing> findAllForAdmin(String search, String status,
+                                               Integer categoryId) throws SQLException {
         String sql = """
                 SELECT i.item_id, i.item_name, u.name AS seller_name,
                        c.category_name, i.listing_type, i.price,
@@ -29,26 +32,101 @@ public class ItemRepository {
                 FROM items i
                 LEFT JOIN users u ON u.user_id = i.seller_id
                 LEFT JOIN categories c ON c.category_id = i.category_id
+                WHERE (? = '' OR LOWER(i.item_name) LIKE ?)
+                  AND (? = '' OR i.item_status = ?)
+                  AND (? IS NULL OR i.category_id = ?)
                 ORDER BY i.item_id DESC
                 """;
         List<AdminListing> listings = new ArrayList<>();
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                listings.add(new AdminListing(
-                        resultSet.getInt("item_id"),
-                        resultSet.getString("item_name"),
-                        resultSet.getString("seller_name"),
-                        resultSet.getString("category_name"),
-                        resultSet.getString("listing_type"),
-                        resultSet.getBigDecimal("price"),
-                        resultSet.getString("item_condition"),
-                        resultSet.getString("date_posted"),
-                        resultSet.getString("item_status")));
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            String normalizedSearch = search == null ? "" : search.trim().toLowerCase(java.util.Locale.ROOT);
+            String normalizedStatus = status == null ? "" : status;
+            statement.setString(1, normalizedSearch);
+            statement.setString(2, "%" + normalizedSearch + "%");
+            statement.setString(3, normalizedStatus);
+            statement.setString(4, normalizedStatus);
+            if (categoryId == null) {
+                statement.setNull(5, java.sql.Types.INTEGER);
+                statement.setNull(6, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(5, categoryId);
+                statement.setInt(6, categoryId);
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    listings.add(readAdminListing(resultSet));
+                }
             }
         }
         return listings;
+    }
+
+    public AdminListing findAdminListingById(int itemId) throws SQLException {
+        String sql = """
+                SELECT i.item_id, i.item_name, u.name AS seller_name,
+                       c.category_name, i.listing_type, i.price,
+                       i.item_condition, i.date_posted, i.item_status
+                FROM items i
+                LEFT JOIN users u ON u.user_id = i.seller_id
+                LEFT JOIN categories c ON c.category_id = i.category_id
+                WHERE i.item_id = ?
+                """;
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, itemId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? readAdminListing(resultSet) : null;
+            }
+        }
+    }
+
+    private AdminListing readAdminListing(ResultSet resultSet) throws SQLException {
+        return new AdminListing(
+                resultSet.getInt("item_id"),
+                resultSet.getString("item_name"),
+                resultSet.getString("seller_name"),
+                resultSet.getString("category_name"),
+                resultSet.getString("listing_type"),
+                resultSet.getBigDecimal("price"),
+                resultSet.getString("item_condition"),
+                resultSet.getString("date_posted"),
+                resultSet.getString("item_status"));
+    }
+
+    public List<AdminCategoryCount> getListingCountsByCategory() throws SQLException {
+        String sql = """
+                SELECT c.category_id, c.category_name, COUNT(i.item_id) AS listing_count
+                FROM categories c
+                LEFT JOIN items i ON i.category_id = c.category_id
+                GROUP BY c.category_id, c.category_name
+                ORDER BY c.category_name
+                """;
+        List<AdminCategoryCount> categories = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                categories.add(new AdminCategoryCount(
+                        resultSet.getInt("category_id"),
+                        resultSet.getString("category_name"),
+                        resultSet.getInt("listing_count")));
+            }
+        }
+        return categories;
+    }
+
+    public AdminChangeResult markAvailableListingUnavailable(int itemId) throws SQLException {
+        if (itemId <= 0) return AdminChangeResult.INVALID_STATE;
+        String sql = "UPDATE items SET item_status = 'UNAVAILABLE' WHERE item_id = ? AND item_status = 'AVAILABLE'";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, itemId);
+            int changed = statement.executeUpdate();
+            if (changed == 1) return AdminChangeResult.SUCCESS;
+        }
+        return findAdminListingById(itemId) == null
+                ? AdminChangeResult.NOT_FOUND : AdminChangeResult.INVALID_STATE;
     }
 
     private int count(String sql) throws SQLException {

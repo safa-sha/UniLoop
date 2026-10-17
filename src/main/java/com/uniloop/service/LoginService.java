@@ -47,10 +47,7 @@ public class LoginService {
         if (userId <= 0) return false;
 
         try {
-            User user = userRepository.findByUserId(userId);
-            return user != null
-                    && "ACTIVE".equalsIgnoreCase(user.getStatus())
-                    && "ADMIN".equalsIgnoreCase(user.getRole());
+            return userRepository.isActiveAdmin(userId);
         } catch (SQLException exception) {
             LOGGER.log(Level.WARNING, "Could not verify admin account", exception);
             return false;

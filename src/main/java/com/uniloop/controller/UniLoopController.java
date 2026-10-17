@@ -77,6 +77,7 @@ public class UniLoopController {
                     && user.getAdmissionYear() != null
                     && user.getCourseProgram() != null && !user.getCourseProgram().isBlank();
             model.addAttribute("profileName", user.getName());
+            model.addAttribute("userFullName", user.getName());
             model.addAttribute("profileEmail", user.getEmail());
             model.addAttribute("userDepartment", user.getDepartment());
             model.addAttribute("userAdmissionYear", user.getAdmissionYear());
@@ -95,7 +96,8 @@ public class UniLoopController {
     }
 
     @PostMapping("/profile")
-    public String updateProfile(@RequestParam(name = "phone", required = false) String phone,
+    public String updateProfile(@RequestParam(name = "fullName", required = false) String fullName,
+                                @RequestParam(name = "phone", required = false) String phone,
                                 @RequestParam(name = "department", required = false) String department,
                                 @RequestParam(name = "admissionYear", required = false) String admissionYearInput,
                                 @RequestParam(name = "courseProgram", required = false) String courseProgram,
@@ -115,11 +117,15 @@ public class UniLoopController {
 
         ProfileUpdateResult result = invalidAdmissionYear
                 ? ProfileUpdateResult.INVALID_ADMISSION_YEAR
-                : userService.updateProfile(userId, phone, department, admissionYear, courseProgram);
+                : userService.updateProfile(userId, fullName, phone, department,
+                admissionYear, courseProgram);
         if (result == ProfileUpdateResult.SUCCESS) {
+            String normalizedFullName = fullName.trim();
+            session.setAttribute("authenticatedUserName", normalizedFullName);
             redirectAttributes.addFlashAttribute("profileSuccess", "Your profile was updated.");
         } else {
             redirectAttributes.addFlashAttribute("profileError", profileUpdateMessage(result));
+            redirectAttributes.addFlashAttribute("profileFullName", fullName);
             redirectAttributes.addFlashAttribute("profilePhone", phone);
             redirectAttributes.addFlashAttribute("profileDepartment", department);
             redirectAttributes.addFlashAttribute("profileAdmissionYear", admissionYearInput);
@@ -175,6 +181,7 @@ public class UniLoopController {
 
     private String profileUpdateMessage(ProfileUpdateResult result) {
         return switch (result) {
+            case INVALID_NAME -> "Enter your full name (up to 100 characters).";
             case INVALID_DEPARTMENT -> "Enter a department of up to 100 characters.";
             case INVALID_ADMISSION_YEAR -> "Enter a valid admission year.";
             case INVALID_COURSE_PROGRAM -> "Enter a course or program of up to 150 characters.";

@@ -47,10 +47,13 @@ public class UserService {
         return userRepository.findByUserId(userId);
     }
 
-    public ProfileUpdateResult updateProfile(int authenticatedUserId, String phoneInput,
-                                             String departmentInput, Integer admissionYear,
-                                             String courseProgramInput) {
+    public ProfileUpdateResult updateProfile(int authenticatedUserId, String nameInput,
+                                             String phoneInput, String departmentInput,
+                                             Integer admissionYear, String courseProgramInput) {
         if (authenticatedUserId <= 0) return ProfileUpdateResult.INVALID_USER_ID;
+
+        String name = nameInput == null ? "" : nameInput.trim();
+        if (name.isEmpty() || name.length() > 100) return ProfileUpdateResult.INVALID_NAME;
 
         String department = departmentInput == null ? "" : departmentInput.trim();
         if (department.isEmpty()) return ProfileUpdateResult.INVALID_DEPARTMENT;
@@ -71,8 +74,8 @@ public class UserService {
         if (phone != null && phone.length() > 20) return ProfileUpdateResult.INVALID_PHONE;
 
         try {
-            return userRepository.updateProfile(authenticatedUserId, phone, department,
-                    admissionYear, courseProgram)
+            return userRepository.updateProfile(authenticatedUserId, name, phone,
+                    department, admissionYear, courseProgram)
                     ? ProfileUpdateResult.SUCCESS : ProfileUpdateResult.USER_NOT_FOUND;
         } catch (SQLException exception) {
             LOGGER.log(Level.WARNING, "Could not update user profile", exception);
@@ -123,7 +126,7 @@ public class UserService {
     public enum RegistrationResult { SUCCESS, INVALID_NAME, INVALID_EMAIL_SYNTAX, INVALID_EMAIL_DOMAIN, INVALID_PASSWORD, DUPLICATE_EMAIL, FAILED }
 
     public enum ProfileUpdateResult {
-        SUCCESS, INVALID_USER_ID, INVALID_DEPARTMENT, INVALID_ADMISSION_YEAR,
+        SUCCESS, INVALID_USER_ID, INVALID_NAME, INVALID_DEPARTMENT, INVALID_ADMISSION_YEAR,
         INVALID_COURSE_PROGRAM, INVALID_PHONE, USER_NOT_FOUND, FAILED
     }
 

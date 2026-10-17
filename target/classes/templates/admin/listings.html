@@ -12,20 +12,52 @@
     <div class="account-heading">
         <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
         <h1>Listing Management</h1>
-        <p>Marketplace listings and their current status. Listings are read-only.</p>
+        <p>Search marketplace listings and review their status.</p>
     </div>
 
     <nav class="admin-page-navigation" aria-label="Admin pages">
         <a href="/admin">Admin Dashboard</a>
         <a href="/admin/users">User Management</a>
+        <a href="/admin/requests">Request Monitoring</a>
     </nav>
 
+    <p class="account-message account-message-success" role="status"
+       th:if="${adminSuccess != null}" th:text="${adminSuccess}"></p>
+    <p class="account-message account-message-error" role="alert"
+       th:if="${adminError != null}" th:text="${adminError}"></p>
     <p class="account-message account-message-error" role="alert"
        th:if="${managementError != null}" th:text="${managementError}"></p>
 
+    <form class="admin-filter-form" action="/admin/listings" method="get">
+        <label>
+            Search item name
+            <input type="search" name="q" maxlength="150" th:value="${search}">
+        </label>
+        <label>
+            Status
+            <select name="status">
+                <option value="">All statuses</option>
+                <option th:each="statusOption : ${listingStatusOptions}"
+                        th:value="${statusOption}" th:text="${statusOption}"
+                        th:selected="${selectedStatus == statusOption}">AVAILABLE</option>
+            </select>
+        </label>
+        <label>
+            Category
+            <select name="category">
+                <option value="">All categories</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.categoryId}" th:text="${category.categoryName}"
+                        th:selected="${selectedCategory == category.categoryId}">Books</option>
+            </select>
+        </label>
+        <button class="account-primary-button" type="submit">Filter listings</button>
+        <a class="admin-filter-reset" href="/admin/listings">Clear</a>
+    </form>
+
     <p class="account-panel admin-empty-state"
        th:if="${managementError == null and #lists.isEmpty(listings)}">
-        No listings were found.
+        No listings match these filters.
     </p>
 
     <div class="admin-table-wrap"
@@ -43,12 +75,14 @@
                 <th scope="col">Condition</th>
                 <th scope="col">Posted</th>
                 <th scope="col">Status</th>
+                <th scope="col">Admin actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="listing : ${listings}">
                 <td th:text="${listing.itemId}">1</td>
-                <td th:text="${listing.itemName}">Item</td>
+                <td><a class="admin-table-link" th:href="@{/admin/listings/{id}(id=${listing.itemId})}"
+                       th:text="${listing.itemName}">Item</a></td>
                 <td th:text="${listing.sellerName != null ? listing.sellerName : 'Unavailable'}">Seller</td>
                 <td th:text="${listing.categoryName != null ? listing.categoryName : 'Unavailable'}">Category</td>
                 <td th:text="${listing.listingType}">SELL</td>
@@ -57,6 +91,18 @@
                 <td th:text="${listing.datePosted}">2026-01-01 00:00:00</td>
                 <td><span class="admin-status admin-listing-status"
                           th:text="${listing.itemStatus}">AVAILABLE</span></td>
+                <td class="admin-actions-cell">
+                    <form action="/admin/listings/unavailable" method="post" data-admin-action="true"
+                          th:if="${listing.itemStatus == 'AVAILABLE'}"
+                          th:attr="data-confirm-title='Mark listing unavailable?',
+                                   data-confirm-message=|Mark listing '${listing.itemName}' (ID ${listing.itemId}) as unavailable? The listing and request history will be preserved.|,
+                                   data-confirm-text='Mark Unavailable'">
+                        <input type="hidden" name="itemId" th:value="${listing.itemId}">
+                        <input type="hidden" name="_adminCsrf" th:value="${adminCsrfToken}">
+                        <button class="admin-action-button" type="submit">Mark Unavailable</button>
+                    </form>
+                    <span th:if="${listing.itemStatus != 'AVAILABLE'}">—</span>
+                </td>
             </tr>
             </tbody>
         </table>

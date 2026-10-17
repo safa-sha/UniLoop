@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Details - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page admin-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
+        <h1>Request Details</h1>
+        <p>Read-only details; request decisions remain with the buyer and seller.</p>
+    </div>
+    <nav class="admin-page-navigation" aria-label="Admin pages">
+        <a href="/admin">Admin Dashboard</a>
+        <a href="/admin/requests">Request Monitoring</a>
+        <a href="/admin/users">User Management</a>
+        <a href="/admin/listings">Listing Management</a>
+    </nav>
+    <p class="account-message account-message-error" role="alert"
+       th:if="${managementError != null}" th:text="${managementError}"></p>
+    <section class="account-panel admin-details-panel" th:if="${adminRequest != null}">
+        <dl class="admin-details-list">
+            <div><dt>Request ID</dt><dd th:text="${adminRequest.requestId}">1</dd></div>
+            <div><dt>Item</dt><dd th:text="${adminRequest.itemName}">Item</dd></div>
+            <div><dt>Buyer</dt><dd th:text="${adminRequest.buyerName}">Buyer</dd></div>
+            <div><dt>Seller</dt><dd th:text="${adminRequest.sellerName}">Seller</dd></div>
+            <div><dt>Status</dt><dd><span class="admin-status"
+                                             th:text="${adminRequest.requestStatus}">PENDING</span></dd></div>
+            <div><dt>Request date</dt><dd th:text="${adminRequest.requestDate}">2026-01-01 00:00:00</dd></div>
+        </dl>
+    </section>
+</main>
+</body>
+</html>

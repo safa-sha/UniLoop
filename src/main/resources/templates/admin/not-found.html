@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Found - UniLoop Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page admin-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <section class="account-panel">
+        <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
+        <h1>Record not found</h1>
+        <p>The requested record is unavailable or may have been removed.</p>
+        <a class="account-primary-button" href="/admin">Admin Dashboard</a>
+    </section>
+</main>
+</body>
+</html>

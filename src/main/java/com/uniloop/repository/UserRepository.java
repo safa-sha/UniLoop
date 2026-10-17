@@ -1,5 +1,6 @@
 package com.uniloop.repository;
 import com.uniloop.DatabaseConnection;
+import com.uniloop.model.AdminChangeResult;
 import com.uniloop.model.AdminUser;
 import com.uniloop.model.User;
 import java.sql.*;
@@ -36,6 +37,19 @@ public class UserRepository {
         }
     }
 
+    public boolean isActiveAdmin(int userId) throws SQLException {
+        String sql = "SELECT role, status FROM users WHERE user_id = ? LIMIT 1";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement s = c.prepareStatement(sql)) {
+            s.setInt(1, userId);
+            try (ResultSet r = s.executeQuery()) {
+                return r.next()
+                        && "ADMIN".equalsIgnoreCase(r.getString("role"))
+                        && "ACTIVE".equalsIgnoreCase(r.getString("status"));
+            }
+        }
+    }
+
     public int countUsers() throws SQLException {
         return count("SELECT COUNT(*) FROM users");
     }
@@ -44,27 +58,179 @@ public class UserRepository {
         return count("SELECT COUNT(*) FROM users WHERE status = 'ACTIVE'");
     }
 
-    public List<AdminUser> findAllForAdmin() throws SQLException {
+    public List<AdminUser> findAllForAdmin(String search, String role, String status) throws SQLException {
         String sql = """
                 SELECT user_id, name, email, role, status, created_at
                 FROM users
+                WHERE (? = '' OR LOWER(name) LIKE ? OR LOWER(email) LIKE ?)
+                  AND (? = '' OR role = ?)
+                  AND (? = '' OR status = ?)
                 ORDER BY user_id DESC
                 """;
         List<AdminUser> users = new ArrayList<>();
         try (Connection c = DatabaseConnection.getConnection();
-             PreparedStatement s = c.prepareStatement(sql);
-             ResultSet r = s.executeQuery()) {
-            while (r.next()) {
-                users.add(new AdminUser(
-                        r.getInt("user_id"),
-                        r.getString("name"),
-                        r.getString("email"),
-                        r.getString("role"),
-                        r.getString("status"),
-                        r.getString("created_at")));
+             PreparedStatement s = c.prepareStatement(sql)) {
+            String normalizedSearch = search == null ? "" : search.trim().toLowerCase(Locale.ROOT);
+            String normalizedRole = role == null ? "" : role;
+            String normalizedStatus = status == null ? "" : status;
+            s.setString(1, normalizedSearch);
+            s.setString(2, "%" + normalizedSearch + "%");
+            s.setString(3, "%" + normalizedSearch + "%");
+            s.setString(4, normalizedRole);
+            s.setString(5, normalizedRole);
+            s.setString(6, normalizedStatus);
+            s.setString(7, normalizedStatus);
+            try (ResultSet r = s.executeQuery()) {
+                while (r.next()) {
+                    users.add(new AdminUser(
+                            r.getInt("user_id"),
+                            r.getString("name"),
+                            r.getString("email"),
+                            r.getString("role"),
+                            r.getString("status"),
+                            r.getString("created_at")));
+                }
             }
         }
         return users;
+    }
+
+    public AdminChangeResult changeAccountStatus(int userId, String expectedStatus,
+                                                  String newStatus) throws SQLException {
+        if (userId <= 0 || !(("ACTIVE".equals(expectedStatus) && "INACTIVE".equals(newStatus))
+                || ("INACTIVE".equals(expectedStatus) && "ACTIVE".equals(newStatus)))) {
+            return AdminChangeResult.INVALID_STATE;
+        }
+        try (Connection c = DatabaseConnection.getConnection()) {
+            c.setAutoCommit(false);
+            try {
+                int activeAdminCount = lockAndCountActiveAdmins(c);
+                String currentRole;
+                String currentStatus;
+                try (PreparedStatement s = c.prepareStatement(
+                        "SELECT role, status FROM users WHERE user_id = ? FOR UPDATE")) {
+                    s.setInt(1, userId);
+                    try (ResultSet r = s.executeQuery()) {
+                        if (!r.next()) {
+                            c.rollback();
+                            return AdminChangeResult.NOT_FOUND;
+                        }
+                        currentRole = r.getString("role");
+                        currentStatus = r.getString("status");
+                    }
+                }
+
+                if (!expectedStatus.equalsIgnoreCase(currentStatus)) {
+                    c.rollback();
+                    return AdminChangeResult.INVALID_STATE;
+                }
+                if ("ADMIN".equalsIgnoreCase(currentRole)
+                        && "ACTIVE".equalsIgnoreCase(currentStatus)
+                        && "INACTIVE".equals(newStatus)
+                        && activeAdminCount <= 1) {
+                    c.rollback();
+                    return AdminChangeResult.LAST_ACTIVE_ADMIN;
+                }
+
+                try (PreparedStatement s = c.prepareStatement(
+                        "UPDATE users SET status = ? WHERE user_id = ? AND status = ?")) {
+                    s.setString(1, newStatus);
+                    s.setInt(2, userId);
+                    s.setString(3, expectedStatus);
+                    if (s.executeUpdate() != 1) {
+                        c.rollback();
+                        return AdminChangeResult.INVALID_STATE;
+                    }
+                }
+                c.commit();
+                return AdminChangeResult.SUCCESS;
+            } catch (SQLException exception) {
+                c.rollback();
+                throw exception;
+            } finally {
+                c.setAutoCommit(true);
+            }
+        }
+    }
+
+    public AdminChangeResult changeRole(int userId, String expectedRole,
+                                        String newRole) throws SQLException {
+        if (userId <= 0 || !(("STUDENT".equals(expectedRole) && "ADMIN".equals(newRole))
+                || ("ADMIN".equals(expectedRole) && "STUDENT".equals(newRole)))) {
+            return AdminChangeResult.INVALID_STATE;
+        }
+        try (Connection c = DatabaseConnection.getConnection()) {
+            c.setAutoCommit(false);
+            try {
+                int activeAdminCount = lockAndCountActiveAdmins(c);
+                String currentRole;
+                String currentStatus;
+                try (PreparedStatement s = c.prepareStatement(
+                        "SELECT role, status FROM users WHERE user_id = ? FOR UPDATE")) {
+                    s.setInt(1, userId);
+                    try (ResultSet r = s.executeQuery()) {
+                        if (!r.next()) {
+                            c.rollback();
+                            return AdminChangeResult.NOT_FOUND;
+                        }
+                        currentRole = r.getString("role");
+                        currentStatus = r.getString("status");
+                    }
+                }
+
+                if (!expectedRole.equalsIgnoreCase(currentRole)) {
+                    c.rollback();
+                    return AdminChangeResult.INVALID_STATE;
+                }
+                if ("ADMIN".equalsIgnoreCase(currentRole)
+                        && "ACTIVE".equalsIgnoreCase(currentStatus)
+                        && "STUDENT".equals(newRole)
+                        && activeAdminCount <= 1) {
+                    c.rollback();
+                    return AdminChangeResult.LAST_ACTIVE_ADMIN;
+                }
+                if ("STUDENT".equalsIgnoreCase(currentRole)
+                        && "ADMIN".equals(newRole)
+                        && !"ACTIVE".equalsIgnoreCase(currentStatus)) {
+                    c.rollback();
+                    return AdminChangeResult.INVALID_STATE;
+                }
+
+                try (PreparedStatement s = c.prepareStatement(
+                        "UPDATE users SET role = ? WHERE user_id = ? AND role = ?")) {
+                    s.setString(1, newRole);
+                    s.setInt(2, userId);
+                    s.setString(3, expectedRole);
+                    if (s.executeUpdate() != 1) {
+                        c.rollback();
+                        return AdminChangeResult.INVALID_STATE;
+                    }
+                }
+                c.commit();
+                return AdminChangeResult.SUCCESS;
+            } catch (SQLException exception) {
+                c.rollback();
+                throw exception;
+            } finally {
+                c.setAutoCommit(true);
+            }
+        }
+    }
+
+    private int lockAndCountActiveAdmins(Connection connection) throws SQLException {
+        int count = 0;
+        String sql = """
+                SELECT user_id
+                FROM users
+                WHERE role = 'ADMIN' AND status = 'ACTIVE'
+                ORDER BY user_id
+                FOR UPDATE
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) count++;
+        }
+        return count;
     }
 
     private int count(String sql) throws SQLException {
@@ -99,8 +265,9 @@ public class UserRepository {
      * authenticatedUserId must come from the server-side authenticated session,
      * not from a profile form field.
      */
-    public boolean updateProfile(int authenticatedUserId, String phone, String department,
-                                 Integer admissionYear, String courseProgram) throws SQLException {
+    public boolean updateProfile(int authenticatedUserId, String name, String phone,
+                                 String department, Integer admissionYear,
+                                 String courseProgram) throws SQLException {
         try (Connection c = DatabaseConnection.getConnection()) {
             Set<String> columns = getUserColumns(c);
             String[] requiredColumns = {"phone", "department", "admission_year", "course_program"};
@@ -116,17 +283,18 @@ public class UserRepository {
                         + missingColumns);
             }
 
-            String sql = "UPDATE users SET phone = ?, department = ?, admission_year = ?, course_program = ? WHERE user_id = ?";
+            String sql = "UPDATE users SET name = ?, phone = ?, department = ?, admission_year = ?, course_program = ? WHERE user_id = ?";
             try (PreparedStatement s = c.prepareStatement(sql)) {
-                s.setString(1, phone);
-                s.setString(2, department);
+                s.setString(1, name);
+                s.setString(2, phone);
+                s.setString(3, department);
                 if (admissionYear == null) {
-                    s.setNull(3, Types.INTEGER);
+                    s.setNull(4, Types.INTEGER);
                 } else {
-                    s.setInt(3, admissionYear);
+                    s.setInt(4, admissionYear);
                 }
-                s.setString(4, courseProgram);
-                s.setInt(5, authenticatedUserId);
+                s.setString(5, courseProgram);
+                s.setInt(6, authenticatedUserId);
                 return s.executeUpdate() > 0;
             }
         }

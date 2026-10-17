@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listing Details - UniLoop</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="account-page admin-page">
+<header th:replace="~{fragments/navbar :: navbar('')}"></header>
+<main class="account-main">
+    <div class="account-heading">
+        <p class="account-eyebrow">UNILOOP ADMINISTRATION</p>
+        <h1>Listing Details</h1>
+        <p>Read-only listing information and moderation status.</p>
+    </div>
+    <nav class="admin-page-navigation" aria-label="Admin pages">
+        <a href="/admin">Admin Dashboard</a>
+        <a href="/admin/listings">Listing Management</a>
+        <a href="/admin/requests">Request Monitoring</a>
+    </nav>
+    <p class="account-message account-message-error" role="alert"
+       th:if="${managementError != null}" th:text="${managementError}"></p>
+    <section class="account-panel admin-details-panel" th:if="${listing != null}">
+        <dl class="admin-details-list">
+            <div><dt>Listing ID</dt><dd th:text="${listing.itemId}">1</dd></div>
+            <div><dt>Item</dt><dd th:text="${listing.itemName}">Item</dd></div>
+            <div><dt>Seller</dt><dd th:text="${listing.sellerName != null ? listing.sellerName : 'Unavailable'}">Seller</dd></div>
+            <div><dt>Category</dt><dd th:text="${listing.categoryName != null ? listing.categoryName : 'Unavailable'}">Category</dd></div>
+            <div><dt>Listing type</dt><dd th:text="${listing.listingType}">SELL</dd></div>
+            <div><dt>Price</dt><dd th:text="${listing.price != null ? '₹' + listing.price : '—'}">₹0.00</dd></div>
+            <div><dt>Condition</dt><dd th:text="${listing.condition != null ? listing.condition : '—'}">Good</dd></div>
+            <div><dt>Posted</dt><dd th:text="${listing.datePosted}">2026-01-01 00:00:00</dd></div>
+            <div><dt>Status</dt><dd><span class="admin-status"
+                                             th:text="${listing.itemStatus}">AVAILABLE</span></dd></div>
+        </dl>
+        <form action="/admin/listings/unavailable" method="post" data-admin-action="true"
+              th:if="${listing.itemStatus == 'AVAILABLE'}"
+              th:attr="data-confirm-title='Mark listing unavailable?',
+                       data-confirm-message=|Mark listing '${listing.itemName}' (ID ${listing.itemId}) as unavailable? The listing and request history will be preserved.|,
+                       data-confirm-text='Mark Unavailable'">
+            <input type="hidden" name="itemId" th:value="${listing.itemId}">
+            <input type="hidden" name="_adminCsrf" th:value="${adminCsrfToken}">
+            <button class="admin-action-button" type="submit">Mark Unavailable</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>
