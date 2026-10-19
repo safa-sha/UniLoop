@@ -1,2 +1,4 @@
 com\uniloop\controller\UniLoopController$1.class
 com\uniloop\controller\RegistrationController$1.class
+com\uniloop\controller\ApiItemController.class
+com\uniloop\dto\ItemResponse.class

@@ -1,6 +1,7 @@
 package com.uniloop.repository;
 
 import com.uniloop.DatabaseConnection;
+import com.uniloop.dto.ItemResponse;
 import com.uniloop.model.AdminCategoryCount;
 import com.uniloop.model.AdminChangeResult;
 import com.uniloop.model.AdminListing;
@@ -136,6 +137,42 @@ public class ItemRepository {
             resultSet.next();
             return resultSet.getInt(1);
         }
+    }
+
+    public List<ItemResponse> findAvailableItemsForApi() throws SQLException {
+        String sql = """
+                SELECT i.item_id, i.seller_id, i.category_id, i.item_name,
+                       i.description, i.price, i.image_path, i.item_condition,
+                       i.listing_type, i.item_status, i.date_posted,
+                       c.category_name, u.name AS seller_name
+                FROM items i
+                LEFT JOIN categories c ON c.category_id = i.category_id
+                LEFT JOIN users u ON u.user_id = i.seller_id
+                WHERE i.item_status = 'AVAILABLE'
+                ORDER BY i.item_id DESC
+                """;
+        List<ItemResponse> items = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                items.add(new ItemResponse(
+                        resultSet.getInt("item_id"),
+                        resultSet.getInt("seller_id"),
+                        resultSet.getInt("category_id"),
+                        resultSet.getString("item_name"),
+                        resultSet.getString("description"),
+                        resultSet.getDouble("price"),
+                        resultSet.getString("image_path"),
+                        resultSet.getString("item_condition"),
+                        resultSet.getString("listing_type"),
+                        resultSet.getString("item_status"),
+                        resultSet.getString("date_posted"),
+                        resultSet.getString("category_name"),
+                        resultSet.getString("seller_name")));
+            }
+        }
+        return items;
     }
 
     // Get all AVAILABLE items for Browse
